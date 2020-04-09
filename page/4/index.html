@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Page 4 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/01/18/Dubbo-RPC实现细节/">Dubbo之RPC实现细节</a></h1>
+  
+
+      
+        <time datetime="2019-01-18T12:43:36.000Z">2019-01-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>Dubbo使用了Mine、Netty3和Netty4等框架实现了RPC调用，本文主要基于Netty分析Dubbo的RPC实现源码。这部分源码在dubbo-remoting-netty4模块中的NettyServer类中。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/01/18/Dubbo-RPC实现细节/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/01/13/Dubbo-SPI基础使用/">Dubbo之SPI基础使用</a></h1>
+  
+
+      
+        <time datetime="2019-01-13T04:29:51.000Z">2019-01-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="SPI简介"><a href="#SPI简介" class="headerlink" title="SPI简介"></a>SPI简介</h3><p>SPI全称为Service Provider Interface，是一种服务发现机制。SPI的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。正因此特性，我们可以很容易的通过SPI机制为我们的程序提供拓展功能。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/01/13/Dubbo-SPI基础使用/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/12/28/Dubbo-服务的注册方向与访问/">Dubbo之服务的注册发现与访问</a></h1>
+  
+
+      
+        <time datetime="2018-12-28T11:49:14.000Z">2018-12-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Dubbo调用"><a href="#Dubbo调用" class="headerlink" title="Dubbo调用"></a>Dubbo调用</h2><h3 id="Dubbo调用原理分析"><a href="#Dubbo调用原理分析" class="headerlink" title="Dubbo调用原理分析"></a>Dubbo调用原理分析</h3><ul>
+<li>基于Spring的XML解析扩展机制自定义Dubbo的基于XML的配置格式。</li>
+<li>dubbo-config项目的dubbo-config-spring子项目负责解析Dubbo的XML配置文件（主要是解析出Dubbo的注册中心地址、使用的传输协议、服务器端的端口号等）。</li>
+<li>解析出配置后服务器端启动，并将自己所能提供的服务注册到注册中心，然后通过dubbo-remoting项目的dubbo-remoting-netty4子项目（dubbo协议）开启服务。</li>
+<li>客户端同样通过Spring的XML解析机制解析出配置的各种参数，在通过注册中心或直接配置拿到服务器端的地址，然后通过dubbo-remoting项目的dubbo-remoting-netty4子项目（dubbo协议）连接到服务器端。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/12/28/Dubbo-服务的注册方向与访问/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/12/01/基础之计算机网络/">计算机网络</a></h1>
+  
+
+      
+        <time datetime="2018-12-01T07:32:20.000Z">2018-12-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>TCP/IP提供一种面向连接的、可靠的字节流服务。面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。在一个TCP连接中，仅有两方进行彼此通信。广播和多播不能用于TCP。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/12/01/基础之计算机网络/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/09/08/基础之操作系统/">操作系统</a></h1>
+  
+
+      
+        <time datetime="2018-09-07T23:53:07.000Z">2018-09-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="操作系统的引导"><a href="#操作系统的引导" class="headerlink" title="操作系统的引导"></a>操作系统的引导</h3><ol>
+<li>开机时，CS=0xFFFF IP=0x0000，所以会跳转到固化在内存中的基本输入输出系统(BIOS)；</li>
+<li>BIOS从引导扇区(0磁道0扇区)读取bootsect.s(512k)到内存中。</li>
+<li>bootsect.s将操作系统读到内存中。1. 读入setup；2. 在屏幕上打出logo；3. 调用13号中断读取操作系统后面的system部分。</li>
+<li>setup完成操作系统启动前的初始化，获取硬件信息如内存的大小等。</li>
+<li>setup进入保护模式，然后跳转到system模块的head.s中。</li>
+<li>head.s再次初始化GDT表等，然后调用main函数(汇编调用C函数)。</li>
+<li>main函数初始化页表等资源，然后阻塞。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/09/08/基础之操作系统/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/18/其它之Linux使用/">Linux使用</a></h1>
+  
+
+      
+        <time datetime="2018-08-18T12:02:41.000Z">2018-08-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程"><a href="#CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程" class="headerlink" title="CentOS7配置网络 | Vim使用教程 | Make命令教程 | Diff命令教程"></a><a href="http://www.cnblogs.com/txk1452/p/5617639.html" target="_blank" rel="noopener">CentOS7配置网络</a> | <a href="http://vimzijun.net/categories/vim/page/2/" target="_blank" rel="noopener">Vim使用教程</a> | <a href="http://www.ruanyifeng.com/blog/2015/02/make.html" target="_blank" rel="noopener">Make命令教程</a> | <a href="http://www.ruanyifeng.com/blog/2012/08/how_to_read_diff.html" target="_blank" rel="noopener">Diff命令教程</a></h3>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/18/其它之Linux使用/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/11/Java高级特性之HashMap原理分析/">HashMap原理分析</a></h1>
+  
+
+      
+        <time datetime="2018-08-11T01:34:51.000Z">2018-08-11</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="JDK7中的HashMap"><a href="#JDK7中的HashMap" class="headerlink" title="JDK7中的HashMap"></a>JDK7中的HashMap</h2><h4 id="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"><a href="#HashMap底层维护了一个数组，数组的每一项都是一个Entry。" class="headerlink" title="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"></a>HashMap底层维护了一个数组，数组的每一项都是一个Entry。</h4><pre><code>transient Entry&lt;K,V&gt;[] table;
+</code></pre>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/11/Java高级特性之HashMap原理分析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/04/Java高级特性之反射源码分析/">Java反射源码分析</a></h1>
+  
+
+      
+        <time datetime="2018-08-04T02:39:10.000Z">2018-08-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="java-lang-reflect-Method"><a href="#java-lang-reflect-Method" class="headerlink" title="java.lang.reflect.Method"></a>java.lang.reflect.Method</h3><p>每个Java方法有且只有一个Method对象作为root，它相当于根对象，对用户不可见。当我们创建Method对象时，我们代码中获取的Method对象都相当于它的副本（或引用）。root对象持有一个MethodAccessor对象，所以所有获取到的Method对象都共享一个MethodAccessor对象，因此必须保证它在内存中的可见性。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/04/Java高级特性之反射源码分析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/page/3/" class="alignleft prev">上一页</a>
+  
+  
+    <a href="/page/5/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+      </li>
+    
+      <li>
+        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

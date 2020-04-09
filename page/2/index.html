@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Page 2 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/01/05/MQ-Kafka基础/">Kafka基础</a></h1>
+  
+
+      
+        <time datetime="2020-01-05T03:20:02.000Z">2020-01-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
+<li>Broker：Kafka中使用Broker来接受Producer和Consumer的请求，并把Message持久化到本地磁盘。每个Cluster当中会选举出一个Broker来担任Controller，负责处理Partition的Leader选举，协调Partition迁移等工作。</li>
+<li>Consumer：用于从Broker中取出/消费Message。</li>
+<li>Producer：用于往Broker中发送/生产Message。</li>
+<li>Topic：用于划分Message的逻辑概念，一个Topic可以分布在多个Broker上。</li>
+<li>Partition：分区是Kafka中横向扩展和一切并行化的基础，每个Topic都至少被切分为1个Partition。</li>
+<li>Offset：消息在Partition中的编号，编号顺序不跨Partition(在Partition内有序)。</li>
+<li>Replication：Kafka支持以Partition为单位对Message进行冗余备份，每个Partition都可以配置至少1个Replication(当仅1个Replication时即仅该Partition本身)。</li>
+<li>Leader：每个Replication集合中的Partition都会选出一个唯一的Leader，所有的读写请求都由Leader处理。其他Replicas从Leader处把数据更新同步到本地。</li>
+<li>ISR：In-Sync Replica,是Replicas的一个子集，表示目前Alive且与Leader能够Catch-up的Replicas集合。由于读写都是首先落到Leader上，所以一般来说通过同步机制从Leader上拉取数据的Replica都会和Leader有一些延迟(包括了延迟时间和延迟条数两个维度)，任意一个超过阈值都会把该Replica踢出ISR。每个Leader Partition都有它自己独立的ISR。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/01/05/MQ-Kafka基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/11/13/MQ-RocketMQ基础/">RocketMQ基础</a></h1>
+  
+
+      
+        <time datetime="2019-11-13T04:29:51.000Z">2019-11-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="MQ作用"><a href="#MQ作用" class="headerlink" title="MQ作用"></a>MQ作用</h3><p>在一个企业级的架构应用中，MQ的主要作用为业务解耦、事件消息广播、消息流控处理。其中，对于业务解耦是作为消息队列，要解决的一个首要问题。所谓业务解耦，就是说在一个业务流程处理上，只关注具体的流程，尽到通知的责任即可，不必等待消息处理的结果。<br>总得来看，企业级系统模块通信的方式通常情况下，无非两种。同步方式：REST、RPC方式实现；异步方式：消息中间件（消息队列）方式实现。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/11/13/MQ-RocketMQ基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/10/10/基础之网络编程模型/">网络编程模型</a></h1>
+  
+
+      
+        <time datetime="2019-10-10T02:22:43.000Z">2019-10-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="线程驱动和事件驱动"><a href="#线程驱动和事件驱动" class="headerlink" title="线程驱动和事件驱动"></a>线程驱动和事件驱动</h3><ul>
+<li>线程驱动：当收到一个请求的时候，将会为该请求开一个新的线程来处理请求。一般存在一个线程池，线程池中有空闲的线程，会从线程池中拿取线程来进行处理，如果线程池中没有空闲的线程，新来的请求将会进入队列排队，直到线程池中空闲线程。</li>
+<li>事件驱动：当进来一个新的请求的时，请求将会被压入队列中，然后通过一个循环来检测队列中的事件状态变化，如果检测到有状态变化的事件，那么就执行该事件对应的处理代码，一般都是回调函数。<b>对于事件驱动编程来说，如果某个时间的回调函数是计算密集型，或者是阻塞I/O,那么这个回调函数将会阻塞后面所有事件回调函数的执行。</b>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/10/10/基础之网络编程模型/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/10/10/基础之HTTP协议/">HTTP协议</a></h1>
+  
+
+      
+        <time datetime="2019-10-10T02:22:43.000Z">2019-10-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><a href="https://github.com/duoani/HTTP-RFCs.zh-cn" target="_blank" rel="noopener">RFC文档</a><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/10/10/基础之HTTP协议/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/09/23/Java基础之一些工具类/">一些工具类</a></h1>
+  
+
+      
+        <time datetime="2019-09-23T12:56:21.000Z">2019-09-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="BigDecimal"><a href="#BigDecimal" class="headerlink" title="BigDecimal"></a>BigDecimal</h3><ul>
+<li>基本方法：加（add(BigDecimal)）、减（subtract(BigDecimal)）、乘（multiply(BigDecimal)）、除（divide(BigDecimal)）。</li>
+<li>除法时需要传入小数点后的位数和取值方式。<ul>
+<li>RoundingMode.ROUND_CEILING：向正无限大方向舍入的舍入模式。</li>
+<li>RoundingMode.ROUND_DOWN：向零方向舍入的舍入模式。</li>
+<li>RoundingMode.ROUND_FLOOR：向负无限大方向舍入的舍入模式。</li>
+<li>RoundingMode.ROUND_HALF_DOWN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向下舍入。</li>
+<li>RoundingMode.ROUND_HALF_EVEN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向相邻的偶数舍入。</li>
+<li>RoundingMode.ROUND_HALF_UP：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向上舍入。</li>
+<li>RoundingMode.ROUND_UNNECESSARY用于断言请求的操作具有精确结果的舍入模式，因此不需要舍入。</li>
+<li>RoundingMode.ROUND_UP：远离零方向舍入的舍入模式。</li>
+</ul>
+</li>
+<li>stripTrailingZeros()方法可以去除尾部的0，然后可以用scale()获取小数点的位数。</li>
+<li>toString()方法可能是科学计数法所以可以使用toPlainString()方法转换为字符串。</li>
+<li>Double转BigDecimal使用BigDecimal.valueOf(Double)而不是new BigDecimal(Double)否则可能会丢失精度。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/09/23/Java基础之一些工具类/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之适配器模式/">Java设计模式之适配器模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:19:54.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>统中有一套完整的类结构，而我们需要利用其中摸某一个类的功能（即方法），但是我们的客户端只认识另一个和这个类结构不相关的接口，这时候就可以使用适配器模式将这个现有的类与我们的目标接口进行适配，最终获得一个符合需要的接口并包含复用的类的功能的类。本来是火鸡却实现鸭子接口，当你客户需要一个鸭子的时候，就可以假装成鸭子。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之适配器模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之观察者模式/">Java设计模式之观察者模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:16:15.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>观察者模式（又称发布-订阅模式），即一个目标物体管理所有依赖于他的观察者物体，并且在它本身状态改变时，它的所有依赖者都会收到通知并自动更新。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之观察者模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之代理模式/">Java设计模式之代理模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:09:38.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>代理模式一般分为静态代理和动态代理。两种代理从虚拟机加载类的角度来讲，本质上都是一样的，都是在原有类的基础上加入一些其他的逻辑，产生一个新的与原有类接口相同确行为不同的类型。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之代理模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/" class="alignleft prev">上一页</a>
+  
+  
+    <a href="/page/3/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+      </li>
+    
+      <li>
+        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+
