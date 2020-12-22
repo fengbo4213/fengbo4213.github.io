@@ -108,8 +108,39 @@
 <li>数据不一致:在二阶段提交协议的阶段二,即执行事务提交的时候,当协调者向所有的参与者发送Commit请求之后,发生了局部网络异常或者是协调者在尚未发送完Commit请求之前自身发生了崩澎,导致最终只有部分参与者收到了Commit请求。于是,这部分收到了Commit请求的参与者就会进行事务的提交,而其他没有收到Commit请求的参与者则无法进行事务提交,于是整个分布式系统便出现了数据不一致性现象。</li>
 <li>太过保守:如果在协调者指示参与者进行事务提交询问的过程中,参与者出现故障而导致协调者始终无法获取到所有参与者的响应信息的话,这时协调者只能依靠其自身的超时机制来判断是否需要中断事务,这样的策略显得比较保守。换句话说,二阶段提交协议没有设计较为完善的容错机制,任意一个节点的失败都会导致整个事务的失败。</li>
 </ol>
-<h2 id="分布式一致性算法"><a href="#分布式一致性算法" class="headerlink" title="分布式一致性算法"></a>分布式一致性算法</h2><p>目前主要使用的是Paxos和Raft，它们在保证一定的可用性的同时，对外提供强一致性。</p>
-<h3 id="Paxos协议"><a href="#Paxos协议" class="headerlink" title="Paxos协议"></a>Paxos协议</h3><h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a><a href="https://www.cnblogs.com/rgcLOVEyaya/p/RGC_LOVE_YAYA_1003days.html" target="_blank" rel="noopener">Redis实现分布式锁</a></h2>
+<h2 id="Paxos协议"><a href="#Paxos协议" class="headerlink" title="Paxos协议"></a>Paxos协议</h2><h2 id="Raft协议"><a href="#Raft协议" class="headerlink" title="Raft协议"></a>Raft协议</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>主从备份主要有两种方法：<ol>
+<li>状态转移(State Transfer)：主服务器将完整的状态内容都传输给备份服务器。即将主节点的当前所有数据进行镜像备份，适合冷备份。</li>
+<li>备份状态机(Replicated State Machine)：将需要备份的服务器视为一个确定性状态机——主备以相同的状态启动，以相同顺序导入相同的输入，最后它们就会进入相同的状态、给出相同的输出。</li>
+</ol>
+</li>
+<li>Write-Ahead Logging：对数据文件的修改必须发生在这些修改已经记录到日志之后，也就是先写日志落盘然后写数据。这样就不需要每次提交事务的时候把数据块刷回磁盘，因为出现奔溃的情况下可以用日志来恢复数据。</li>
+</ul>
+<h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a><a href="https://www.cnblogs.com/rgcLOVEyaya/p/RGC_LOVE_YAYA_1003days.html" target="_blank" rel="noopener">Redis实现分布式锁</a></h2><h2 id="ZooKeeper的典型应用场景"><a href="#ZooKeeper的典型应用场景" class="headerlink" title="ZooKeeper的典型应用场景"></a>ZooKeeper的典型应用场景</h2><h3 id="ZooKeeper简介"><a href="#ZooKeeper简介" class="headerlink" title="ZooKeeper简介"></a>ZooKeeper简介</h3><p>ZooKeeper是一个高可用的分布式数据管理与协调框架。基于对ZAB算法的实现,该框架能够很好地保证分布式环境中数据的一致性。也正是基于这样的特性，使得ZooKeeper成为了解决分布式一致性问题的利器。</p>
+<h3 id="数据的发布-订阅"><a href="#数据的发布-订阅" class="headerlink" title="数据的发布/订阅"></a>数据的发布/订阅</h3><ul>
+<li>即所谓的配置中心,顾名思义就是发布者将数据发布到ZooKeeper的一个或一系列节点上,供订阅者进行数据订阅,进而达到动态获取数据的目的,实现配置信息的集中式管理和数据的动态更新。</li>
+<li>客户端向服务端注册自己需要关注的节点,一旦该节点的数据发生变更,那么服务端就会向相应的客户端发送Wateher事件通知,客户端接收到这个消息通知之后,需要主动到服务端获取最新的数据。</li>
+</ul>
+<h3 id="命名服务-Name-Service"><a href="#命名服务-Name-Service" class="headerlink" title="命名服务(Name Service)"></a>命名服务(Name Service)</h3><p>在分布式系统中，被命名的实体通常可以是集群中的机器、提供的服务地址或远程对象等一一这些我们都可以统称它们为名字(Name),其中较为常见的就是一些分布式服务框架(如RPC、RMI)中的服务地址列表,通过使用命名服务,客户端应用能够根据指定名字来获取资源的实体、服务地址和提供者的信息等。<br>命名服务器的作用主要有两个，一个是收集提供请求处理的服务器的地址信息;另外一个是提供这些地址信息给请求发起方。当然,名称服务只是起到了一个地址交换的作用,在发起请求的机器上,需要根据从名称服务得到的地址迹行负载均衡的工作。</p>
+<h3 id="集群管理与负载均衡"><a href="#集群管理与负载均衡" class="headerlink" title="集群管理与负载均衡"></a>集群管理与负载均衡</h3><p>ZooKeeper具有以下两大特性。</p>
+<ol>
+<li>客户端如果对ZooKeeper的一个数据节点注册Wateher监听,那么当该数据节点的内容或是其子节点列表发生变更时,ZooKeeper服务器就会向订阅的客户端发送变更通知。</li>
+<li>对在ZooKeeper上创建的临时节点,一旦客户端与服务器之间的会话失效,那么该临时节点也就被自动清除。<br>利用ZooKeeper的这两大特性,就可以实现集群机器存活性监控系统。监控系统在/cuserServers节点上注册一个Watcher监听,那么但凡进行动态添加机器的操作,就会在/clusterServers节点下创建一个临时节点:/cliisterServers/[HostName]。这样一来,监控系统就能够实时检测到机器的变动情况。<br>同时集群上的服务器可以在监听到Watcher事件时，去ZooKeeper拉取集群上所有服务器的基础信息，然后以这些信息为基础进行软负载均衡。</li>
+</ol>
+<h3 id="Master选举"><a href="#Master选举" class="headerlink" title="Master选举"></a>Master选举</h3><ul>
+<li>在分布式系统中,Master往往用来协调集群中其他系统单元,具有对分布式系统状态变更的决定权。例如,在一些读写分离的应用场景中,客户端的写请求往往是由Master来处理的;而在另一些场景中,Master则常常负责处理一些复杂的逻辑,些将处理结果同步给集群中其他系统单元。</li>
+<li>ZooKeeper能够很好地保证在分布式高并发情况下节点的创建一定能够保证全局唯一性,即ZooKeeper将会保证客户端无法重复创建一个已经存在的数据节点。也就是说,如果同时有多个客户端请求创建同一个节点,那么最终一定只有一个客户端请求能够创建成功。利用这个特性,就能很容易地在分布式环境中进行Master选举了。</li>
+<li>即所有客户端都去向ZooKeeper请求创建一个临时节点,例如/maser_efecrion/2013-09-20/binding。在这个过程中,只有一个客户端能够成功创建这个节点,那么这个客户端所在的机器就成为了Master。同时,其他没有在ZooKeeper上成功创建节点的客户端,都会在节点/maser_elecrion/2013-09-20上注册一个子节点变更的Watcher,用于监控当前的Master机器是否存活,一旦发现当前的Master挂了,那么其余的客户端将会重新进行Master选举。</li>
+</ul>
+<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><ol>
+<li>获取锁：在需要获取排他锁时,所有的客户端都会试图通过调用create()接口,在/exclusive_lock节点下创建临时子节点/exclusive_lock/lock。ZooKeeper会保证在所有的客户端中,最终只有一个客户端能够创建成功,那么就可以认为该客户端获取了锁。同时,所有没有获取到锁的客户端谐需要到/excliusive_lock节点上注册一个子节点变更的Watcher监听,以便实时监听到lock节点的变更情况。</li>
+<li>释放锁：/exelsive_lock/lock是一个临时节点,因此在以下两种情况下,都有可能释放锁。<ul>
+<li>当前获取锁的客户端机器发生宕机,那么ZooKeeper上的这个临时节点就会被移除。</li>
+<li>正常执行完业务逻辑后,客户端就会主动将自已创建的临时节点删除。<br>无论在什么情况下移除了lock节点,ZooKeeper都会通知所有在/exclusive_lock节点上注册了子节点变更Wateher监听的客户端。这些客户端在接收到通知后,再次重新发起分布式锁获取,即重复获取锁过程。</li>
+</ul>
+</li>
+</ol>
+
       
     </div>
       
@@ -170,7 +201,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -240,19 +271,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

@@ -66,7 +66,12 @@
 <h3 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h3><ul>
 <li>1xx(Informational)：这是一个过渡响应，用于在完成所请求的动作以及发送一个最终响应之前传递连接状态或请求进展。</li>
 <li>2xx(Successful)：客户端的请求已经被成功接收、理解和接受。</li>
-<li>3xx (Redirection)：需要用户代理采取进一步的动作才能实现这个请求。如果提供了一个 Location头字段，用户代理可以自动重定向它的请求到Location的字段值所指定的URI引用，即使它不理解具体的状态码。</li>
+<li>3xx (Redirection)：需要用户代理采取进一步的动作才能实现这个请求。如果提供了一个 Location头字段，用户代理可以自动重定向它的请求到Location的字段值所指定的URI引用，即使它不理解具体的状态码。<ul>
+<li>301：在请求的URL已被移除时使用。响应的Location首部中应该包含资源现在所处的URL。</li>
+<li>302：与301状态码类似，但是，客户端应该使用Location首部给出的URL来临时定位资源，将来的请求仍然使用老的URL。</li>
+<li>304：如果客户端发送了一个带条件的GET 请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个304状态码。</li>
+</ul>
+</li>
 <li>4xx(Client Error)状态码种类表明客户端貌似有错误。</li>
 <li>5xx(Server Error)状态码种类表明服务器意识到它有错误或者它无法执行所请求的方法。</li>
 </ul>
@@ -149,8 +154,8 @@
 </ul>
 <h3 id="HTTPS加密方式"><a href="#HTTPS加密方式" class="headerlink" title="HTTPS加密方式"></a>HTTPS加密方式</h3><p>非对称加密处理起来更为复杂效率更低，所以HTTPS使用非对称加密的方式传递对称加密的密匙，再使用对称加密的方式来进行通信。</p>
 <h3 id="HTTPS通信过程"><a href="#HTTPS通信过程" class="headerlink" title="HTTPS通信过程"></a>HTTPS通信过程</h3><ol>
-<li>客户端通过发送Client Hello报文开始 SSL 通信。报文中包含客户端支持的 SSL 的指定版本、加密组件（Cipher Suite）列表（所使用的加密算法及密钥长度等）。</li>
-<li>服务器可进行SSL通信时，会以Server Hello报文作为应答。和客户端一样，在报文中包含 SSL 版本以及加密组件。服务器的加密组件内容是从接收到的客户端加密组件内筛选出来的。</li>
+<li>客户端通过发送Client Hello报文开始SSL通信。报文中包含客户端支持的SSL的指定版本、加密组件(Cipher Suite)列表（所使用的加密算法及密钥长度等）。</li>
+<li>服务器可进行SSL通信时，会以Server Hello报文作为应答。和客户端一样，在报文中包含SSL版本以及加密组件。服务器的加密组件内容是从接收到的客户端加密组件内筛选出来的。</li>
 <li>之后服务器发送Certificate报文。报文中包含公开密钥证书。</li>
 <li>最后服务器发送Server Hello Done报文通知客户端，最初阶段的SSL握手协商部分结束。</li>
 <li>SSL第一次握手结束之后，客户端以Client Key Exchange报文作为回应。报文中包含通信加密中使用的一种被称为Pre-master secret的随机密码串（对称加密）。该报文已用步骤3中的公开密钥进行加密。</li>
@@ -228,7 +233,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -298,19 +303,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

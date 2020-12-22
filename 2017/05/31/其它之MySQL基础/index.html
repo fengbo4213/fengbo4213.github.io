@@ -61,16 +61,17 @@
     </header>
     <div class="entry">
       
-        <h3 id="数据库定义"><a href="#数据库定义" class="headerlink" title="数据库定义"></a>数据库定义</h3><ul>
+        <h2 id="数据库基础"><a href="#数据库基础" class="headerlink" title="数据库基础"></a>数据库基础</h2><h3 id="数据库定义"><a href="#数据库定义" class="headerlink" title="数据库定义"></a>数据库定义</h3><ul>
 <li>数据库（数据真正存储的地方）是文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合。</li>
-<li>数据库实例（对数据进行操作的管理系统）是程序，是位于用户和操作系统之间的一层数据管理软件，用户对数据库的任何操作，包括数据库定义，数据查询，数据维护，数据库运行控制等都是在数据库实例下进行的，应用程序只有通过数据库实例才能和数据库打交道。</li>
+<li>数据库实例（对数据进行操作的管理系统）是程序，是位于用户和操作系统之间的一层数据管理软件，用户对数据库的任何操作，包括数据库定义，数据查询，数据维护，数据库运行控制等都是在数据库实例下进行的，应用程序只有通过数据库实例才能和数据库打交道。<a id="more"></a>
+</li>
 </ul>
 <h3 id="一些关于数据库的基本概念"><a href="#一些关于数据库的基本概念" class="headerlink" title="一些关于数据库的基本概念"></a>一些关于数据库的基本概念</h3><ul>
 <li>OLTP(联机事务处理Online Transaction Processing)：表示事务性非常高的系统，一般都是高可用的在线系统，以小的事务以及小的查询为主，评估其系统的时候，一般看其每秒执行的Transaction以及Execute SQL的数量。</li>
 <li>OLAP(联机分析处理Online Analytical Processing)：有的时候也叫DSS决策支持系统，就是我们说的数据仓库。在这样的系统中，语句的执行量不是考核标准，因为一条语句的执行时间可能会非常长，读取的数据也非常多。所以，在这样的系统中，考核的标准往往是磁盘子系统的吞吐量（带宽），如能达到多少MB/s的流量。</li>
 <li>ETL(Extraction-Transformation-Loading)：即数据抽取（Extract）、转换（Transform）、装载（Load）的过程，它是构建数据仓库的重要环节。</li>
 </ul>
-<h3 id="数据库三范式"><a href="#数据库三范式" class="headerlink" title="数据库三范式"></a>数据库三范式</h3><p>第一范式（1NF）：字段具有原子性,不可再分。第二范式（2NF）要求数据库表中的每个实例或行必须可以被惟一地区分。第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息.<br><a id="more"></a></p>
+<h3 id="数据库三范式"><a href="#数据库三范式" class="headerlink" title="数据库三范式"></a>数据库三范式</h3><p>第一范式（1NF）：字段具有原子性,不可再分。第二范式（2NF）要求数据库表中的每个实例或行必须可以被惟一地区分。第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息.</p>
 <h3 id="数据库设计规范"><a href="#数据库设计规范" class="headerlink" title="数据库设计规范"></a>数据库设计规范</h3><ol>
 <li>构建数据库时尽量不使用MySQL的枚举类型（网上也有说应该使用枚举类型的），如果是确定表达是与否语义则使用tinyint(1)，如果是（-1、0、1、2）就可表示则使用tinyint(2)，如果还有更多语义项个人还是习惯使用枚举（Java枚举，数据库存储字符串），不确定这个习惯是否好。tinyint(1)和tinyint(2)在数据库层面上没有什么不同存储范围都是-128-127，但是Mybatis Plus自动生成实体类时会将前者映射成布尔类型，后者映射成Integer。</li>
 <li>注意MySQL关键字，碰到简单的英文很可能是MySQL关键字时尽量加一个前缀（表名）。</li>
@@ -80,7 +81,13 @@
 <li>varchar是可变长字符串，不预先分配存储空间，长度不要超过5000，如果存储长度大于此值，定义字段类型为text，独立出来一张表，用主键来对应，避免影响其它字段索引效率。如果存储的字符串长度几乎相等（手机号、身份证号），使用char定长字符串类型。</li>
 <li>varchar使用额外的1到2字节存储长度，列小于255使用1字节保存长度，大于255使用2字节保存，varchar保留字符串末尾的空格。</li>
 </ol>
-<h3 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h3><p>MySQL和其他数据库的最重要区别就是<b>插件式的表存储引擎</b>。用户可以很方便的根据具体的应用建立不同的存储引擎表。下面是一些具体的存储引擎：</p>
+<h3 id="数据库的ACID特性"><a href="#数据库的ACID特性" class="headerlink" title="数据库的ACID特性"></a>数据库的ACID特性</h3><ol>
+<li>原子性：指事务是一个不可再分割的工作单元，事务中的操作要么都发生，要么都不发生。</li>
+<li>一致性：事务不能破坏关系数据的完整性以及业务逻辑上的一致性（转账例子）。</li>
+<li>隔离性：多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。</li>
+<li>持久性：在事务完成以后，该事务所对数据库所作的更改便持久的保存在数据库之中，并不会被回滚。</li>
+</ol>
+<h2 id="MySQL基础"><a href="#MySQL基础" class="headerlink" title="MySQL基础"></a><a href="https://segmentfault.com/a/1190000019619667" target="_blank" rel="noopener">MySQL基础</a></h2><h3 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h3><p>MySQL和其他数据库的最重要区别就是<b>插件式的表存储引擎</b>。用户可以很方便的根据具体的应用建立不同的存储引擎表。下面是一些具体的存储引擎：</p>
 <ul>
 <li>InnoDB存储引擎：支持事物（1.2开始支持全文索引），其设计目标主要面向在线事物处理（OLTP）的应用。</li>
 <li>MyISAM存储引擎：不支持事物、表锁设计，支持全文索引，主要面向一下OLAP数据库应用。</li>
@@ -89,22 +96,6 @@
 <li>Archive存储引擎：只支持INSERT和SELECT操作，非常适合存储归档数据，如日志信息。</li>
 <li>Federated存储引擎：并不存放数据，只是指向一台远程MySQL数据库服务器上的表。</li>
 <li>Maria存储引擎：最新设计用来取代MyISAM存储引擎的。</li>
-</ul>
-<h3 id="MySQL一些知识点"><a href="#MySQL一些知识点" class="headerlink" title="MySQL一些知识点"></a>MySQL一些知识点</h3><ul>
-<li>查询正在执行的事务：SELECT * FROM information_schema.INNODB_TRX</li>
-<li>MySQL大数据分页：SELECT * FROM table WHERE id &gt;= (SELECT id FROM table LIMIT 1000000, 1) LIMIT 10;</li>
-<li>修改密码：set password for root@localhost = password(‘123’);</li>
-<li>忘记密码后修改密码：<ol>
-<li>打开DOS窗口，转到mysql\bin目录。 </li>
-<li>输入mysqld –skip-grant-tables。–skip-grant-tables的意思是启动MySQL服务的时候跳过权限表认证。 </li>
-<li>再开一个DOS窗口（因为刚才那个DOS窗口已经不能动了），转到mysql\bin目录。 </li>
-<li>输入mysql回车，如果成功，将出现MySQL提示符 &gt;。</li>
-<li>连接权限数据库： use mysql;。</li>
-<li>改密码：update user set password=password(“123”) where user=”root”;（别忘了最后加分号） 。 </li>
-<li>刷新权限（必须步骤）：flush privileges;。</li>
-<li>注销系统，再进入，使用用户名root和刚才设置的新密码123登录。</li>
-</ol>
-</li>
 </ul>
 <h3 id="MySQL中的数据类型"><a href="#MySQL中的数据类型" class="headerlink" title="MySQL中的数据类型"></a>MySQL中的数据类型</h3><p>整数</p>
 <table>
@@ -238,6 +229,75 @@
 <li>BLOB存储的数据只能整体读出。 </li>
 <li>TEXT可以指定字符集，BLOB不用指定字符集。</li>
 </ul>
+<h3 id="MySQL一些知识点"><a href="#MySQL一些知识点" class="headerlink" title="MySQL一些知识点"></a>MySQL一些知识点</h3><ul>
+<li>查询正在执行的事务：SELECT * FROM information_schema.INNODB_TRX</li>
+<li>MySQL大数据分页：SELECT * FROM table WHERE id &gt;= (SELECT id FROM table LIMIT 1000000, 1) LIMIT 10;</li>
+</ul>
+<h3 id="MySQL管理"><a href="#MySQL管理" class="headerlink" title="MySQL管理"></a>MySQL管理</h3><ol>
+<li>创建用户：CREATE USER ‘username‘@’host’ IDENTIFIED BY ‘password’;<ul>
+<li>host为%表示任意主机可用。</li>
+</ul>
+</li>
+<li>授权：grant all privileges on leasehold.* to ‘leasehold‘@’%’ identified by ‘!@#leaseholdqwe’;;<ul>
+<li>privileges表示用户的操作权限，如SELECT，INSERT，UPDATE等，如果要授予所的权限则使用ALL</li>
+</ul>
+</li>
+<li>撤销权限：REVOKE privilege ON databasename.tablename FROM ‘username‘@’host’;</li>
+<li>修改密码：<ul>
+<li>update user set authentication_string=password(‘新密码’) where user=’username’;</li>
+<li>alter user ‘username‘@’host’ identified by ‘新密码’;</li>
+<li>flush privileges;</li>
+</ul>
+</li>
+<li>root忘记密码后修改密码：<ol>
+<li>打开DOS窗口，转到mysql\bin目录。 </li>
+<li>输入mysqld –skip-grant-tables。–skip-grant-tables的意思是启动MySQL服务的时候跳过权限表认证。 </li>
+<li>再开一个DOS窗口（因为刚才那个DOS窗口已经不能动了），转到mysql\bin目录。 </li>
+<li>输入mysql回车，如果成功，将出现MySQL提示符 &gt;。</li>
+<li>连接权限数据库： use mysql;。</li>
+<li>改密码：update user set password=password(“123”) where user=”root”;（别忘了最后加分号） 。 </li>
+<li>刷新权限（必须步骤）：flush privileges;。</li>
+<li>注销系统，再进入，使用用户名root和刚才设置的新密码123登录。</li>
+</ol>
+</li>
+</ol>
+<h2 id="MySQL索引"><a href="#MySQL索引" class="headerlink" title="MySQL索引"></a>MySQL索引</h2><h3 id="B树和B-树索引"><a href="#B树和B-树索引" class="headerlink" title="B树和B+树索引"></a>B树和B+树索引</h3><ul>
+<li>B树是一种平衡的多叉树，在B-树中查找给定关键字的方法是，首先把根结点取来，在根结点所包含的关键字K1,…,Kn查找给定的关键字（可用顺序查找或二分查找法），若找到等于给定值的关键字，则查找成功；否则，一定可以确定要查找的关键字在Ki与Ki+1之间，Pi为指向子树根节点的指针，此时取指针Pi所指的结点继续查找，直至找到，或指针Pi为空时查找失败。</li>
+<li>B+树是应数据库所需而出现的一种B树的变形树。B+树让内结点只作索引使用，去掉了其中指向data record的指针， 使得每个结点中能存放更多的key，树的层高能进一步被压缩, 使得检索的时间更短。</li>
+</ul>
+<h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>具体可以参考<a href="https://blog.csdn.net/klchht/article/details/78146443?locationNum=9&amp;fps=1" target="_blank" rel="noopener">联合索引（复合索引）在B+树上的结构</a>。</p>
+<h2 id="MySQL面试相关"><a href="#MySQL面试相关" class="headerlink" title="MySQL面试相关"></a>MySQL面试相关</h2><h3 id="InnoDB的事务隔离级别"><a href="#InnoDB的事务隔离级别" class="headerlink" title="InnoDB的事务隔离级别"></a>InnoDB的事务隔离级别</h3><ul>
+<li>InnoDB通过MVVC（多版本并发控制）隔离掉脏读。InnoDB在插入数据时会生成快照以便在事务失败后回滚，读取时会读取快照，这样不加锁也不会出现脏读。<ul>
+<li>脏读：事务T2读取到事务T1修改了但是还未提交的数据，之后事务T1又回滚其更新操作，导致事务T2读到的是脏数据。</li>
+</ul>
+</li>
+<li>InnoDB通过行锁隔离掉不可重复读。既共享锁（读锁）锁住的数据互斥锁（写锁）不能访问。<ul>
+<li>不可重复读：事务T1读取某个数据后，事务T2对其做了修改，当事务T1再次读该数据时得到与前一次不同的值。</li>
+</ul>
+</li>
+<li>InnoDB通过间隙锁（Gap锁）隔离掉幻读。Gap锁锁住的是一个范围，不包含记录本身。<ul>
+<li>虚读（幻读）：事务T1读取在读取某范围数据时，事务T2又插入一条数据，当事务T1再次数据这个范围数据时发现不一样了，出现了一些“幻影行”。</li>
+</ul>
+</li>
+<li>更新丢失：两事务同时更新，一个失败回滚覆盖另一个事务的更新。或事务1执行更细操作，在事务1结束前事务2也更新，则事务1的更细结果被事务2的覆盖了。<b>InnoDB可以隔离掉脏读、不可重复读和幻读，但是需要注意业务层面的更新丢失。</b></li>
+</ul>
+<h3 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h3><ul>
+<li>数据量大这个问题没啥银弹，需要根据业务的不同采取不同的方法。我的话一般会先看一下慢查询，然后explain一下，主要是看看有没有走索引，如果没有考虑一下怎么能走，或者考虑一下能不能加一个。一般能解决大部分问题。</li>
+<li>更多数据的单表查询可以分库分表，我们之前有根据日期进行分表，也有根据是否结案来分表的。不过这个只针对历史数据可以和正在使用的数据分开的情况。</li>
+<li>还有就是多表查询、报表之类的可以通过定时任务统计生成一种中间表。然后去查中间表。问题在于实时性不强。</li>
+<li>还有就是canal，阿里开源的一个中间件。</li>
+<li>如果数据量更大或者是大表之间的连表操作，可以考虑上中间件，根据业务的不同使用不同的中间件，es或MyCat等。</li>
+<li>尽量不使用数据库提供的函数，一个有可能产生兼容问题，还有就是可能引发性能问题，之前碰到过一个使用函数在SQL中格式化日期并判断大小的，去掉这个函数在业务中处理速度提升了10多倍。原因是该函数导致索引失效，不管时间多短都会进行全表扫描。</li>
+<li>在MySQL查询中，当查询条件左右两侧类型不匹配的时候会发生隐式转换，可能导致查询无法使用索引。数据库字段是数字，查询条件是字符串时会走索引；数据库字段是字符串，查询条件是数字时不会走索引。</li>
+<li>当只要一行数据时使用LIMIT 1：当你查询表的有些时候，你已经知道结果只会有一条结果，但因为你可能需要去fetch游标，或是你需要检查返回的记录数。在这种情况下，加上LIMIT 1可以增加性能。这样一样，MySQL数据库引擎会在找到一条数据后停止搜索，而不是继续往后查少下一条符合记录的数据。</li>
+<li>避免SELECT *：从数据库里读出越多的数据，那么查询就会变得越慢。并且，如果你的数据库服务器和WEB服务器是两台独立的服务器的话，这还会增加网络传输的负载。</li>
+<li>PROCEDURE ANALYSE()会让MySQL帮你去分析你的字段和其实际的数据，并会给你一些有用的建议。只有表中有实际的数据，这些建议才会变得有用，因为要做一些大的决定是需要有数据作为基础的。</li>
+</ul>
+<h3 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h3><ul>
+<li>步骤：根据容量（当前容量和增长量）评估分库或分表个数 -&gt; 选key（均匀）-&gt; 分表规则（hash或range等）-&gt; 执行（一般双写）-&gt; 扩容问题（尽量减少数据的移动）。</li>
+<li><a href="https://www.cnblogs.com/butterfly100/p/9034281.html" target="_blank" rel="noopener">分库分表思路</a></li>
+<li><a href="https://tech.meituan.com/2017/04/21/mt-leaf.html" target="_blank" rel="noopener">美团点评分布式ID生成系统</a></li>
+</ul>
 
       
     </div>
@@ -299,7 +359,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -369,19 +429,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

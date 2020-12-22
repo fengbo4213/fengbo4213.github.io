@@ -53,6 +53,186 @@
     <header>
       
   
+    <h1 class="title"><a href="/2019/10/10/基础之HTTP协议/">HTTP协议</a></h1>
+  
+
+      
+        <time datetime="2019-10-10T02:22:43.000Z">2019-10-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><a href="https://github.com/duoani/HTTP-RFCs.zh-cn" target="_blank" rel="noopener">RFC文档</a><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/10/10/基础之HTTP协议/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/09/23/Java基础之一些工具类/">一些工具类</a></h1>
+  
+
+      
+        <time datetime="2019-09-23T12:56:21.000Z">2019-09-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="BigDecimal"><a href="#BigDecimal" class="headerlink" title="BigDecimal"></a>BigDecimal</h3><ul>
+<li>基本方法：加（add(BigDecimal)）、减（subtract(BigDecimal)）、乘（multiply(BigDecimal)）、除（divide(BigDecimal)）。</li>
+<li>除法时需要传入小数点后的位数和取值方式。<ul>
+<li>RoundingMode.CEILING：向正无限大方向舍入的舍入模式。</li>
+<li>RoundingMode.FLOOR：向负无限大方向舍入的舍入模式。</li>
+<li>RoundingMode.DOWN：向零方向舍入的舍入模式。</li>
+<li>RoundingMode.UP：远离零方向舍入的舍入模式。</li>
+<li>RoundingMode.HALF_DOWN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向下舍入。</li>
+<li>RoundingMode.HALF_UP：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向上舍入。</li>
+<li>RoundingMode.HALF_EVEN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向相邻的偶数舍入。</li>
+<li>RoundingMode.UNNECESSARY用于断言请求的操作具有精确结果的舍入模式，因此不需要舍入。</li>
+</ul>
+</li>
+<li>stripTrailingZeros()方法可以去除尾部的0，然后可以用scale()获取小数点的位数。</li>
+<li>toString()方法可能是科学计数法所以可以使用toPlainString()方法转换为字符串。</li>
+<li>Double转BigDecimal使用BigDecimal.valueOf(Double)而不是new BigDecimal(Double)否则可能会丢失精度。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/09/23/Java基础之一些工具类/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之适配器模式/">Java设计模式之适配器模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:19:54.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>统中有一套完整的类结构，而我们需要利用其中摸某一个类的功能（即方法），但是我们的客户端只认识另一个和这个类结构不相关的接口，这时候就可以使用适配器模式将这个现有的类与我们的目标接口进行适配，最终获得一个符合需要的接口并包含复用的类的功能的类。本来是火鸡却实现鸭子接口，当你客户需要一个鸭子的时候，就可以假装成鸭子。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之适配器模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之观察者模式/">Java设计模式之观察者模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:16:15.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>观察者模式（又称发布-订阅模式），即一个目标物体管理所有依赖于他的观察者物体，并且在它本身状态改变时，它的所有依赖者都会收到通知并自动更新。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之观察者模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/07/15/Java设计模式之代理模式/">Java设计模式之代理模式</a></h1>
+  
+
+      
+        <time datetime="2019-07-15T11:09:38.000Z">2019-07-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>代理模式一般分为静态代理和动态代理。两种代理从虚拟机加载类的角度来讲，本质上都是一样的，都是在原有类的基础上加入一些其他的逻辑，产生一个新的与原有类接口相同确行为不同的类型。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2019/07/15/Java设计模式之代理模式/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2019/07/15/Java设计模式之策略模式/">Java设计模式之策略模式</a></h1>
   
 
@@ -147,174 +327,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/07/15/Java设计模式之装饰者模式/">Java设计模式之装饰者模式</a></h1>
-  
-
-      
-        <time datetime="2019-07-15T10:52:03.000Z">2019-07-15</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>装饰者模式在不改变原类文件和使用继承的情况下，动态的扩展一个对象的功能。经典案例：Java I/O包里的类。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/07/15/Java设计模式之装饰者模式/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/07/14/Java设计模式之单例模式/">Java设计模式之单例模式</a></h1>
-  
-
-      
-        <time datetime="2019-07-14T02:49:07.000Z">2019-07-14</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>该模式保证了一个类只有一个对象实例。一般会将构造方法私有化，使其不能在类的外部通过new关键字实例化该类对象。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/07/14/Java设计模式之单例模式/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/05/01/Python实现屏幕截图/">Python实现屏幕截图</a></h1>
-  
-
-      
-        <time datetime="2019-05-01T03:24:59.000Z">2019-05-01</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>之前使用Python构建了一个图片转文字小工具，但是使用的是使用系统自带的截图工具然后监听目录变化来实现的。接下来我想直接使用Python来构建一个截图工具，这样就可以结合转换工具使用。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/05/01/Python实现屏幕截图/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/03/01/Python实现的图片转文字小工具/">Python实现的图片转文字小工具</a></h1>
-  
-
-      
-        <time datetime="2019-03-01T07:27:16.000Z">2019-03-01</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>阅读PDF书籍时如果该书是扫描版的那么记笔记就需要手打文字。个人感觉及其麻烦（主要还是懒）。所以想着实现一个简单的图片转文字小工具提升一下自己的阅读效率。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/03/01/Python实现的图片转文字小工具/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/01/26/其它之Nginx使用/">Nginx使用</a></h1>
-  
-
-      
-        <time datetime="2019-01-26T06:07:10.000Z">2019-01-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="Nginx基本概念"><a href="#Nginx基本概念" class="headerlink" title="Nginx基本概念"></a>Nginx基本概念</h3><ul>
-<li>Nginx是一款轻量级的Web服务器、反向代理服务器及电子邮件代理服务器。目前大多数公司使用Nginx作为反向代理服务器，反向代理是指接受外部网络请求后转发到内网中真正可以处理业务逻辑的服务器上，并将从服务器上得到的结果返回给用户。</li>
-<li>正向代理和反向代理的区别是正向代理的用户的真实访问地址不是代理服务器，却通过代理服务器进行了转发；反向代理的用户的访问地址就是代理服务器，而真实处理请求的服务器却不是代理服务器。</li>
-<li>代理连接的是两个或多个使用相同协议的应用程序，而网关连接的则是两个或多个使用不同协议的端点。网关扮演的是协议转换器的角色，即使客户端和服务器使用的是不同的协议，客户端也可以通过它完成与服务器之间的事务处理。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/01/26/其它之Nginx使用/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -330,7 +342,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -400,19 +412,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

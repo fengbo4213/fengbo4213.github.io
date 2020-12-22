@@ -53,6 +53,179 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/12/01/基础之计算机网络/">计算机网络</a></h1>
+  
+
+      
+        <time datetime="2018-12-01T07:32:20.000Z">2018-12-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>TCP/IP提供一种面向连接的、可靠的字节流服务。面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。在一个TCP连接中，仅有两方进行彼此通信。广播和多播不能用于TCP。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/12/01/基础之计算机网络/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/09/08/基础之操作系统/">操作系统</a></h1>
+  
+
+      
+        <time datetime="2018-09-07T23:53:07.000Z">2018-09-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="操作系统的引导"><a href="#操作系统的引导" class="headerlink" title="操作系统的引导"></a>操作系统的引导</h3><ol>
+<li>开机时，CS=0xFFFF IP=0x0000，所以会跳转到固化在内存中的基本输入输出系统(BIOS)；</li>
+<li>BIOS从引导扇区(0磁道0扇区)读取bootsect.s(512k)到内存中。</li>
+<li>bootsect.s将操作系统读到内存中。1. 读入setup；2. 在屏幕上打出logo；3. 调用13号中断读取操作系统后面的system部分。</li>
+<li>setup完成操作系统启动前的初始化，获取硬件信息如内存的大小等。</li>
+<li>setup进入保护模式，然后跳转到system模块的head.s中。</li>
+<li>head.s再次初始化GDT表等，然后调用main函数(汇编调用C函数)。</li>
+<li>main函数初始化页表等资源，然后阻塞。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/09/08/基础之操作系统/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/18/其它之Linux使用/">Linux使用</a></h1>
+  
+
+      
+        <time datetime="2018-08-18T12:02:41.000Z">2018-08-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程"><a href="#CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程" class="headerlink" title="CentOS7配置网络 | Vim使用教程 | Make命令教程 | Diff命令教程"></a><a href="http://www.cnblogs.com/txk1452/p/5617639.html" target="_blank" rel="noopener">CentOS7配置网络</a> | <a href="http://vimzijun.net/categories/vim/page/2/" target="_blank" rel="noopener">Vim使用教程</a> | <a href="http://www.ruanyifeng.com/blog/2015/02/make.html" target="_blank" rel="noopener">Make命令教程</a> | <a href="http://www.ruanyifeng.com/blog/2012/08/how_to_read_diff.html" target="_blank" rel="noopener">Diff命令教程</a></h3>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/18/其它之Linux使用/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/11/Java高级特性之HashMap原理分析/">HashMap原理分析</a></h1>
+  
+
+      
+        <time datetime="2018-08-11T01:34:51.000Z">2018-08-11</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="JDK7中的HashMap"><a href="#JDK7中的HashMap" class="headerlink" title="JDK7中的HashMap"></a>JDK7中的HashMap</h2><h4 id="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"><a href="#HashMap底层维护了一个数组，数组的每一项都是一个Entry。" class="headerlink" title="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"></a>HashMap底层维护了一个数组，数组的每一项都是一个Entry。</h4><pre><code>transient Entry&lt;K,V&gt;[] table;
+</code></pre>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/11/Java高级特性之HashMap原理分析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/08/04/Java高级特性之反射源码分析/">Java反射源码分析</a></h1>
+  
+
+      
+        <time datetime="2018-08-04T02:39:10.000Z">2018-08-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="java-lang-reflect-Method"><a href="#java-lang-reflect-Method" class="headerlink" title="java.lang.reflect.Method"></a>java.lang.reflect.Method</h3><p>每个Java方法有且只有一个Method对象作为root，它相当于根对象，对用户不可见。当我们创建Method对象时，我们代码中获取的Method对象都相当于它的副本（或引用）。root对象持有一个MethodAccessor对象，所以所有获取到的Method对象都共享一个MethodAccessor对象，因此必须保证它在内存中的可见性。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/08/04/Java高级特性之反射源码分析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/07/28/Java高级特性之动态代理源码分析/">动态代理源码分析</a></h1>
   
 
@@ -147,181 +320,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/07/01/Spring-IoC源码解析1/">IoC源码解析-容器启动阶段</a></h1>
-  
-
-      
-        <time datetime="2018-07-01T01:49:40.000Z">2018-07-01</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/SpringIoC/01.png"><br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/07/01/Spring-IoC源码解析1/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/30/Spring事务/">Spring事务</a></h1>
-  
-
-      
-        <time datetime="2018-06-30T08:28:27.000Z">2018-06-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="事务基础概念"><a href="#事务基础概念" class="headerlink" title="事务基础概念"></a>事务基础概念</h2><ul>
-<li>原子性：事务包含的所有操作是一个整体，这些操作要么全部提交成功，要么只要有一个操作失败，就全部失败。</li>
-<li>一致性：甲乙共有400元钱，甲提交转账100给乙的请求后，不管操作成功还是失败，甲乙依旧共有400元钱。</li>
-<li>持久性：一旦整个事务提交成功，对数据所做的变更将被记录并不可逆转。</li>
-<li>隔离性：规定了各个事务之间相互影响的程度。一般为事务指定4种隔离级别，即下面的事务隔离级别。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/06/30/Spring事务/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/23/Spring-AOP揭秘/">Spring-AOP揭秘</a></h1>
-  
-
-      
-        <time datetime="2018-06-23T02:25:17.000Z">2018-06-23</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>AOP（面向切面编程）是面向对象编程模式的一个补足，负责将系统中的日志记录、安全检查、事物管理等无法通过OOP模块化的重复代码模块化，避免不必要的代码散落。而Spring AOP采用Java作为AOP的实现语言（AOL），较之想AspectJ那种语言扩展型的AOP实现，SpringAOP可以更快捷的融入开发，学习曲线相对平滑得多。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/06/23/Spring-AOP揭秘/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/16/Spring-IoC揭秘/">Spring-IoC揭秘</a></h1>
-  
-
-      
-        <time datetime="2018-06-16T07:22:30.000Z">2018-06-16</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="IoC原理解析"><a href="#IoC原理解析" class="headerlink" title="IoC原理解析"></a>IoC原理解析</h2><h3 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h3><ol>
-<li>Spring通过XmlBeanDefinitionReader解析XML配置将配置中的bean的基本信息解析到BeanDefinition实例中。</li>
-<li>通过BeanDefinitionRegistry接口的registerBeanDefinition方法将BeanDefinition注册到BeanDefinition容器，即存放到变量名为beanDefinitionMap的Map集合中。</li>
-<li>使用BeanFactoryPostProcessor在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。可以以此来修改bean定义的某些属性，为bean定义增加其他信息等。<ul>
-<li>PropertyPlaceholderConfigurer实现类：允许我们在XML配置文件中使用占位符（PlaceHolder），并将这些站位符所代表的资源单独配置到简单的properties文件中来加载（例如数据库的数据源等配置内容，一般写在配置文件中）。</li>
-<li>PropertyOverrideConfigurer实现类：可以对容器中配置的任何你想处理的bean定义的property信息进行覆盖替换。即读取properties文件中的配置项，用读取到beanName.propertyName=value的value值覆盖掉对应的原来XML中bean定义的property信息。</li>
-<li>CustomEditorConfigurer实现类：容器从XML中读取的都是字符串形式的，最终的应用程序却是由各种类型的对象构成。要想完成这种由字符串到具体对象的转换，就需要转换规则相关的信息，CustomEditorConfigurer类就是负责将我们自己实现的PropertyEditor接口的实现类告知容器的。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/06/16/Spring-IoC揭秘/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/09/JavaWeb-Spring其它/">Spring其它</a></h1>
-  
-
-      
-        <time datetime="2018-06-09T01:05:52.000Z">2018-06-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="Spring定时任务"><a href="#Spring定时任务" class="headerlink" title="Spring定时任务"></a>Spring定时任务</h2><p><a href="http://www.cnblogs.com/haoxinyue/p/6663720.html" target="_blank" rel="noopener">实现延迟任务的几种方式</a> | <a href="https://segmentfault.com/a/1190000013077817" target="_blank" rel="noopener">Spring定时任务</a><br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/06/09/JavaWeb-Spring其它/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -337,7 +335,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -407,19 +405,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

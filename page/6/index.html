@@ -53,6 +53,181 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/07/01/Spring-IoC源码解析1/">IoC源码解析-容器启动阶段</a></h1>
+  
+
+      
+        <time datetime="2018-07-01T01:49:40.000Z">2018-07-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/SpringIoC/01.png"><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/07/01/Spring-IoC源码解析1/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/30/Spring事务/">Spring事务</a></h1>
+  
+
+      
+        <time datetime="2018-06-30T08:28:27.000Z">2018-06-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="事务基础概念"><a href="#事务基础概念" class="headerlink" title="事务基础概念"></a>事务基础概念</h2><ul>
+<li>原子性：事务包含的所有操作是一个整体，这些操作要么全部提交成功，要么只要有一个操作失败，就全部失败。</li>
+<li>一致性：甲乙共有400元钱，甲提交转账100给乙的请求后，不管操作成功还是失败，甲乙依旧共有400元钱。</li>
+<li>持久性：一旦整个事务提交成功，对数据所做的变更将被记录并不可逆转。</li>
+<li>隔离性：规定了各个事务之间相互影响的程度。一般为事务指定4种隔离级别，即下面的事务隔离级别。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/30/Spring事务/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/23/Spring-AOP揭秘/">Spring-AOP揭秘</a></h1>
+  
+
+      
+        <time datetime="2018-06-23T02:25:17.000Z">2018-06-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>AOP（面向切面编程）是面向对象编程模式的一个补足，负责将系统中的日志记录、安全检查、事物管理等无法通过OOP模块化的重复代码模块化，避免不必要的代码散落。而Spring AOP采用Java作为AOP的实现语言（AOL），较之想AspectJ那种语言扩展型的AOP实现，SpringAOP可以更快捷的融入开发，学习曲线相对平滑得多。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/23/Spring-AOP揭秘/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/16/Spring-IoC揭秘/">Spring-IoC揭秘</a></h1>
+  
+
+      
+        <time datetime="2018-06-16T07:22:30.000Z">2018-06-16</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="IoC原理解析"><a href="#IoC原理解析" class="headerlink" title="IoC原理解析"></a>IoC原理解析</h2><h3 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h3><ol>
+<li>Spring通过XmlBeanDefinitionReader解析XML配置将配置中的bean的基本信息解析到BeanDefinition实例中。</li>
+<li>通过BeanDefinitionRegistry接口的registerBeanDefinition方法将BeanDefinition注册到BeanDefinition容器，即存放到变量名为beanDefinitionMap的Map集合中。</li>
+<li>使用BeanFactoryPostProcessor在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。可以以此来修改bean定义的某些属性，为bean定义增加其他信息等。<ul>
+<li>PropertyPlaceholderConfigurer实现类：允许我们在XML配置文件中使用占位符（PlaceHolder），并将这些站位符所代表的资源单独配置到简单的properties文件中来加载（例如数据库的数据源等配置内容，一般写在配置文件中）。</li>
+<li>PropertyOverrideConfigurer实现类：可以对容器中配置的任何你想处理的bean定义的property信息进行覆盖替换。即读取properties文件中的配置项，用读取到beanName.propertyName=value的value值覆盖掉对应的原来XML中bean定义的property信息。</li>
+<li>CustomEditorConfigurer实现类：容器从XML中读取的都是字符串形式的，最终的应用程序却是由各种类型的对象构成。要想完成这种由字符串到具体对象的转换，就需要转换规则相关的信息，CustomEditorConfigurer类就是负责将我们自己实现的PropertyEditor接口的实现类告知容器的。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/16/Spring-IoC揭秘/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/09/JavaWeb-Spring其它/">Spring其它</a></h1>
+  
+
+      
+        <time datetime="2018-06-09T01:05:52.000Z">2018-06-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Spring定时任务"><a href="#Spring定时任务" class="headerlink" title="Spring定时任务"></a>Spring定时任务</h2><p><a href="http://www.cnblogs.com/haoxinyue/p/6663720.html" target="_blank" rel="noopener">实现延迟任务的几种方式</a> | <a href="https://segmentfault.com/a/1190000013077817" target="_blank" rel="noopener">Spring定时任务</a><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/09/JavaWeb-Spring其它/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/04/20/JavaWeb-XML解析/">Sprin之XML解析</a></h1>
   
 
@@ -157,241 +332,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/19/基础之C语言基础/">C语言基础</a></h1>
-  
-
-      
-        <time datetime="2017-12-19T09:49:45.000Z">2017-12-19</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="C语言基础"><a href="#C语言基础" class="headerlink" title="C语言基础"></a>C语言基础</h2><h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">存储大小</th>
-<th>值范围 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">unsigned char</td>
-<td style="text-align:center">1字节</td>
-<td>0到255</td>
-</tr>
-<tr>
-<td style="text-align:center">char</td>
-<td style="text-align:center">1字节</td>
-<td>-128到127</td>
-</tr>
-<tr>
-<td style="text-align:center">unsigned int</td>
-<td style="text-align:center">2或4字节</td>
-<td>0到65535或0到4294967295</td>
-</tr>
-<tr>
-<td style="text-align:center">int</td>
-<td style="text-align:center">2或4字节</td>
-<td>-32768到32787或-2147483648到2147483647</td>
-</tr>
-<tr>
-<td style="text-align:center">unsigned short</td>
-<td style="text-align:center">2字节</td>
-<td>0到65535</td>
-</tr>
-<tr>
-<td style="text-align:center">short</td>
-<td style="text-align:center">2字节</td>
-<td>-32768到32767</td>
-</tr>
-<tr>
-<td style="text-align:center">unsigned long</td>
-<td style="text-align:center">4字节</td>
-<td>0到4294967295</td>
-</tr>
-<tr>
-<td style="text-align:center">long</td>
-<td style="text-align:center">4字节</td>
-<td>-2147483648到2147483647</td>
-</tr>
-<tr>
-<td style="text-align:center">float</td>
-<td style="text-align:center">4字节</td>
-<td>1.2E-38到3.4E+38，精度为6位小数</td>
-</tr>
-<tr>
-<td style="text-align:center">double</td>
-<td style="text-align:center">8字节</td>
-<td>2.3E-308到1.7E+308，精度为15位小数</td>
-</tr>
-<tr>
-<td style="text-align:center">long double</td>
-<td style="text-align:center">16字节</td>
-<td>3.4E-4932到1.1E+4932，精度为19位小数</td>
-</tr>
-</tbody>
-</table>
-<p>ps：布尔类型可以使用int替代，1为TRUE，0为FALSE。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/12/19/基础之C语言基础/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/26/JavaWeb-Spring注解/">Spring注解</a></h1>
-  
-
-      
-        <time datetime="2017-11-26T03:34:14.000Z">2017-11-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><b>注解本身没有功能，和xml一样是一种元数据；元数据是解释数据的数据，即配置。</b><br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/11/26/JavaWeb-Spring注解/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/10/19/JavaWeb-Spring工具类/">Spring工具类</a></h1>
-  
-
-      
-        <time datetime="2017-10-19T09:25:11.000Z">2017-10-19</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="StringUtils"><a href="#StringUtils" class="headerlink" title="StringUtils "></a>StringUtils
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/10/19/JavaWeb-Spring工具类/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/10/18/Java高级特性之对象的创建/">Java对象的创建</a></h1>
-  
-
-      
-        <time datetime="2017-10-18T13:03:58.000Z">2017-10-18</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="对象创建时机"><a href="#对象创建时机" class="headerlink" title="对象创建时机"></a>对象创建时机</h2><ul>
-<li>使用new关键字创建对象；</li>
-<li>使用反射创建对象：即使用Class类的newInstance方法、Constructor类的newInstance方法等创建对象；</li>
-<li>使用Clone方法创建一个对象：无论何时我们调用一个对象的clone方法，JVM都会帮助我们创建一个新的、一样的对象，且该对象的创建过程中并不会调用任何构造函数。</li>
-<li>使用反序列化机制创建对象：当我们反序列化一个对象时，JVM会给我们创建一个单独的对象，且JVM并不会调用任何构造函数。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/10/18/Java高级特性之对象的创建/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/09/30/Java高级特性之Java虚拟机/">Java虚拟机</a></h1>
-  
-
-      
-        <time datetime="2017-09-30T00:58:38.000Z">2017-09-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="内存模型相关概念"><a href="#内存模型相关概念" class="headerlink" title="内存模型相关概念"></a>内存模型相关概念</h2><h3 id="缓存一致性问题"><a href="#缓存一致性问题" class="headerlink" title="缓存一致性问题"></a>缓存一致性问题</h3><p>为了弥补处理器和内存运算速度的巨大差异，现代计算机都会加入一层读写速度接近处理器运算速度的高速缓存。将运算需要使用到的数据复制到缓存中，让运算能快速进行，当运算结束后再从缓存同步会内存中。所以在多处理器系统中，因为每个处理器都有自己的高速缓存，而它们又共享同一主存。当它们的运算任务都涉及同一块主内存区域是，可能导致各自缓存数据不一致。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/09/30/Java高级特性之Java虚拟机/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -407,7 +347,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -477,19 +417,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

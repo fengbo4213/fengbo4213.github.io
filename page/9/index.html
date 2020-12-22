@@ -53,6 +53,195 @@
     <header>
       
   
+    <h1 class="title"><a href="/2017/06/22/Java基础之序列化/">Java序列化</a></h1>
+  
+
+      
+        <time datetime="2017-06-22T06:08:37.000Z">2017-06-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="序列化ID问题"><a href="#序列化ID问题" class="headerlink" title="序列化ID问题"></a>序列化ID问题</h3><ul>
+<li>Java的序列化是通过在运行时判断类的serialVersionUID来验证版本的一致性的。在进行反序列化时，JVM会把传来的字节流中的serialVersionUID与本地相应类的serialVersionUID进行比较。如果相同就认为是一致的，可以进行反序列化，否则抛出序列化版本不一致异常。</li>
+<li>如果没有特殊需求，就是用默认的 1L 就可以，这样可以确保代码一致时反序列化成功。但是有些时候，通过改变序列化ID可以用来限制某些用户的使用。既当client需要一个从server端生成的对象时，如果server端希望client端进行版本升级，就可以改变自己的serialVersionUID来强迫client端进行升级。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/06/22/Java基础之序列化/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/06/22/Java基础之枚举/">Java枚举</a></h1>
+  
+
+      
+        <time datetime="2017-06-22T05:04:13.000Z">2017-06-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>test</p>
+<h3 id="枚举和普通类的区别"><a href="#枚举和普通类的区别" class="headerlink" title="枚举和普通类的区别"></a>枚举和普通类的区别</h3><ul>
+<li>枚举可以实现接口，但是枚举默认继承了java.lang.Enum类，故而不能继承其他类。</li>
+<li>枚举默认被final修饰，故而不能派生子类。</li>
+<li>枚举构造器默认使用private修饰，如果显示添加也只能使用private修饰。</li>
+<li>枚举类的所有实例必须在第一行显示列出，否则该枚举无法在被实例。这些实例默认使用public static fianl修饰。</li>
+<li>建议枚举类的成员变量都使用private final修饰。</li>
+<li><b>类内部的枚举默认被static final修饰。</b>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/06/22/Java基础之枚举/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/06/22/Java基础之内部类/">Java内部类</a></h1>
+  
+
+      
+        <time datetime="2017-06-22T02:09:31.000Z">2017-06-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="非静态内部内与静态内部类"><a href="#非静态内部内与静态内部类" class="headerlink" title="非静态内部内与静态内部类"></a>非静态内部内与静态内部类</h3><pre><code>// 构建一个静态内部类实例
+Outer.Inner in = new Outer.Inner();
+// 方法静态内部类的静态方法
+Outer.Inner.静态方法();
+// 构建一个非静态内部类
+Outer.Inner in = new Outer().new Inner();
+</code></pre><ul>
+<li>非静态内部类：相当于一个成员函数的位置。可以使用任意访问控制符，如public、protected、private等。</li>
+<li>静态内部类：相当于外部内。</li>
+<li>非静态内部类不能存在任何static的变量和方法，但是可以定义常量。因为非静态内部类是要依赖于外部类的实例，而静态变量和方法是不依赖对象的，仅于类相关。即在加载静态域时，根本没有外部类。常量是编译器就可以确定的，放在常量池中。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/06/22/Java基础之内部类/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/06/21/Java基础之Java关键字/">Java关键字</a></h1>
+  
+
+      
+        <time datetime="2017-06-21T05:56:21.000Z">2017-06-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="常见关键字"><a href="#常见关键字" class="headerlink" title="常见关键字"></a>常见关键字</h2><pre><code>if  else  switch  case  for  do  while  try  catch  finally  null  break  continue  return  throw  throws  void
+boolean  true  false  char  byte  short  int  long  float  double  
+class  interface  enum  abstract  import  extends  implements  super  this  package  new
+public  protected  default  private volatile synchronized 保留字(goto  const)
+</code></pre>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/06/21/Java基础之Java关键字/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/05/31/其它之MySQL基础/">MySQL基础</a></h1>
+  
+
+      
+        <time datetime="2017-05-31T15:37:58.000Z">2017-05-31</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="数据库基础"><a href="#数据库基础" class="headerlink" title="数据库基础"></a>数据库基础</h2><h3 id="数据库定义"><a href="#数据库定义" class="headerlink" title="数据库定义"></a>数据库定义</h3><ul>
+<li>数据库（数据真正存储的地方）是文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合。</li>
+<li>数据库实例（对数据进行操作的管理系统）是程序，是位于用户和操作系统之间的一层数据管理软件，用户对数据库的任何操作，包括数据库定义，数据查询，数据维护，数据库运行控制等都是在数据库实例下进行的，应用程序只有通过数据库实例才能和数据库打交道。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/05/31/其它之MySQL基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/1919/02/06/一些知识点的总结/">知识点总结</a></h1>
   
 
@@ -94,7 +283,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -164,19 +353,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

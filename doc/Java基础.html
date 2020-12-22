@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"></h1>
+  
+
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Java数据结构"><a href="#Java数据结构" class="headerlink" title="Java数据结构"></a>Java数据结构</h2><h3 id="HashMap不安全的体现"><a href="#HashMap不安全的体现" class="headerlink" title="HashMap不安全的体现"></a>HashMap不安全的体现</h3><ul>
+<li>resize即重新hash时会死循环。</li>
+<li>迭代器的过程中有其他线程修改了map，那么将抛出ConcurrentModificationException。</li>
+</ul>
+<h3 id="HashMap和ConcurrentHashMap的区别"><a href="#HashMap和ConcurrentHashMap的区别" class="headerlink" title="HashMap和ConcurrentHashMap的区别"></a>HashMap和ConcurrentHashMap的区别</h3><ul>
+<li>HashMap的内部是一个链表的数组。HashMap内部一般是一个长度为16的数组，数组中每个元素存储的是一个链表的头结点。一般情况是通过hashCode(key)%len获得HashMap中元素对应的数组的下标，即每个链表上的每个元素的hashCode的值相同。当HashMap中的元素中个数大于初始容量(默认16）* 负载系数(默认0.75)时会进行自动扩容并重新哈希。</li>
+<li>ConcurrentHashMap内部结构和HashMap相同，但ConcurrentHashMap是线程安全的。他将数据分为多个segment，默认是16个，然后每次操作对一个segment加锁，降低锁竞争。而1.8又改为通过CAS+重量级锁来实现，不过我并没有去看源码验证，而是刷博客看来的。</li>
+</ul>
+<h3 id="为什么HashMap的key要重写equals方法和hashCode方法？"><a href="#为什么HashMap的key要重写equals方法和hashCode方法？" class="headerlink" title="为什么HashMap的key要重写equals方法和hashCode方法？"></a>为什么HashMap的key要重写equals方法和hashCode方法？</h3><p>因为HashMap根据hashCode方法返回的值来计算并获取存储的数组的下标。根据equals方法判断存储的元素的key和该数组对应的链表上其他元素的key是否相等，如果相等则覆盖，否则添加到链表的后面。</p>
+<h3 id="LinkedHashMap和TreeMap"><a href="#LinkedHashMap和TreeMap" class="headerlink" title="LinkedHashMap和TreeMap"></a>LinkedHashMap和TreeMap</h3><ul>
+<li>LinkedHashMap会在HashMap的基础上采用双向链表的形式将所有entry连接起来，保证元素的迭代顺序跟插入顺序相同。</li>
+<li>TreeSet要求存放的对象所属的类必须实现Comparable接口，该接口提供了比较元素的compareTo()方法，当插入元素时会回调该方法比较元素的大小。</li>
+</ul>
+<h3 id="Collections的sort-方法如何比较元素"><a href="#Collections的sort-方法如何比较元素" class="headerlink" title="Collections的sort()方法如何比较元素"></a>Collections的sort()方法如何比较元素</h3><p>Collections工具类的sort方法有两种重载的形式，第一种要求传入的待排序容器中存放的对象比较实现Comparable接口以实现元素的比较；第二种不强制性的要求容器中的元素必须可比较，但是要求传入第二个参数，参数是Comparator接口的子类型（需要重写compare方法实现元素的比较），相当于一个临时定义的排序规则。</p>
+<h2 id="Java并发编程"><a href="#Java并发编程" class="headerlink" title="Java并发编程"></a>Java并发编程</h2><h3 id="wait-和sleep-long"><a href="#wait-和sleep-long" class="headerlink" title="wait()和sleep(long)"></a>wait()和sleep(long)</h3><p>wait()必须在锁里面，因为它释放执行权的同时也会释放锁，如果没有锁可以释放会抛出java.lang.IllegalMonitorStateException。sleep(long)只释放执行权不释放锁且会自己醒，所以如果该方法放到锁里面那么在它苏醒之前被该锁锁住的代码都不会执行。</p>
+<h3 id="volatile原理"><a href="#volatile原理" class="headerlink" title="volatile原理"></a>volatile原理</h3><ul>
+<li>当把变量声明为volatile后，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作与其他内存操作一起重排序。同时volatile变量不会被缓存在寄存器或者其它处理器不可见的地方。</li>
+<li>原理是使用lock前缀使得本CPU的Cache写入内存，该写入操作会同时引起其它CPU或内核无效化其Cache。因为该变量需要同步到内存，意味着所有之前的操作都已经执行完成，这样便形成了指令重排序无法越过内存屏障的效果。</li>
+</ul>
+<h3 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h3><p>ThreadLocal为每一个使用该变量的线程都提供了一个该变量的副本，每一个线程都可以改变自己的副本而不会其他线程的副本相冲突。ThreadLocal自身不会保存这些特定的数据资源，而是由每个线程自己来管理。每个Thread对象都有一个ThreadLocal.ThreadLocalMap(开发地址的线性探测)类型的名为threadLocals的实例变量，它保存了ThreadLocal设置给这个线程的数据。当通过ThreadLocal的set(data)方法来设置数据的时候，ThreadLocal会首先获取当前线程的引用，然后通过该引用获取当前线程持有的threadLocals，最后，以当前ThreadLocal的ThreadLocalHashCode作为key，将要设置的数据设置到当前线程。</p>
+<h3 id="同步器"><a href="#同步器" class="headerlink" title="同步器"></a>同步器</h3><ul>
+<li>CountDownLatch：提供一个计数器，当计数器为0时，所有线程才会释放资源。可以用来监听某些初始化操作，等初始化完毕后，通知主线程继续工作；</li>
+<li>CyclicBarrier：使用屏障点来阻塞一组线程，当该组线程有没有到达屏障点的线程时其他线程会等待该线程到达；</li>
+<li>Semaphore：可以限制有多少个线程可以执行业务代码，即用来限流；</li>
+<li>Exchanger：在两个线程的同步点之间实行数据的交换。</li>
+</ul>
+<h2 id="AQS原理"><a href="#AQS原理" class="headerlink" title="AQS原理"></a>AQS原理</h2><p>使用cas判断volatile变量state的值，如果是0，证明该锁没有被持有，则将其设置1，并把该锁的持有线程设置为当前线程。如果已经有线程持有该锁则调用AbstractQueuedSynchronizer类的acquire(int)方法。判断再次请求该锁的线程是不是持有该锁的线程，如果是则进行一个可重入操作，即将state状态位加1。如果不是将请求线程扔到一个等待队列里面去。</p>
+<h3 id="synchronized关键字"><a href="#synchronized关键字" class="headerlink" title="synchronized关键字"></a>synchronized关键字</h3><p>synchronized是Java同步关键字，可以用来修饰方法和代码块。修饰静态方法锁住的是class对象，修饰成员方法锁住的是this对象。JDK1.6之前synchronized的效率比Lock低很多，1.6之后synchronized引入自旋锁、偏向锁、轻量级锁等机制提升了效率。</p>
+<ul>
+<li>自旋锁：如果物理机有一个以上的处理器，能让两个或以上的线程同时并行执行，就可以让后面的请求锁的线程不直接阻塞而是执行一个忙循环（自旋）。</li>
+<li>锁升级：第一次获取锁的时候，即在Mark Word里面记录下线程的ID，当有线程再次获取锁的时候直接对吧比线程ID，如果相同就不需要加锁直接访问。如果不同则通过CAS操作竞争锁失败，偏向锁升级为轻量级锁。轻量级锁应对的是虽然有多个线程访问代码块，但是他们之间并没有竞争的情况。当一个线程获取轻量级锁时虚拟机将使用CAS操作将对象的Mark Word更新为指向当前线程的栈帧的指针并将锁标志位更新为00，即表示处于轻量级锁定状态。如果同时另一个线程来访问该锁，同样使用CAS操作更新Mark Word，但是会更新失败，即存在锁竞争，轻量级锁膨胀为重量级锁。当然不会这么一刀切，中间会有一个自适应自旋之类的，大致逻辑是这样。</li>
+<li>lock更加灵活，可以使用公平锁（默认非公平，ReentrantLock的构造方法中传入true时为公平锁），可中断锁等。同时lock可以使用多个condition来特定唤醒某个线程。</li>
+</ul>
+<h2 id="Java虚拟机"><a href="#Java虚拟机" class="headerlink" title="Java虚拟机"></a>Java虚拟机</h2><h3 id="JVM调优"><a href="#JVM调优" class="headerlink" title="JVM调优"></a>JVM调优</h3><p>如果CPU使用率较高，GC频繁且GC时间长，可能就需要JVM调优了。<br>基本思路就是让每一次GC都回收尽可能多的对象，<br>对于CMS来说，要合理设置年轻代和年老代的大小。该如何确定它们的大小呢？这是一个迭代的过程，可以先采用JVM的默认值，然后通过压测分析GC日志。<br>如果看年轻代的内存使用率处在高位，导致频繁的Minor GC，而频繁GC的效率又不高，说明对象没那么快能被回收，这时年轻代可以适当调大一点。<br>如果看年老代的内存使用率处在高位，导致频繁的Full GC，这样分两种情况：如果每次Full GC后年老代的内存占用率没有下来，可以怀疑是内存泄漏；如果Full GC后年老代的内存占用率下来了，说明不是内存泄漏，要考虑调大年老代。<br>对于G1收集器来说，可以适当调大Java堆，因为G1收集器采用了局部区域收集策略，单次垃圾收集的时间可控，可以管理较大的Java堆。</p>
+<h3 id="Java虚拟机内存划分"><a href="#Java虚拟机内存划分" class="headerlink" title="Java虚拟机内存划分"></a>Java虚拟机内存划分</h3><p>Java虚拟机管理的内存分为堆、栈、方法区和程序计数器。</p>
+<ul>
+<li>程序计数器可以看做是当前线程锁执行的字节码的行号指示器。即记录了Java虚拟机正在执行的字节码指令的地址。</li>
+<li>方法区存放字节码文件和Class对象等。在Hotspot虚拟机中，在Java8之前方法区使用永久代实现，Java8后直接存放在一块与堆不相连的本地内存（元空间）中。方法区中还包含了运行时常量池，用于存放Class文件中的常量池中的信息（编译期生成的各种字面量和符号引用）。</li>
+<li>栈又分为本地方法栈和虚拟机栈，在HotSpot虚拟机中虚拟机栈和本地方法栈合二为一。</li>
+<li>虚拟机堆分为老年代和新生代，其中老年代主要使用标记清除或标记整理等算法进行垃圾回收；而新生代又分为Eden区和Survivor区，新构建的对象存放在Eden区经过一次垃圾收集后存活的对象会被复制到Survivor区，Survivor区分为from区和to区（复制算法）。</li>
+</ul>
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><ol>
+<li>启动类加载器加载JAVA_HOME\lib目录；</li>
+<li>扩展类加载器加载JAVA_HOME\lib\ext目录或被java.ext.dirs系统变量所指定的路径；</li>
+<li>应用程序类加载器又称为系统类加载器加载用户路径(ClassPath)上所指定的类库；</li>
+<li>线程上下文类加载器为了让父类加载器请求子类加载器去完成类加载操作。</li>
+</ol>
+<h3 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h3><p>不同处理器提供不同的缓存一致性，即不同的平台的高速缓存和内存的数据一致性协议不同，JVM在平台上提供了一层抽象，即JMM。JVM使用插入内存栏杆来屏蔽与底层平台内存模型之间的差异。<br>Java内存模型规定了所以的变量都存储在主内存中(对应主内存)；同时每条线程还有自己的工作内存(对应高速缓存)，线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作（读取、赋值等）都必须在工作内存中进行，而不能直接读写主内存中的变量。不同的线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成。</p>
+<h3 id="什么情况可以影响到新生代的回收速度。"><a href="#什么情况可以影响到新生代的回收速度。" class="headerlink" title="什么情况可以影响到新生代的回收速度。"></a>什么情况可以影响到新生代的回收速度。</h3><ol>
+<li>Survivor区中存活对象的数量，因为是使用复制算法，对象数量越多需要复制的对象越多。</li>
+<li>Eden区中存活对象的数量，因为Eden中的对象经过一次GC后要移动到Survivor中。</li>
+</ol>
+<h3 id="线上问题调试"><a href="#线上问题调试" class="headerlink" title="线上问题调试"></a>线上问题调试</h3><ol>
+<li>获取内存Dump文件的命令：jmap -dump:format=b,file=生成的文件名 进程号。</li>
+<li>获取线程Dump文件的命令：jstack  -l 进程号 &gt; 生成的文件名。</li>
+</ol>
+<h3 id="显示锁"><a href="#显示锁" class="headerlink" title="显示锁"></a>显示锁</h3><p>显示锁提供了一下内置锁不具备的功能：可中断(lockInterruptibly)、可轮询和定时(tryLock)、公平锁、读写锁等。</p>
+<h3 id="AQS"><a href="#AQS" class="headerlink" title="AQS"></a>AQS</h3><p>AQS是一个用来构建锁和同步器的框架，Lock、FutureTask、CountDawnLatch、Semaphore、SynchronousQueue等。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

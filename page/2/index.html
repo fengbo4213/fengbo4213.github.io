@@ -53,32 +53,30 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/01/05/MQ-Kafka基础/">Kafka基础</a></h1>
+    <h1 class="title"><a href="/2020/05/26/其它之Linux网络管理/">Linux网络管理</a></h1>
   
 
       
-        <time datetime="2020-01-05T03:20:02.000Z">2020-01-05</time>
+        <time datetime="2020-05-26T11:46:42.000Z">2020-05-26</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
-<li>Broker：Kafka中使用Broker来接受Producer和Consumer的请求，并把Message持久化到本地磁盘。每个Cluster当中会选举出一个Broker来担任Controller，负责处理Partition的Leader选举，协调Partition迁移等工作。</li>
-<li>Consumer：用于从Broker中取出/消费Message。</li>
-<li>Producer：用于往Broker中发送/生产Message。</li>
-<li>Topic：用于划分Message的逻辑概念，一个Topic可以分布在多个Broker上。</li>
-<li>Partition：分区是Kafka中横向扩展和一切并行化的基础，每个Topic都至少被切分为1个Partition。</li>
-<li>Offset：消息在Partition中的编号，编号顺序不跨Partition(在Partition内有序)。</li>
-<li>Replication：Kafka支持以Partition为单位对Message进行冗余备份，每个Partition都可以配置至少1个Replication(当仅1个Replication时即仅该Partition本身)。</li>
-<li>Leader：每个Replication集合中的Partition都会选出一个唯一的Leader，所有的读写请求都由Leader处理。其他Replicas从Leader处把数据更新同步到本地。</li>
-<li>ISR：In-Sync Replica,是Replicas的一个子集，表示目前Alive且与Leader能够Catch-up的Replicas集合。由于读写都是首先落到Leader上，所以一般来说通过同步机制从Leader上拉取数据的Replica都会和Leader有一些延迟(包括了延迟时间和延迟条数两个维度)，任意一个超过阈值都会把该Replica踢出ISR。每个Leader Partition都有它自己独立的ISR。
+        <h3 id="网络管理基础命令"><a href="#网络管理基础命令" class="headerlink" title="网络管理基础命令"></a>网络管理基础命令</h3><ul>
+<li>route -n：查看本机的路由表。</li>
+<li>traceroute -n <a href="http://www.baidu.com：检查本机到百度所经过的各个路由器。traceroute" target="_blank" rel="noopener">www.baidu.com：检查本机到百度所经过的各个路由器。traceroute</a> -nT <a href="http://www.baidu.com通过TCP来检测。" target="_blank" rel="noopener">www.baidu.com通过TCP来检测。</a></li>
+<li>netstat -nlpt：查看监听的端口服务。</li>
+<li>netstat -nta | grep 100 | wc -l：查看100端口的连接数。</li>
+<li>netstat -nt 2&gt;/dev/null | grep :100 | grep “ESTABLISHED” | awk ‘{print $5}’ | cut -d: -f 4 | sort | uniq -c | sort -nr | head</li>
+<li>nmap localhost：扫瞄本机所启用的端口；nmap -sTU localhost会同时扫描UDP端口；nmap -sP 192.168.1.0/24会分析内网中有几台主机是启动的；yum install nmap安装nmap。</li>
+<li>vi /etc/sysconfig/iptables：修改防火墙出站及入站规则。
       
     </div>
       
         
         <footer>
           <div class="alignleft">
-            <a href="/2020/01/05/MQ-Kafka基础/#more" class="more-link">Read More ›</a>
+            <a href="/2020/05/26/其它之Linux网络管理/#more" class="more-link">Read More ›</a>
           </div>
         
         
@@ -95,7 +93,190 @@
     <header>
       
   
-    <h1 class="title"><a href="/2019/11/13/MQ-RocketMQ基础/">RocketMQ基础</a></h1>
+    <h1 class="title"><a href="/2020/03/13/分布式之分布式原理/">分布式原理</a></h1>
+  
+
+      
+        <time datetime="2020-03-13T12:59:16.000Z">2020-03-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="单机存储引擎"><a href="#单机存储引擎" class="headerlink" title="单机存储引擎"></a>单机存储引擎</h3><p>存储系统的基本功能包括:增、删、读、改,其中,读取操作又分为随机读取和顺序扫描。</p>
+<ul>
+<li>哈希存储引擎是哈希表的持久化实现,支持增、删、改,以及随机读取操作,但不支持顺序扫描,对应的存储系统为键值(Key-Value)存储系统。</li>
+<li>B树(B-Tree)存储引擎是B树的持久化实现,不仅支持单条记录的增、删、读、改操作,还支持顺序扫描,对应的存储系统是关系数据库。</li>
+<li>LSM树存储引擎通过将数据的修改增量保存在内存中，读取时需要合并磁盘中的历史数据和内存中的操作记录。支持增、删、改、随机读取以及顺序扫描。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/03/13/分布式之分布式原理/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a></h1>
+  
+
+      
+        <time datetime="2020-02-08T03:59:16.000Z">2020-02-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="网络管理"><a href="#网络管理" class="headerlink" title="网络管理"></a>网络管理</h3><ol>
+<li><p>使用nmap进行网络扫描</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sP 192.168.0.*</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看流量是从哪些端口发送出去的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iftop -P</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>TX：发送流量<br>RX：接收流量<br>TOTAL：总流量<br>Cumm：运行iftop到目前时间的总流量<br>peak：流量峰值<br>rates：分别表示过去 2s 10s 40s 的平均流量</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/01/29/树莓派之利用VNC远程控制树莓派/">利用VNC远程控制树莓派</a></h1>
+  
+
+      
+        <time datetime="2020-01-29T10:44:51.000Z">2020-01-29</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="设置树莓派启动方式"><a href="#设置树莓派启动方式" class="headerlink" title="设置树莓派启动方式"></a>设置树莓派启动方式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo raspi-config</span><br></pre></td></tr></table></figure>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/01/29/树莓派之利用VNC远程控制树莓派/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/01/28/树莓派之实现NAS家庭服务器/">树莓派实现NAS家庭服务器</a></h1>
+  
+
+      
+        <time datetime="2020-01-28T07:25:35.000Z">2020-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="挂载移动硬盘"><a href="#挂载移动硬盘" class="headerlink" title="挂载移动硬盘"></a>挂载移动硬盘</h3><ol>
+<li><p>插上硬盘，查看状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount /dev/sda5 /home/pi/samba</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/01/28/树莓派之实现NAS家庭服务器/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/01/27/树莓派之系统安装/">树莓派系统和相关软件安装</a></h1>
+  
+
+      
+        <time datetime="2020-01-27T13:05:51.000Z">2020-01-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="官方系统安装"><a href="#官方系统安装" class="headerlink" title="官方系统安装"></a><a href="https://post.smzdm.com/p/738951/" target="_blank" rel="noopener">官方系统安装</a></h3><ol>
+<li>安装SDFormatter4，选好要用的TF卡盘符，然后点击格式化。</li>
+<li>安装Win32DiskImager，点击文件夹图标，选择准备好的img文件，然后点击Write按钮。</li>
+<li>进度条走完之后会弹出两个框，一个是询问是否格式化磁盘，选取消。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/01/27/树莓派之系统安装/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2019/11/13/其它之RocketMQ基础/">RocketMQ基础</a></h1>
   
 
       
@@ -104,14 +285,14 @@
     </header>
     <div class="entry">
       
-        <h3 id="MQ作用"><a href="#MQ作用" class="headerlink" title="MQ作用"></a>MQ作用</h3><p>在一个企业级的架构应用中，MQ的主要作用为业务解耦、事件消息广播、消息流控处理。其中，对于业务解耦是作为消息队列，要解决的一个首要问题。所谓业务解耦，就是说在一个业务流程处理上，只关注具体的流程，尽到通知的责任即可，不必等待消息处理的结果。<br>总得来看，企业级系统模块通信的方式通常情况下，无非两种。同步方式：REST、RPC方式实现；异步方式：消息中间件（消息队列）方式实现。<br>
+        <h3 id="MQ作用"><a href="#MQ作用" class="headerlink" title="MQ作用"></a><a href="https://www.cnblogs.com/javazhiyin/p/13201315.html" target="_blank" rel="noopener">MQ作用</a></h3><p>在一个企业级的架构应用中，MQ的主要作用为业务解耦、事件消息广播、消息流控处理。其中，对于业务解耦是作为消息队列，要解决的一个首要问题。所谓业务解耦，就是说在一个业务流程处理上，只关注具体的流程，尽到通知的责任即可，不必等待消息处理的结果。<br>总得来看，企业级系统模块通信的方式通常情况下，无非两种。同步方式：REST、RPC方式实现；异步方式：消息中间件（消息队列）方式实现。<br>
       
     </div>
       
         
         <footer>
           <div class="alignleft">
-            <a href="/2019/11/13/MQ-RocketMQ基础/#more" class="more-link">Read More ›</a>
+            <a href="/2019/11/13/其它之RocketMQ基础/#more" class="more-link">Read More ›</a>
           </div>
         
         
@@ -158,186 +339,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/10/10/基础之HTTP协议/">HTTP协议</a></h1>
-  
-
-      
-        <time datetime="2019-10-10T02:22:43.000Z">2019-10-10</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><a href="https://github.com/duoani/HTTP-RFCs.zh-cn" target="_blank" rel="noopener">RFC文档</a><br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/10/10/基础之HTTP协议/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/09/23/Java基础之一些工具类/">一些工具类</a></h1>
-  
-
-      
-        <time datetime="2019-09-23T12:56:21.000Z">2019-09-23</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="BigDecimal"><a href="#BigDecimal" class="headerlink" title="BigDecimal"></a>BigDecimal</h3><ul>
-<li>基本方法：加（add(BigDecimal)）、减（subtract(BigDecimal)）、乘（multiply(BigDecimal)）、除（divide(BigDecimal)）。</li>
-<li>除法时需要传入小数点后的位数和取值方式。<ul>
-<li>RoundingMode.ROUND_CEILING：向正无限大方向舍入的舍入模式。</li>
-<li>RoundingMode.ROUND_DOWN：向零方向舍入的舍入模式。</li>
-<li>RoundingMode.ROUND_FLOOR：向负无限大方向舍入的舍入模式。</li>
-<li>RoundingMode.ROUND_HALF_DOWN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向下舍入。</li>
-<li>RoundingMode.ROUND_HALF_EVEN：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向相邻的偶数舍入。</li>
-<li>RoundingMode.ROUND_HALF_UP：向最接近数字方向舍入的舍入模式，如果与两个相邻数字的距离相等，则向上舍入。</li>
-<li>RoundingMode.ROUND_UNNECESSARY用于断言请求的操作具有精确结果的舍入模式，因此不需要舍入。</li>
-<li>RoundingMode.ROUND_UP：远离零方向舍入的舍入模式。</li>
-</ul>
-</li>
-<li>stripTrailingZeros()方法可以去除尾部的0，然后可以用scale()获取小数点的位数。</li>
-<li>toString()方法可能是科学计数法所以可以使用toPlainString()方法转换为字符串。</li>
-<li>Double转BigDecimal使用BigDecimal.valueOf(Double)而不是new BigDecimal(Double)否则可能会丢失精度。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/09/23/Java基础之一些工具类/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/07/15/Java设计模式之适配器模式/">Java设计模式之适配器模式</a></h1>
-  
-
-      
-        <time datetime="2019-07-15T11:19:54.000Z">2019-07-15</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>统中有一套完整的类结构，而我们需要利用其中摸某一个类的功能（即方法），但是我们的客户端只认识另一个和这个类结构不相关的接口，这时候就可以使用适配器模式将这个现有的类与我们的目标接口进行适配，最终获得一个符合需要的接口并包含复用的类的功能的类。本来是火鸡却实现鸭子接口，当你客户需要一个鸭子的时候，就可以假装成鸭子。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/07/15/Java设计模式之适配器模式/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/07/15/Java设计模式之观察者模式/">Java设计模式之观察者模式</a></h1>
-  
-
-      
-        <time datetime="2019-07-15T11:16:15.000Z">2019-07-15</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>观察者模式（又称发布-订阅模式），即一个目标物体管理所有依赖于他的观察者物体，并且在它本身状态改变时，它的所有依赖者都会收到通知并自动更新。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/07/15/Java设计模式之观察者模式/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/07/15/Java设计模式之代理模式/">Java设计模式之代理模式</a></h1>
-  
-
-      
-        <time datetime="2019-07-15T11:09:38.000Z">2019-07-15</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>代理模式一般分为静态代理和动态代理。两种代理从虚拟机加载类的角度来讲，本质上都是一样的，都是在原有类的基础上加入一些其他的逻辑，产生一个新的与原有类接口相同确行为不同的类型。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2019/07/15/Java设计模式之代理模式/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -353,7 +354,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -423,19 +424,19 @@
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>

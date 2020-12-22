@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"></h1>
+  
+
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h2><h3 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h3><p>原来需要手动new对象，并且用完之后对象可能被废弃了，而Spring IoC可以帮助我们创建对象、管理对象的生命周期、对对象的依赖进行注入等。具体可以分为容器启动阶段和实例化阶段，容器启动阶段主要是解析配置文件，以XML为例，通过XmlBeanDefinitionReader加载所有的xml文件并在内部调用DefaultBeanDefinitionDocumentReader解析xml各个节点，主要是将bean标签解析到BeanDefinition中，在然后就可以通过BeanDefinitionRegistry将BeanDefinition添加到BeanDefinition容器中。实例化阶段在调用getBean方法后开始，一般我们在程序中调用getBean方法后会先去单例容器尝试获取该实例，如果存在就可以直接返回，如果不存在就会去判断该bean是否是单例的，然后去BeanDefinition容器获取该key对应的BeanDefinition对象，然后根据BeanDefinition去构建需要返回的对象实例。大概步骤是这样，中间还有很多需要注意的点，比如会尝试从父容器获取bean、对BeanPostProcessors的调用、循环依赖的问题等。<br><a id="more"></a></p>
+<h3 id="循环依赖"><a href="#循环依赖" class="headerlink" title="循环依赖"></a>循环依赖</h3><p>Spring使用三级缓存来解决循环依赖问题，即将已经创建出来还没有注入依赖的对象放入singletonsCurrentlyInCreation缓存中，循环依赖时可以将还没有构建完成的实例从该容器中拿出来，并进行依赖注入。所以如果是构造方法注入的循环依赖，Spring会抛出异常。</p>
+<h3 id="Ioc容器的加载过程"><a href="#Ioc容器的加载过程" class="headerlink" title="Ioc容器的加载过程"></a>Ioc容器的加载过程</h3><ol>
+<li>刷新预处理</li>
+<li>将配置信息解析，注册到BeanFactory</li>
+<li>设置bean的类加载器</li>
+<li>如果有第三方想再bean加载注册完成后，初始化前做点什么(例如修改属性的值，修改bean的scope为单例或者多例。)，提供了相应的模板方法，后面还调用了这个方法的实现，并且把这些个实现类注册到对应的容器中</li>
+<li>初始化当前的事件广播器</li>
+<li>初始化所有的bean</li>
+<li>广播applicationcontext初始化完成。</li>
+</ol>
+<h3 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h3><p>AOP面向切面编程是对面向对象编程的一种补充，主要是为了将日志打印、事务处理等无法通过OOP模块化的重复代码模块化。Spring AOP采用Java作为AOP的实现语言。内部使用了动态代理和CGLIB动态字节码增强来实现。</p>
+<h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>Java动态代理在运行时动态的创建代理对象，灵活的实现了代理模式。具体实现方式是使用ProxyGenerator类的generateClassFile()方法生成代理类字节码byte数组，然后根据传递进来的类加载器加载该字节码到Java虚拟机并返回Class对象，最后根据Class对象反射生成代理实例。</p>
+<h3 id="Spring事务"><a href="#Spring事务" class="headerlink" title="Spring事务"></a>Spring事务</h3><p>Spring支持编程式事物和声明式事务。其中编程式事务需要手动开启、提交和回滚事务；而声明式事务使用AOP自动将事务的逻辑织入到事先配置好的切面中。</p>
+<ul>
+<li>Spring默认的事务隔离级别是使用数据库的隔离级别，其中MySQL默认可以隔离掉脏读、不可重复读和幻读。其中脏读可以通过读MVCC来避免，MVCC即多版本并发控制会在事务提交之前在快照中保存事务开始之前的版本的数据用来在事务提交失败时进行回滚；不可重复读则是通过行锁来避免；而幻读是通过间隙锁(Gap Lock)来避免。</li>
+<li>Spring事务默认的传播级别是如果存在一个事务，则加入当前事务；如果没有事务则开启一个新的事务。其它的级别包括如果存在一个事务，则加入当前事务；如果没有事务，则非事务的执行和如果已经存在一个事务，则加入当前事务；如果没有一个活动的事务，则抛出异常等。</li>
+</ul>
+<h3 id="事务的丢失更新问题"><a href="#事务的丢失更新问题" class="headerlink" title="事务的丢失更新问题"></a>事务的丢失更新问题</h3><ol>
+<li>事务1查询一条数据，放入本地内存中并显示给终端用户1。</li>
+<li>事务2查询同一条数据并显示给用户2。</li>
+<li>用户1和用户2都修改了这条数据并提交更新到数据库。这样用户1修改的数据就丢失掉了。</li>
+</ol>
+<h3 id="SpringBoot自动装配原理"><a href="#SpringBoot自动装配原理" class="headerlink" title="SpringBoot自动装配原理"></a>SpringBoot自动装配原理</h3><p>SpringBoot开启自动装配后，SpringBoot会去自动扫描starter包下面的META-INF/spring.factories文件，并根据该文件中的配置去找对应的Configuration，实现对应的配置。</p>
+<h2 id="SpringMVC"><a href="#SpringMVC" class="headerlink" title="SpringMVC"></a>SpringMVC</h2><h3 id="请求过程"><a href="#请求过程" class="headerlink" title="请求过程"></a>请求过程</h3><p>用户发起请求到前端控制器，前端控制器根据用户的URL调用处理器映射器根据xml、注解等配置查找对应处理请求的Handler并返回给前端控制器，前端控制器调用处理器适配器执行Handler，并返回给前端控制器一个ModuleAndView，前端控制器请求视图解析器解析ModuleAndView并返回正在的View，前端控制器对View进行渲染并返回给用户。</p>
+<h3 id="拦截器和过滤器的区别"><a href="#拦截器和过滤器的区别" class="headerlink" title="拦截器和过滤器的区别"></a>拦截器和过滤器的区别</h3><ul>
+<li>拦截器是基于Java的反射机制，即使用SpringAOP机制实现，而过滤器是基于函数回调。</li>
+<li>拦截器是Spring组件，配置在Spring文件中，可以使用Spring的资源和对象（即拦截器可以获取IoC容器中的各个bean）。</li>
+<li>过滤器在Servlet执行前和执行后执行，所以SpringMVC的全局异常处理无法处理过滤器中抛出的异常。</li>
+</ul>
+<h2 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h2><h3 id="Mybatis缓存"><a href="#Mybatis缓存" class="headerlink" title="Mybatis缓存"></a><a href="https://tech.meituan.com/2018/01/19/mybatis-cache.html" target="_blank" rel="noopener">Mybatis缓存</a></h3><ul>
+<li>一级缓存：在一次数据库会话中，执行多次查询条件完全相同的SQL，MyBatis提供了一级缓存的方案优化这部分场景，如果是相同的SQL语句，会优先命中一级缓存，避免直接对数据库进行查询，提高性能。其最大的共享范围就是一个SqlSession内部。</li>
+<li>二级缓存：二级缓存开启后，同一个namespace下的所有操作语句，都影响着同一个Cache，即二级缓存被多个SqlSession共享，是一个全局的变量。</li>
+</ul>
+<h3 id="Mybatis分页"><a href="#Mybatis分页" class="headerlink" title="Mybatis分页"></a>Mybatis分页</h3><p>Mybatis使用RowBounds对象进行分页，它是针对ResultSet结果集执行的内存分页。物理分页的话我们使用的是PageHelper插件，该插件的基本原理是一个切面拦截，然后拼接出count查询和limit分页查询SQL语句。</p>
+<h2 id="Dubbo"><a href="#Dubbo" class="headerlink" title="Dubbo"></a>Dubbo</h2><h3 id="RPC请求过程"><a href="#RPC请求过程" class="headerlink" title="RPC请求过程"></a>RPC请求过程</h3><p>客户端启动的时候会根据配置的信息（集成Spring的xsd扩展槽，生成一些自定义的XML标签）为需要远程的接口生成代理类，在代理类中会集成网络通讯的逻辑，即将请求的方法和参数序列化到服务器端，服务器执行后将执行结果序列化返回给客户端，所以在客户端看起来像是直接访问服务端的方法。</p>
+<h3 id="服务治理和服务发现"><a href="#服务治理和服务发现" class="headerlink" title="服务治理和服务发现"></a>服务治理和服务发现</h3><p>服务治理指管理各个服务的服务。服务治理最核心的问题是服务发现和服务注册。Dubbo引入了一个注册中心的概念，服务的注册和发现主要依赖这个服务中心。具体过程为：</p>
+<ol>
+<li>服务提供者启动并将服务注册到注册中心注册自己提供的服务。</li>
+<li>服务消费者启动，向注册中心订阅自己需要的服务。</li>
+<li>注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。</li>
+<li>服务消费者，从提供者地址列表中，基于软负载均衡算法（默认是基于权重的随机算法），选一台提供者进行调用，如果调用失败，在选另一台调用。</li>
+<li>服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。</li>
+</ol>
+<h3 id="Dubbo健壮性"><a href="#Dubbo健壮性" class="headerlink" title="Dubbo健壮性"></a>Dubbo健壮性</h3><ul>
+<li>监控中心宕机不影响使用，只是丢失部分采样数据。</li>
+<li>注册中心对等集群，任意一台宕机后，将自动切换到另一台。</li>
+<li><b>注册中心全部宕机后，服务提供者和服务消费者仍能通过本地缓存通信。</b></li>
+<li>服务提供者无状态，任意一台宕机后，不影响使用。</li>
+<li>服务提供者全部宕机后，服务消费者应用将无法使用，并无限次重连等待服务提供者恢复。</li>
+<li>在一定时间内服务提供者没有返回，则认为本次调用失败。失败后会再次调用，如果在配置的调用次数内都失败，则认为此次请求异常，抛出异常。<b>可能引发发送邮件重复或账户注册重复等问题。</b></li>
+</ul>
+<h3 id="Dubbo保证幂等性"><a href="#Dubbo保证幂等性" class="headerlink" title="Dubbo保证幂等性"></a>Dubbo保证幂等性</h3><p>用户对于同一操作发起的一次请求或者多次请求的结果是一致的，不会因为多次点击而产生了副作用。首先在业务逻辑中就应该注意保证接口的幂等性，而像转账这些无法保证的操作可以考虑使用分布式锁。例如使用redis的setNX（SET if Not eXists）若给定的key已经存在，则setNX不做任何操作。<br>支付操作流程：先查询订单状态如果订单未付款就使用setNX根据订单号设置一个key，当服务调用成功或回滚后才会删除key。然后构建一个本地事务修改订单状态和扣款。转账类似，在确认转账但未输入密码付款前可以生成一条有唯一编号且状态为未付款的交易记录。</p>
+<h3 id="Dubbo配套设施"><a href="#Dubbo配套设施" class="headerlink" title="Dubbo配套设施"></a>Dubbo配套设施</h3><p>熔断、限流、降级、隔离，监控、服务测试、api网关、注册中心等。</p>
+<ul>
+<li>服务注册与发行：Zookeeper和Eureka（不维护）和Nacos。</li>
+<li>负载均衡：自带管控台可以进行配置。</li>
+<li>服务熔断：Sentinel和Hystrix（不在活跃开发）。</li>
+<li>分布式配置：Nacos，即Nacos可以作为sentinel规则配置中心。</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

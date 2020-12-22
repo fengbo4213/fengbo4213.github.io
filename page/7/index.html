@@ -53,11 +53,179 @@
     <header>
       
   
-    <h1 class="title"><a href="/2017/09/02/Java高级特性之AQS源码分析/">AQS源码分析</a></h1>
+    <h1 class="title"><a href="/2017/12/20/基础之C语言常用函数/">C语言常用函数</a></h1>
   
 
       
-        <time datetime="2017-09-02T06:42:13.000Z">2017-09-02</time>
+        <time datetime="2017-12-20T12:29:44.000Z">2017-12-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="进程控制相关函数"><a href="#进程控制相关函数" class="headerlink" title="进程控制相关函数"></a>进程控制相关函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 获取进程和父进程pid</span><br><span class="line">pid_t getpid(void);</span><br><span class="line">pid_t getppid(void);</span><br><span class="line">// 创建和终止进程</span><br><span class="line">pid_t fork(void);</span><br><span class="line">void exit(int status);</span><br><span class="line">// 等待子进程终止或停止</span><br><span class="line">pid_t waitpid(pid_t pid, int *startusp, int options);</span><br><span class="line">pid_t wait(int *starusp); // wait函数是waitpid的简单版本</span><br><span class="line">// 让进程休眠</span><br><span class="line">unsigned int sleep(unsigned int secs);</span><br><span class="line">int pause(void);</span><br><span class="line">// 在当前进程的上下文中加载并运行一个新程序</span><br><span class="line">int execve(const char *filename, const char *argv[], const char *envp[]);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/12/20/基础之C语言常用函数/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/19/基础之C语言基础/">C语言基础</a></h1>
+  
+
+      
+        <time datetime="2017-12-19T09:49:45.000Z">2017-12-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="C语言基础"><a href="#C语言基础" class="headerlink" title="C语言基础"></a>C语言基础</h2><h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">存储大小</th>
+<th>值范围 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">unsigned char</td>
+<td style="text-align:center">1字节</td>
+<td>0到255</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1字节</td>
+<td>-128到127</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned int</td>
+<td style="text-align:center">2或4字节</td>
+<td>0到65535或0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">2或4字节</td>
+<td>-32768到32787或-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned short</td>
+<td style="text-align:center">2字节</td>
+<td>0到65535</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2字节</td>
+<td>-32768到32767</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned long</td>
+<td style="text-align:center">4字节</td>
+<td>0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4字节</td>
+<td>-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4字节</td>
+<td>1.2E-38到3.4E+38，精度为6位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8字节</td>
+<td>2.3E-308到1.7E+308，精度为15位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">16字节</td>
+<td>3.4E-4932到1.1E+4932，精度为19位小数</td>
+</tr>
+</tbody>
+</table>
+<p>ps：</p>
+<ol>
+<li>布尔类型可以使用int替代，1为TRUE，0为FALSE。</li>
+<li>C语言使用常量来判断是否匹配返回值或信号时，这些常量需要设置为2的n次方。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/12/19/基础之C语言基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/26/JavaWeb-Spring注解/">Spring注解</a></h1>
+  
+
+      
+        <time datetime="2017-11-26T03:34:14.000Z">2017-11-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><b>注解本身没有功能，和xml一样是一种元数据；元数据是解释数据的数据，即配置。</b><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/11/26/JavaWeb-Spring注解/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/02/Java高级特性之AQS源码分析/">AQS源码分析</a></h1>
+  
+
+      
+        <time datetime="2017-11-02T06:42:13.000Z">2017-11-02</time>
       
     </header>
     <div class="entry">
@@ -69,7 +237,110 @@
         
         <footer>
           <div class="alignleft">
-            <a href="/2017/09/02/Java高级特性之AQS源码分析/#more" class="more-link">Read More ›</a>
+            <a href="/2017/11/02/Java高级特性之AQS源码分析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/10/19/JavaWeb-Spring工具类/">Spring工具类</a></h1>
+  
+
+      
+        <time datetime="2017-10-19T09:25:11.000Z">2017-10-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="StringUtils"><a href="#StringUtils" class="headerlink" title="StringUtils "></a>StringUtils
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/10/19/JavaWeb-Spring工具类/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/10/18/Java高级特性之对象的创建/">Java对象的创建</a></h1>
+  
+
+      
+        <time datetime="2017-10-18T13:03:58.000Z">2017-10-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="对象创建时机"><a href="#对象创建时机" class="headerlink" title="对象创建时机"></a>对象创建时机</h2><ul>
+<li>使用new关键字创建对象；</li>
+<li>使用反射创建对象：即使用Class类的newInstance方法、Constructor类的newInstance方法等创建对象；</li>
+<li>使用Clone方法创建一个对象：无论何时我们调用一个对象的clone方法，JVM都会帮助我们创建一个新的、一样的对象，且该对象的创建过程中并不会调用任何构造函数。</li>
+<li>使用反序列化机制创建对象：当我们反序列化一个对象时，JVM会给我们创建一个单独的对象，且JVM并不会调用任何构造函数。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/10/18/Java高级特性之对象的创建/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/09/30/Java高级特性之Java虚拟机/">Java虚拟机</a></h1>
+  
+
+      
+        <time datetime="2017-09-30T00:58:38.000Z">2017-09-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="内存模型相关概念"><a href="#内存模型相关概念" class="headerlink" title="内存模型相关概念"></a>内存模型相关概念</h2><h3 id="缓存一致性问题"><a href="#缓存一致性问题" class="headerlink" title="缓存一致性问题"></a>缓存一致性问题</h3><p>为了弥补处理器和内存运算速度的巨大差异，现代计算机都会加入一层读写速度接近处理器运算速度的高速缓存。将运算需要使用到的数据复制到缓存中，让运算能快速进行，当运算结束后再从缓存同步会内存中。所以在多处理器系统中，因为每个处理器都有自己的高速缓存，而它们又共享同一主存。当它们的运算任务都涉及同一块主内存区域是，可能导致各自缓存数据不一致。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/09/30/Java高级特性之Java虚拟机/#more" class="more-link">Read More ›</a>
           </div>
         
         
@@ -114,210 +385,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/08/22/Java基础之反射/">Java反射</a></h1>
-  
-
-      
-        <time datetime="2017-08-22T11:53:26.000Z">2017-08-22</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="获取Class对象的三种方式"><a href="#获取Class对象的三种方式" class="headerlink" title="获取Class对象的三种方式"></a>获取Class对象的三种方式</h3><pre><code>Person p = new Person(); 
-Class clazz = p.getClass();﻿             // 第一种
-Class clazz = Person.class;             // 第二种
-Class clazz = Class.forName(&quot;Person&quot;);  // 第三种
-</code></pre>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/08/22/Java基础之反射/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/08/12/Java基础之克隆与排序/">Java克隆与排序</a></h1>
-  
-
-      
-        <time datetime="2017-08-12T02:43:25.000Z">2017-08-12</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="克隆接口-Cloneable"><a href="#克隆接口-Cloneable" class="headerlink" title="克隆接口(Cloneable)"></a>克隆接口(Cloneable)</h2><h3 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h3><ol>
-<li>实现Cloneable接口；</li>
-<li>覆盖Object中protected类型的clone方法。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/08/12/Java基础之克隆与排序/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/07/04/其它之Maven基础/">Maven基础</a></h1>
-  
-
-      
-        <time datetime="2017-07-04T13:52:29.000Z">2017-07-04</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="Pom-xml详解-Maven插件所有插件"><a href="#Pom-xml详解-Maven插件所有插件" class="headerlink" title="Pom.xml详解 | Maven插件所有插件"></a><a href="http://blog.csdn.net/oDeviloo/article/details/52050277" target="_blank" rel="noopener">Pom.xml详解</a> | <a href="http://maven.apache.org/plugins/index.html" target="_blank" rel="noopener">Maven插件所有插件</a></h3>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/07/04/其它之Maven基础/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/06/30/其它之Git安装和使用/">Git的安装和使用</a></h1>
-  
-
-      
-        <time datetime="2017-06-30T02:44:31.000Z">2017-06-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h4 id="Hexo配置"><a href="#Hexo配置" class="headerlink" title="Hexo配置"></a><a href="http://www.cnblogs.com/seayxu/p/5548243.html" target="_blank" rel="noopener">Hexo配置</a></h4><p>重装hexo时，直接从Git上克隆下源码然后直接执行npm install –save hexo-deployer-git命令就好。<br>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/06/30/其它之Git安装和使用/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/06/25/其它之Redis基础/">Redis基础</a></h1>
-  
-
-      
-        <time datetime="2017-06-25T09:35:46.000Z">2017-06-25</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://www.cnblogs.com/huangjacky/p/3700473.html" target="_blank" rel="noopener">redis配置文件解析</a>，Redis是一种基于键值对（key-value）的NoSQL数据库。Redis中的值可以是由string（字符串）、hash（哈希）、list（列表）、set（集合）、zset（有序集合）、Bitmaps（位图）、HyperLogLog、GEO（地理信息定位）等多种数据结构和算法组成。Redis使用了单线程架构和I/O多路复用模型来实现高性能的内存数据库服务。因为Redis是单线程来处理命令，所以一条命令从客户端到服务器端不会被立即执行，所有命令都会进入一个队列中，然后被逐个执行。</p>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/06/25/其它之Redis基础/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/06/22/JavaWeb-listener和filter/">Listener和filter</a></h1>
-  
-
-      
-        <time datetime="2017-06-22T10:53:24.000Z">2017-06-22</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h3><p>特点：1、是一个接口；2、需要注册，例如注册在按钮上；3、在特殊事件发生时调用。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2017/06/22/JavaWeb-listener和filter/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -333,7 +400,7 @@ Class clazz = Class.forName(&quot;Person&quot;);  // 第三种
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 20px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 20px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 20px;">Java高级特性</a> <a href="/tags/Python小工具/" style="font-size: 10px;">Python小工具</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 15px;">其它</a> <a href="/tags/分布式/" style="font-size: 17.5px;">分布式</a> <a href="/tags/树莓派/" style="font-size: 12.5px;">树莓派</a> <a href="/tags/计算机基础/" style="font-size: 15px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 20px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -403,19 +470,19 @@ Class clazz = Class.forName(&quot;Person&quot;);  // 第三种
       </li>
     
       <li>
-        <a href="/2020/04/08/Java高级特性之DirectByteBuffer/">DirectByteBuffer</a>
+        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
       <li>
-        <a href="/2020/03/13/分布式之分布式原理/">分布式原理</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
       </li>
     
       <li>
-        <a href="/2020/03/07/分布式之ZooKeeper的典型应用场景/">ZooKeeper的典型应用场景</a>
+        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
       </li>
     
       <li>
-        <a href="/2020/02/08/树莓派之网络管理和优化/">网络管理和优化</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
       </li>
     
   </ul>
