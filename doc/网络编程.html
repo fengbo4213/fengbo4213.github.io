@@ -60,7 +60,7 @@
     <div class="entry">
       
         <h2 id="Netty实战"><a href="#Netty实战" class="headerlink" title="Netty实战"></a>Netty实战</h2><h3 id="Netty开发网络应用过程"><a href="#Netty开发网络应用过程" class="headerlink" title="Netty开发网络应用过程"></a>Netty开发网络应用过程</h3><p>服务端一般先使用EventLoopGroup构建两个线程组，EventLoop一般和Java线程唯一关联。</p>
-<h2 id="NIO原理"><a href="#NIO原理" class="headerlink" title="NIO原理"></a>NIO原理</h2><h3 id="BIO与NIO"><a href="#BIO与NIO" class="headerlink" title="BIO与NIO"></a>BIO与NIO</h3><p>传统IO每次accept一个客户端请求时都需要新建一个线程，当大并发出现时会构建过多的线程，这时线程上下文切换就会消耗大量CPU资源，而且每个线程都会消耗一定的内存资源会导致内存爆炸。这时就可以使用线程池来优化工程，避免过多的线程被创建。而NIO进一步进行了优化，使用了操作系统底层提供的一些接口通过异步等技术让一个用户线程可以处理多个客户端连接请求。<br><a id="more"></a></p>
+<h2 id="NIO原理"><a href="#NIO原理" class="headerlink" title="NIO原理"></a>NIO原理</h2><h3 id="BIO与NIO"><a href="#BIO与NIO" class="headerlink" title="BIO与NIO"></a>BIO与NIO</h3><p>传统IO每次accept一个客户端请求时都需要新建一个线程，当大并发出现时会构建过多的线程，这时线程上下文切换就会消耗大量CPU资源，而且每个线程都会消耗一定的内存资源会导致内存爆炸。这时就可以使用线程池来优化工程，避免过多的线程被创建。而NIO进一步进行了优化，使用了操作系统底层提供的一些接口通过异步等技术让一个用户线程可以处理多个客户端连接请求。</p>
 <h3 id="Linux的NIO原理"><a href="#Linux的NIO原理" class="headerlink" title="Linux的NIO原理"></a>Linux的NIO原理</h3><ul>
 <li>用户进程调用select函数，该进程还是会阻塞，只是是被select函数阻塞而不是socket IO阻塞，而且select函数可以监控多个socket，即一个用户进程可以处理多个客户端连接。具体原理是select函数会委托内核监控select负责的socket，当任何一个socket中的数据准备好了，select函数就会返回。这个时候用户进程再调用read操作，将数据从内核拷贝到用户进程。</li>
 <li>select函数只支持1024个文件描述符，即最多只能监控1024个socket。而poll没有描述符数量大小限制，poll使用pollfd结构体而不是select的fd_set数组结构来存储文件描述符。但是当文件描述符过多时poll也会和select一样出现性能下降，因为poll函数每次调用也需要把fd集合从用户态拷贝到内核态，且用户进程和内核都需要遍历fd集合来获取就绪的文件描述符。</li>
@@ -94,6 +94,38 @@
 <li>客户主机已经崩溃，并且关闭或者正在重新启动。在任何一种情况下，客户的TCP都没有响应。服务端将不能收到对探测的响应，并在75秒后超时。服务器总共发送10个这样的探测，每个间隔75秒。如果服务器没有收到一个响应，它就认为客户主机已经关闭并终止连接。</li>
 <li>客户主机崩溃并已经重新启动。服务器将收到一个对其保活探测的响应，这个响应是一个复位，使得服务器终止这个连接。</li>
 <li>客户机正常运行，但是服务器不可达，这种情况与2类似，TCP能发现的就是没有收到探查的响应。</li>
+</ol>
+<h3 id="HTTP常用请求头"><a href="#HTTP常用请求头" class="headerlink" title="HTTP常用请求头"></a>HTTP常用请求头</h3><ol>
+<li>Connection: keep-alive、Content-Type、Content-Length、Content-<em>和Accept-</em>。<br> HttpServerKeepAliveHandler、HttpContentCompressor</li>
+<li>Transfer-Encoding: chunked 带有该消息头的HTTP消息体分块进行传输。<br> HttpServerCodec、HttpObjectAggregator</li>
+<li>浏览器缓存相关:<br> Expires: 过期时间，可以由Cache-Control代替。<br> Pragma: 功能和Cache-Control相似，已经逐步抛弃，如果一个报文中同时出现Pragma和Cache-Control时，以Pragma为准。<br> Cache-Control:<pre><code>public: 表示响应可以被客户端和代理服务器缓存。
+private: 表示响应只能被客户端缓存。
+no-store: 不缓存任何响应。
+no-cache: 资源被缓存，但是立即失效，下次会发起请求验证资源是否过期。
+    意味着每次发送请求静态资源时都需要向服务端进行一次过期认证，通常情况下，
+    过期认真证需要配合（ETag和Last-Modified）进行一个比较，
+    如果验证并没有过期，则会发送304的状态码，通知浏览进复用浏览器的缓存。
+max-age=30: 缓存30秒后就过期，需要重新请求。
+s-maxage=30: 覆盖max-age，作用一样，只在代理服务器中生效。
+max-stale=30: 30秒内，即使缓存过期，也可以使用该缓存。
+min-fresh=30: 希望在30秒内获取最新的响应。
+</code></pre> Last-Modified、If-Modified-Since:<pre><code>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是客户端请求的资源，
+同时有一个Last-Modified的属性标记此文件在服务器端最后被修改的时间。
+客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头，询问该时间之后文件是否有被修改过。
+</code></pre> ETag和If-None-Match:<pre><code>1、一些文件也许会周期性的更改，但是他的内容并不改变(仅仅改变的修改时间)，这个时候我们并不希望客户端认为这个文件被修改了，而重新GET;
+2、某些文件修改非常频繁，比如在秒以下的时间内进行修改，(比方说1s内修改了N次)，If-Modified-Since能检查到的粒度是s级的，
+这种修改无法判断(或者说UNIX记录MTIME只能精确到秒)
+3、某些服务器不能精确的得到文件的最后修改时间；
+</code></pre></li>
+<li>Range、Content-Range: 传输指定bytes范围的数据，用于多线程下载和断点续传。</li>
+<li>Expect: 100-continue: HttpServerExpectContinueHandler<br> POST请求的请求体大于一定值时，先发送一个包含该请求头的请求，询问Server是否愿意接受数据。<br> 服务端返回100 Continue表示可以接收，417 Expectation Failed拒绝接收请求。</li>
+<li>跨域资源共享相关设置。<br> Origin: 表示当前请求资源所在页面的协议、域名和端口。<pre><code>Host: 表示当前请求要被发送的目的地，即当前请求目标资源，仅包括域名和端口号。
+Referer: 表示当前请求资源所在页面的完整路径：协议+域名+查询参数（注意不包含锚点信息）。
+</code></pre> Access-Control-Allow-Origin: 服务端允许访问的域名。它的值要么是请求时Origin字段的值，要么是一个*，表示接受任意域名的请求。<br> Access-Control-Allow-Credentials: 表示是否允许发送Cookie。默认情况下，Cookie不包括在CORS请求之中。<pre><code>设为true，即表示服务器明确许可，Cookie可以包含在请求中，一起发给服务器。这个值也只能设为true，如果服务器不要浏览器发送Cookie，删除该字段即可。
+</code></pre> Access-Control-Expose-Headers: CORS请求时，XMLHttpRequest对象的getResponseHeader()方法只能拿到6个基本字段：<br> Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma。<pre><code>如果想拿到其他字段，就必须在Access-Control-Expose-Headers里面指定。
+</code></pre></li>
+<li>Cookie和Token。<br> HTTP响应报文通过Set-Cookie通知客户端需要保存如下Cookie，可以含多个Set-Cookie项。浏览器在发送请求时会通过Cookie请求头返回该域名下接收的所有Cookie。<br> 服务端生成Token发送给客户端，客户端将Token保存在Cookie或者localStorage里面，再次请求时将Token的值设置到Authorization请求头中带给服务器端。</li>
+<li>Connection: Upgrade、Upgrade: websocket</li>
 </ol>
 
       
@@ -160,8 +192,8 @@
     <div class="widget tagcloud">
     <h3 class="title">电子书</h3>
     <ul class="entry">
-      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
-      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
     </ul>
   </div>
 
@@ -225,7 +257,7 @@
       </li>
     
       <li>
-        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
       <li>
@@ -244,7 +276,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 fengbo
+  &copy; 2021 fengbo
   
 </div>
 <div class="clearfix"></div></footer>

@@ -70,7 +70,12 @@
 <li>将客户端连接到Internet的路由器被称为边缘路由器。只负责与其他路由器之间（例如ISP的网络）传递数据的路由器被称为核心路由器。其中，边缘路由器一般都具有交换机的功能和NAT功能。</li>
 </ul>
 </li>
-<li>交换机：工作在链路层，用于同一网络内部的快速传输，主要通过MAC地址将在局域网中将数据传送到对应的机器上（没有ARP表但是有MAC地址表）。交换机只工作在局域网内，不具有路由器的功能，只能实现数据包的转发，其解包只能解链路层协议，再往上层（IP层及以上）都不会被解析。</li>
+<li>交换机：工作在链路层，用于同一网络内部的快速传输，主要通过MAC地址将在局域网中将数据传送到对应的机器上。交换机只工作在局域网内，不具有路由器的功能，只能实现数据包的转发，其解包只能解链路层协议，再往上层（IP层及以上）都不会被解析。<ul>
+<li>交换式集线器简称交换机，而中继式集线器简称集线器。</li>
+<li>MAC地址表：交换机记录所连接设备的MAC地址和交换机端口的对应关系的表。</li>
+<li>ARP缓存表：记录着主机的IP地址和MAC地址的对应关系。</li>
+</ul>
+</li>
 </ul>
 <h3 id="计算机中需要配置的一些信息"><a href="#计算机中需要配置的一些信息" class="headerlink" title="计算机中需要配置的一些信息"></a>计算机中需要配置的一些信息</h3><ul>
 <li>子网掩码：负责将IP地址划分为网络地址和主机地址。即指明了一个IP地址的哪些位标识的是主机所在的网络地址以及哪些位标识的是主机地址的位掩码。</li>
@@ -122,12 +127,12 @@
 <li>确认序号(Ack)：表示发送确认的一端所期望收到的下一个序号，即希望发送方下次发送给自己的TCP报文段的序号的值是这个确认号。因此，确认序号应当是上次已成功收到数据字节序号加1。</li>
 <li>首部长度：由于TCP首部包含一个长度可变的选项部分，所以需要这么一个值来指定这个TCP报文段到底有多长。</li>
 <li>6个标志比特：<ul>
-<li>URG：表示本报文段中发送的数据是否包含紧急数据。后面的紧急指针字段只有当URG=1时才有效。</li>
-<li>ACK：表示前面的确认号字段是否有效。只有当ACK=1时，前面的确认号字段才有效。TCP规定，连接建立后，ACK必须为1。</li>
-<li>PSH：告诉对方收到该报文段后是否应该立即把数据推送给上层。如果为1，则表示对方应当立即把数据提交给上层，而不是缓存起来。</li>
-<li>RST：如果你收到一个RST=1的报文，说明你与主机的连接出现了严重错误（如主机崩溃），必须释放连接，然后再重新建立连接。或者说明你上次发送给主机的数据有问题，主机拒绝响应。</li>
+<li>ACK：表示前面的确认号字段是否有效。只有当ACK=1时，前面的确认序号字段才有效。TCP规定，连接建立后，ACK必须为1。</li>
 <li>SYN：在建立连接时使用，用来同步序号。当SYN=1，ACK=0时，表示这是一个请求建立连接的报文段；当SYN=1，ACK=1时，表示对方同意建立连接。SYN=1，说明这是一个请求建立连接或同意建立连接的报文。只有在前两次握手中SYN才置为1。</li>
 <li>FIN：发标记数据是否发送完毕。如果FIN=1，就相当于告诉对方我的数据已经发送完毕，你可以释放连接了。</li>
+<li>RST：如果你收到一个RST=1的报文，说明你与主机的连接出现了严重错误（如主机崩溃），必须释放连接，然后再重新建立连接。或者说明你上次发送给主机的数据有问题，主机拒绝响应。</li>
+<li>URG：表示本报文段中发送的数据是否包含紧急数据。后面的紧急指针字段只有当URG=1时才有效。</li>
+<li>PSH：告诉对方收到该报文段后是否应该立即把数据推送给上层。如果为1，则表示对方应当立即把数据提交给上层，而不是缓存起来。</li>
 </ul>
 </li>
 <li>窗口大小(Win)：滑动窗口（缓存）大小，即允许对方发送的数据量。也就是告诉对方，从本报文段的确认号开始允许对方发送的数据量。</li>
@@ -285,8 +290,8 @@
     <div class="widget tagcloud">
     <h3 class="title">电子书</h3>
     <ul class="entry">
-      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
-      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
     </ul>
   </div>
 
@@ -350,7 +355,7 @@
       </li>
     
       <li>
-        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
       <li>
@@ -369,7 +374,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 fengbo
+  &copy; 2021 fengbo
   
 </div>
 <div class="clearfix"></div></footer>

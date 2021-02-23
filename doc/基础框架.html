@@ -59,7 +59,7 @@
     </header>
     <div class="entry">
       
-        <h2 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h2><h3 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h3><p>原来需要手动new对象，并且用完之后对象可能被废弃了，而Spring IoC可以帮助我们创建对象、管理对象的生命周期、对对象的依赖进行注入等。具体可以分为容器启动阶段和实例化阶段，容器启动阶段主要是解析配置文件，以XML为例，通过XmlBeanDefinitionReader加载所有的xml文件并在内部调用DefaultBeanDefinitionDocumentReader解析xml各个节点，主要是将bean标签解析到BeanDefinition中，在然后就可以通过BeanDefinitionRegistry将BeanDefinition添加到BeanDefinition容器中。实例化阶段在调用getBean方法后开始，一般我们在程序中调用getBean方法后会先去单例容器尝试获取该实例，如果存在就可以直接返回，如果不存在就会去判断该bean是否是单例的，然后去BeanDefinition容器获取该key对应的BeanDefinition对象，然后根据BeanDefinition去构建需要返回的对象实例。大概步骤是这样，中间还有很多需要注意的点，比如会尝试从父容器获取bean、对BeanPostProcessors的调用、循环依赖的问题等。<br><a id="more"></a></p>
+        <h2 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h2><h3 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h3><p>原来需要手动new对象，并且用完之后对象可能被废弃了，而Spring IoC可以帮助我们创建对象、管理对象的生命周期、对对象的依赖进行注入等。具体可以分为容器启动阶段和实例化阶段，容器启动阶段主要是解析配置文件，以XML为例，通过XmlBeanDefinitionReader加载所有的xml文件并在内部调用DefaultBeanDefinitionDocumentReader解析xml各个节点，主要是将bean标签解析到BeanDefinition中，在然后就可以通过BeanDefinitionRegistry将BeanDefinition添加到BeanDefinition容器中。实例化阶段在调用getBean方法后开始，一般我们在程序中调用getBean方法后会先去单例容器尝试获取该实例，如果存在就可以直接返回，如果不存在就会去判断该bean是否是单例的，然后去BeanDefinition容器获取该key对应的BeanDefinition对象，然后根据BeanDefinition去构建需要返回的对象实例。大概步骤是这样，中间还有很多需要注意的点，比如会尝试从父容器获取bean、对BeanPostProcessors的调用、循环依赖的问题等。</p>
 <h3 id="循环依赖"><a href="#循环依赖" class="headerlink" title="循环依赖"></a>循环依赖</h3><p>Spring使用三级缓存来解决循环依赖问题，即将已经创建出来还没有注入依赖的对象放入singletonsCurrentlyInCreation缓存中，循环依赖时可以将还没有构建完成的实例从该容器中拿出来，并进行依赖注入。所以如果是构造方法注入的循环依赖，Spring会抛出异常。</p>
 <h3 id="Ioc容器的加载过程"><a href="#Ioc容器的加载过程" class="headerlink" title="Ioc容器的加载过程"></a>Ioc容器的加载过程</h3><ol>
 <li>刷新预处理</li>
@@ -184,8 +184,8 @@
     <div class="widget tagcloud">
     <h3 class="title">电子书</h3>
     <ul class="entry">
-      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
-      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
     </ul>
   </div>
 
@@ -249,7 +249,7 @@
       </li>
     
       <li>
-        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
       <li>
@@ -268,7 +268,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 fengbo
+  &copy; 2021 fengbo
   
 </div>
 <div class="clearfix"></div></footer>

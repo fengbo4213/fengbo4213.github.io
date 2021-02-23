@@ -123,7 +123,7 @@
 <li>TCP连接建立握手和TCP慢启动拥塞控制：慢启动是指TCP连接会随着时间进行自我调谐，起初会限制连接的最大速度，如果数据成功传输，会随着时间的推移提高传输的速度。</li>
 <li>用于捎带确认的TCP延迟确认算法:<ul>
 <li>TCP协议为了确保数据的可靠传输实现了自己的确认机制。每个 TCP 段都有一个序列号和数据完整性校验和。每个段的接收者收到完好的段时，都会向发送者回送小的确认分组。如果发送者没有在指定的窗口时间内收到确认信息，发送者就认为分组已被破坏或损毁，并重发数据。</li>
-<li>由于确认报文很小，所以TCP允许在发往相同方向的输出数据分组中对其进行“捎带”。TCP将返回的确认信息与输出的数据分组结合在一起，可以更有效地利用网络。为了增加确认报文找到同向传输数据分组的可能性，很多TCP栈都实现了一种延迟确认算法。延迟确认算法会在一个特定的窗口时间（通常是100～200毫秒）内将输出确认存放在缓冲区中，以寻找能够捎带它的输出数据分组。如果在那个时间段内没有输出数据分组，就将确认信息放在单独的分组中传送。</li>
+<li>由于确认报文很小，所以TCP允许在发往相同方向的输出数据分组中对其进行捎带。TCP将返回的确认信息与输出的数据分组结合在一起，可以更有效地利用网络。为了增加确认报文找到同向传输数据分组的可能性，很多TCP栈都实现了一种延迟确认算法。延迟确认算法会在一个特定的窗口时间（通常是100～200毫秒）内将输出确认存放在缓冲区中，以寻找能够捎带它的输出数据分组。如果在那个时间段内没有输出数据分组，就将确认信息放在单独的分组中传送。</li>
 <li>但是，HTTP具有双峰特征的请求，应答行为降低了捎带信息的可能。当希望有相反方向回传分组的时候，偏偏没有那么多。通常，延迟确认算法会引入相当大的时延。根据所使用操作系统的不同，可以调整或禁止延迟确认算法。</li>
 </ul>
 </li>
@@ -137,15 +137,13 @@
 </ul>
 <h3 id="HTTP长连接"><a href="#HTTP长连接" class="headerlink" title="HTTP长连接"></a>HTTP长连接</h3><p>为了解决TCP连接建立握手和TCP慢启动拥塞控制所带来的网络时延问题，在HTTP/1.0和HTTP/1.1中都引入了长连接的概念。不过长连接需要注意以下几点：</p>
 <ul>
-<li>每个持久连接都只适用于一跳传输。</li>
 <li>长连接必须有Content-Length首部或分块传输编码方式编码的连接。</li>
 <li>HTTP/1.0和HTTP/1.1的长连接方式不同。HTTP/1.1的代理服务器不应该与HTTP/1.0客户端建立持久连接。</li>
+<li>Content-Length字段必须真实反映实体长度，通常如果Content-Length比实际长度短，会造成内容被截断；如果比实体内容长，会造成等待。</li>
 </ul>
-<h3 id="长连接的问题"><a href="#长连接的问题" class="headerlink" title="长连接的问题"></a>长连接的问题</h3><p>对于非持久连接，浏览器可以通过连接是否关闭来界定请求或响应实体的边界；而对于持久连接，尽管已经发送完所有数据，但浏览器并不知道这一点，它无法得知这个打开的连接上是否还会有新数据进来，只能等待。这时候就需要给浏览器返回一个Content-Length告诉浏览器请求体的长度。Content-Length字段必须真实反映实体长度，通常如果Content-Length比实际长度短，会造成内容被截断；如果比实体内容长，会造成等待。</p>
-<h3 id="Content-Length的问题"><a href="#Content-Length的问题" class="headerlink" title="Content-Length的问题"></a>Content-Length的问题</h3><p>实际应用中，有些时候实体长度并没那么好获得，例如实体来自于网络文件，或者由动态语言生成。这时候要想准确获取长度，只能开一个足够大的Buffer，等内容全部生成好再计算。但这样做一方面需要更大的内存开销，另一方面也会让客户端等更久。<br>所以可以使用分块编码（chunked）的方式来传输。在头部加入Transfer-Encoding: chunked之后，就代表这个报文采用了分块编码。这时，报文中的实体需要改为用一系列分块来传输。每个分块包含十六进制的长度值和数据，长度值独占一行，长度不包括它结尾的CRLF（\r\n），也不包括分块数据结尾的CRLF。最后一个分块长度值必须为0，对应的分块数据为CRLF，表示实体结束。</p>
-<h3 id="HTTP消息体的长度判断规则"><a href="#HTTP消息体的长度判断规则" class="headerlink" title="HTTP消息体的长度判断规则"></a>HTTP消息体的长度判断规则</h3><ul>
-<li>如果请求中即没有Content-Length又没有Transfer-Encoding，那么默认该消息体的长度为0；如果响应中没有上述两个请求头，该消息体的长度是由服务器关闭连接之前，接收端接收到的字节数来决定的（为了兼容HTTP/1.0）。</li>
-<li>发送端禁止在任何带有Transfer-Encoding头字段的消息里带有一个Content-Length头字段。<br>当请求消息未带有Transfer-Encoding头字段，并且消息的请求方法意味着该消息需要带有有效载荷，那么，用户代理应当在请求消息里带有一个Content-Length头字段。例如，通常会在一个POST请求中带有一个Content-Length头字段，即使它的值是0（指明一个空的有效载荷）。</li>
+<h3 id="Content-Length的问题"><a href="#Content-Length的问题" class="headerlink" title="Content-Length的问题"></a>Content-Length的问题</h3><ul>
+<li>实际应用中，有些时候实体长度并没那么好获得，例如实体来自于网络文件，或者由动态语言生成。这时候要想准确获取长度，只能开一个足够大的Buffer，等内容全部生成好再计算。但这样做一方面需要更大的内存开销，另一方面也会让客户端等更久。</li>
+<li>所以可以使用分块编码(chunked)的方式来传输。在头部加入Transfer-Encoding: chunked之后，就代表这个报文采用了分块编码。这时，报文中的实体需要改为用一系列分块来传输。每个分块包含十六进制的长度值和数据，长度值独占一行，长度不包括它结尾的CRLF(\r\n)，也不包括分块数据结尾的CRLF。最后一个分块长度值必须为0，对应的分块数据为CRLF，表示实体结束。</li>
 </ul>
 <h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>HTTP加上加密处理和认证以及完整性保护后即是HTTPS。</p>
 <h3 id="对称加密和非对称加密"><a href="#对称加密和非对称加密" class="headerlink" title="对称加密和非对称加密"></a>对称加密和非对称加密</h3><ul>
@@ -154,15 +152,15 @@
 </ul>
 <h3 id="HTTPS加密方式"><a href="#HTTPS加密方式" class="headerlink" title="HTTPS加密方式"></a>HTTPS加密方式</h3><p>非对称加密处理起来更为复杂效率更低，所以HTTPS使用非对称加密的方式传递对称加密的密匙，再使用对称加密的方式来进行通信。</p>
 <h3 id="HTTPS通信过程"><a href="#HTTPS通信过程" class="headerlink" title="HTTPS通信过程"></a>HTTPS通信过程</h3><ol>
-<li>客户端通过发送Client Hello报文开始SSL通信。报文中包含客户端支持的SSL的指定版本、加密组件(Cipher Suite)列表（所使用的加密算法及密钥长度等）。</li>
+<li>客户端通过发送Client Hello报文开始SSL通信。报文中包含客户端支持的SSL的指定版本、加密组件列表(所使用的加密算法及密钥长度等)。</li>
 <li>服务器可进行SSL通信时，会以Server Hello报文作为应答。和客户端一样，在报文中包含SSL版本以及加密组件。服务器的加密组件内容是从接收到的客户端加密组件内筛选出来的。</li>
 <li>之后服务器发送Certificate报文。报文中包含公开密钥证书。</li>
-<li>最后服务器发送Server Hello Done报文通知客户端，最初阶段的SSL握手协商部分结束。</li>
-<li>SSL第一次握手结束之后，客户端以Client Key Exchange报文作为回应。报文中包含通信加密中使用的一种被称为Pre-master secret的随机密码串（对称加密）。该报文已用步骤3中的公开密钥进行加密。</li>
+<li>最后服务器发送Server Hello Done报文通知客户端，SSL第一次握手结束。</li>
+<li>客户端以Client Key Exchange报文作为回应。报文中包含通信加密中使用的一种被称为Pre-master secret的随机密码串(对称加密的密钥)。</li>
 <li>接着客户端继续发送Change Cipher Spec报文。该报文会提示服务器，在此报文之后的通信会采用Pre-master secret密钥加密。</li>
 <li>客户端发送Finished报文。该报文包含连接至今全部报文的整体校验值。这次握手协商是否能够成功，要以服务器是否能够正确解密该报文作为判定标准。</li>
 <li>服务器同样发送Change Cipher Spec报文和Finished报文。</li>
-<li>服务器和客户端的Finished报文交换完毕之后，SSL连接就算建立完成。当然，通信会受到SSL的保护。从此处开始进行应用层协议的通信，即发送HTTP请求。</li>
+<li>服务器和客户端的Finished报文交换完毕之后，SSL连接就算建立完成。</li>
 <li>应用层协议通信，即发送HTTP响应。</li>
 </ol>
 <h3 id="证明公开密钥正确性的证书"><a href="#证明公开密钥正确性的证书" class="headerlink" title="证明公开密钥正确性的证书"></a>证明公开密钥正确性的证书</h3><p>公开密钥加密方式还是存在一些问题的。那就是无法证明公开密钥本身就是货真价实的公开密钥。比如，正准备和某台服务器建立公开密钥加密方式下的通信时，如何证明收到的公开密钥就是原本预想的那台服务器发行的公开密钥。或许在公开密钥传输途中，真正的公开密钥已经被攻击者替换掉了。为了解决上述问题，可以使用由数字证书认证机构（CA，Certificate Authority）和其相关机关颁发的公开密钥证书。</p>
@@ -172,6 +170,18 @@
 <li>接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确服务器的公开密钥是值得信赖的。</li>
 <li>多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥。</li>
 </ol>
+<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a><a href="https://blog.csdn.net/u010852160/article/details/78491084" target="_blank" rel="noopener">HTTP2.0</a></h2><h3 id="HTTP2-0优势"><a href="#HTTP2-0优势" class="headerlink" title="HTTP2.0优势"></a>HTTP2.0优势</h3><ol>
+<li>基于二进制分帧的多路复用，解决了HTTP1.X的对头阻塞(Head-Of-Line Blocking)问题。</li>
+<li>可以定义请求的优先级。</li>
+<li>使用了首部压缩技术，压缩算法使用HPACK。</li>
+<li>使用首部表来跟踪和存储之前发送的键-值对。首部表在连接过程中始终存在，新增的键-值对会更新到表尾，不需要每次通信都需要再携带首部。 </li>
+<li>增加了服务端推送功能，服务端可以根据客户端的请求，提前返回多个响应，推送额外的资源给客户端。</li>
+</ol>
+<h3 id="HTTP2-0协商"><a href="#HTTP2-0协商" class="headerlink" title="HTTP2.0协商"></a>HTTP2.0协商</h3><ol>
+<li>基于ALPN的协商过程：客户端在TLS握手Client Hello阶段表明自身支持HTTP2.0。服务端收到后，响应Server Hello，表示自己也支持HTTP2.0。双方开始HTTP 2.0通信。</li>
+<li>基于HTTP的协商过程：客户端也可以使用HTTP Upgrade机制来使用HTTP2.0。客户端和服务端都可以使用Upgrade请求头来携带升级的协议。</li>
+</ol>
+<h2 id="HTTP3-0"><a href="#HTTP3-0" class="headerlink" title="HTTP3.0"></a>HTTP3.0</h2><p>HTTP2.0无法解决TCP队首阻塞问题。因为TCP使用滑动窗口机制来保证数据传输的可靠性，所以当出现一个数据包丢失时，当前连接就需要等待丢失的数据包重新传输，会将所有的HTTP请求都阻塞掉。HTTP3.0通过是使用QUIC协议替换TCP协议来解决该问题。QUIC底层使用UDP协议实现数据传输，所以该数据包看你被运营商丢弃。</p>
 
       
     </div>
@@ -242,8 +252,8 @@
     <div class="widget tagcloud">
     <h3 class="title">电子书</h3>
     <ul class="entry">
-      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
-      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
     </ul>
   </div>
 
@@ -307,7 +317,7 @@
       </li>
     
       <li>
-        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
       <li>
@@ -326,7 +336,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 fengbo
+  &copy; 2021 fengbo
   
 </div>
 <div class="clearfix"></div></footer>

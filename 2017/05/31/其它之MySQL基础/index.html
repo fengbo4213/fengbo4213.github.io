@@ -276,10 +276,10 @@
 </ul>
 </li>
 <li>InnoDB通过间隙锁（Gap锁）隔离掉幻读。Gap锁锁住的是一个范围，不包含记录本身。<ul>
-<li>虚读（幻读）：事务T1读取在读取某范围数据时，事务T2又插入一条数据，当事务T1再次数据这个范围数据时发现不一样了，出现了一些“幻影行”。</li>
+<li>虚读（幻读）：事务T1读取在读取某范围数据时，事务T2又插入一条数据，当事务T1再次数据这个范围数据时发现不一样了，出现了一些”幻影行”。</li>
 </ul>
 </li>
-<li>更新丢失：两事务同时更新，一个失败回滚覆盖另一个事务的更新。或事务1执行更细操作，在事务1结束前事务2也更新，则事务1的更细结果被事务2的覆盖了。<b>InnoDB可以隔离掉脏读、不可重复读和幻读，但是需要注意业务层面的更新丢失。</b></li>
+<li>更新丢失：两事务同时更新，一个失败回滚覆盖另一个事务的更新。或事务1执行更新操作，在事务1结束前事务2也更新，则事务1的更新结果被事务2的覆盖了。<b>InnoDB可以隔离掉脏读、不可重复读和幻读，但是需要注意业务层面的更新丢失。</b></li>
 </ul>
 <h3 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h3><ul>
 <li>数据量大这个问题没啥银弹，需要根据业务的不同采取不同的方法。我的话一般会先看一下慢查询，然后explain一下，主要是看看有没有走索引，如果没有考虑一下怎么能走，或者考虑一下能不能加一个。一般能解决大部分问题。</li>
@@ -298,6 +298,20 @@
 <li><a href="https://www.cnblogs.com/butterfly100/p/9034281.html" target="_blank" rel="noopener">分库分表思路</a></li>
 <li><a href="https://tech.meituan.com/2017/04/21/mt-leaf.html" target="_blank" rel="noopener">美团点评分布式ID生成系统</a></li>
 </ul>
+<h2 id="MySQL各个版本特性"><a href="#MySQL各个版本特性" class="headerlink" title="MySQL各个版本特性"></a>MySQL各个版本特性</h2><h3 id="5-5-2010-12-03"><a href="#5-5-2010-12-03" class="headerlink" title="5.5 - 2010-12-03"></a>5.5 - 2010-12-03</h3><ol>
+<li>InnoDB作为默认存储引擎。</li>
+<li>以插件形式实现支持半同步复制。默认的MySQL通过异步模式进行复制，主库写入binlog之后，从库不一定能够被读取并处理，因为写入成功只是说明在主库上成功。而半同步复制则是当一次写入操作进行之后，只有主库和至少一个半同步从库上都完成了写入之后，用户才会收到已成功的信息。</li>
+</ol>
+<h3 id="5-6-2013-02-05"><a href="#5-6-2013-02-05" class="headerlink" title="5.6 - 2013-02-05"></a>5.6 - 2013-02-05</h3><ol>
+<li>InnoDB支持全文索引。</li>
+<li>多线程复制。</li>
+<li>加入全局事务ID（GTID）。</li>
+</ol>
+<h3 id="5-7-2015-10-21"><a href="#5-7-2015-10-21" class="headerlink" title="5.7 - 2015-10-21"></a>5.7 - 2015-10-21</h3><ol>
+<li>增强的多线程复制。</li>
+<li>多源复制，即将多个主库的数据归并到一个从库的实例上。</li>
+<li>支持JSON数据类型。</li>
+</ol>
 
       
     </div>
@@ -368,8 +382,8 @@
     <div class="widget tagcloud">
     <h3 class="title">电子书</h3>
     <ul class="entry">
-      <li class='link'><a href='https://www.geekbang.org/' target="_blank">极客空间</a>&nbsp;&nbsp;<a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a></li>
-      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='http://www.icourse163.org/' target="_blank">中国大学</a></li>
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
     </ul>
   </div>
 
@@ -433,7 +447,7 @@
       </li>
     
       <li>
-        <a href="/2020/11/14/基础之加密算法/">加密算法</a>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
       <li>
@@ -452,7 +466,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 fengbo
+  &copy; 2021 fengbo
   
 </div>
 <div class="clearfix"></div></footer>
