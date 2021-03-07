@@ -82,39 +82,6 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/03/02/年度目标之2021/">年度目标之2021</a></h1>
-  
-
-      
-        <time datetime="2021-03-02T00:50:01.000Z">2021-03-02</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="2021-03-02"><a href="#2021-03-02" class="headerlink" title="2021-03-02"></a>2021-03-02</h3>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2021/03/02/年度目标之2021/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
     <h1 class="title"><a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a></h1>
   
 
@@ -167,39 +134,6 @@
         <footer>
           <div class="alignleft">
             <a href="/2020/11/14/基础之加密算法/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a></h1>
-  
-
-      
-        <time datetime="2020-11-07T03:36:59.000Z">2020-11-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="医保"><a href="#医保" class="headerlink" title="医保"></a>医保</h2>
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2020/11/07/常见大病费用及医保报销情况/#more" class="more-link">Read More ›</a>
           </div>
         
         
@@ -334,6 +268,79 @@
 
 
 
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/06/21/路由器之HG255D刷OpenWRT/">HG255D刷OpenWRT</a></h1>
+  
+
+      
+        <time datetime="2020-06-21T10:16:28.000Z">2020-06-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="路由器就是开发板-HG255D电信原版刷机实战整理-Ubuntu使用USB转TTL"><a href="#路由器就是开发板-HG255D电信原版刷机实战整理-Ubuntu使用USB转TTL" class="headerlink" title="路由器就是开发板 | HG255D电信原版刷机实战整理 | Ubuntu使用USB转TTL"></a><a href="https://blog.csdn.net/aggresss/category_6383458.html" target="_blank" rel="noopener">路由器就是开发板</a> | <a href="https://www.right.com.cn/forum/forum.php?mod=viewthread&amp;tid=143721&amp;highlight=hg255d%20openwrt" target="_blank" rel="noopener">HG255D电信原版刷机实战整理</a> | <a href="http://blog.chinaunix.net/uid-23733005-id-204774.html" target="_blank" rel="noopener">Ubuntu使用USB转TTL</a></h3>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/06/21/路由器之HG255D刷OpenWRT/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/26/其它之Linux网络管理/">Linux网络管理</a></h1>
+  
+
+      
+        <time datetime="2020-05-26T11:46:42.000Z">2020-05-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="网络管理基础命令"><a href="#网络管理基础命令" class="headerlink" title="网络管理基础命令"></a>网络管理基础命令</h3><ul>
+<li>route -n：查看本机的路由表。</li>
+<li>traceroute -n <a href="http://www.baidu.com：检查本机到百度所经过的各个路由器。traceroute" target="_blank" rel="noopener">www.baidu.com：检查本机到百度所经过的各个路由器。traceroute</a> -nT <a href="http://www.baidu.com通过TCP来检测。" target="_blank" rel="noopener">www.baidu.com通过TCP来检测。</a></li>
+<li>netstat -nlpt：查看监听的端口服务。</li>
+<li>netstat -nta | grep 100 | wc -l：查看100端口的连接数。</li>
+<li>netstat -nt 2&gt;/dev/null | grep :100 | grep “ESTABLISHED” | awk ‘{print $5}’ | cut -d: -f 4 | sort | uniq -c | sort -nr | head</li>
+<li>nmap localhost：扫瞄本机所启用的端口；nmap -sTU localhost会同时扫描UDP端口；nmap -sP 192.168.1.0/24会分析内网中有几台主机是启动的；yum install nmap安装nmap。</li>
+<li>vi /etc/sysconfig/iptables：修改防火墙出站及入站规则。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2020/05/26/其它之Linux网络管理/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
 
 <nav id="pagination">
   
@@ -347,7 +354,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 11.67px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 13.33px;">分布式</a> <a href="/tags/杂七杂八/" style="font-size: 10px;">杂七杂八</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 14px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 12px;">分布式</a> <a href="/tags/硬件/" style="font-size: 12px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18px;">设计模式</a>
   </div>
 </div>
 
@@ -417,10 +424,6 @@
       </li>
     
       <li>
-        <a href="/2021/03/02/年度目标之2021/">年度目标之2021</a>
-      </li>
-    
-      <li>
         <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
       </li>
     
@@ -429,7 +432,11 @@
       </li>
     
       <li>
-        <a href="/2020/11/07/常见大病费用及医保报销情况/">常见大病费用及医保报销情况</a>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
       </li>
     
   </ul>
