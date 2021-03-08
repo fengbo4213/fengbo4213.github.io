@@ -53,43 +53,6 @@
     <header>
       
   
-    <h1 class="title"><a href="/2018/06/30/Spring事务/">Spring事务</a></h1>
-  
-
-      
-        <time datetime="2018-06-30T08:28:27.000Z">2018-06-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="事务基础概念"><a href="#事务基础概念" class="headerlink" title="事务基础概念"></a>事务基础概念</h2><ul>
-<li>原子性：事务包含的所有操作是一个整体，这些操作要么全部提交成功，要么只要有一个操作失败，就全部失败。</li>
-<li>一致性：甲乙共有400元钱，甲提交转账100给乙的请求后，不管操作成功还是失败，甲乙依旧共有400元钱。</li>
-<li>持久性：一旦整个事务提交成功，对数据所做的变更将被记录并不可逆转。</li>
-<li>隔离性：规定了各个事务之间相互影响的程度。一般为事务指定4种隔离级别，即下面的事务隔离级别。
-      
-    </div>
-      
-        
-        <footer>
-          <div class="alignleft">
-            <a href="/2018/06/30/Spring事务/#more" class="more-link">Read More ›</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
     <h1 class="title"><a href="/2018/06/23/Spring-AOP揭秘/">Spring-AOP揭秘</a></h1>
   
 
@@ -332,6 +295,108 @@
 
 
 
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/19/基础之C语言基础/">C语言基础</a></h1>
+  
+
+      
+        <time datetime="2017-12-19T09:49:45.000Z">2017-12-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="C语言基础"><a href="#C语言基础" class="headerlink" title="C语言基础"></a>C语言基础</h2><h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">存储大小</th>
+<th>值范围 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">unsigned char</td>
+<td style="text-align:center">1字节</td>
+<td>0到255</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1字节</td>
+<td>-128到127</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned int</td>
+<td style="text-align:center">2或4字节</td>
+<td>0到65535或0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">2或4字节</td>
+<td>-32768到32787或-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned short</td>
+<td style="text-align:center">2字节</td>
+<td>0到65535</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2字节</td>
+<td>-32768到32767</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned long</td>
+<td style="text-align:center">4字节</td>
+<td>0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4字节</td>
+<td>-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4字节</td>
+<td>1.2E-38到3.4E+38，精度为6位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8字节</td>
+<td>2.3E-308到1.7E+308，精度为15位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">16字节</td>
+<td>3.4E-4932到1.1E+4932，精度为19位小数</td>
+</tr>
+</tbody>
+</table>
+<p>ps：</p>
+<ol>
+<li>布尔类型可以使用int替代，1为TRUE，0为FALSE。</li>
+<li>C语言使用常量来判断是否匹配返回值或信号时，这些常量需要设置为2的n次方。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/12/19/基础之C语言基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
 
 <nav id="pagination">
   
@@ -347,7 +412,7 @@
 <div class="widget tagcloud">
   <h3 class="title">文章分类</h3>
   <div class="entry">
-    <a href="/tags/JavaWeb/" style="font-size: 18px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 14px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 12px;">分布式</a> <a href="/tags/硬件/" style="font-size: 12px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18px;">设计模式</a>
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 20px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
   </div>
 </div>
 
@@ -417,10 +482,6 @@
       </li>
     
       <li>
-        <a href="/2020/12/02/分布式之分布式解决方案/">分布式解决方案</a>
-      </li>
-    
-      <li>
         <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
       </li>
     
@@ -430,6 +491,10 @@
     
       <li>
         <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
       </li>
     
   </ul>
