@@ -170,7 +170,7 @@
 <li>接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确服务器的公开密钥是值得信赖的。</li>
 <li>多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥。</li>
 </ol>
-<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a><a href="https://blog.csdn.net/u010852160/article/details/78491084" target="_blank" rel="noopener">HTTP2.0</a></h2><h3 id="HTTP2-0优势"><a href="#HTTP2-0优势" class="headerlink" title="HTTP2.0优势"></a>HTTP2.0优势</h3><ol>
+<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a><a href="https://www.oschina.net/question/1397765_172789" target="_blank" rel="noopener">HTTP2.0</a></h2><h3 id="HTTP2-0优势"><a href="#HTTP2-0优势" class="headerlink" title="HTTP2.0优势"></a>HTTP2.0优势</h3><ol>
 <li>基于二进制分帧的多路复用，解决了HTTP1.X的对头阻塞(Head-Of-Line Blocking)问题。</li>
 <li>可以定义请求的优先级。</li>
 <li>使用了首部压缩技术，压缩算法使用HPACK。</li>
@@ -181,7 +181,7 @@
 <li>基于ALPN的协商过程：客户端在TLS握手Client Hello阶段表明自身支持HTTP2.0。服务端收到后，响应Server Hello，表示自己也支持HTTP2.0。双方开始HTTP 2.0通信。</li>
 <li>基于HTTP的协商过程：客户端也可以使用HTTP Upgrade机制来使用HTTP2.0。客户端和服务端都可以使用Upgrade请求头来携带升级的协议。</li>
 </ol>
-<h2 id="HTTP3-0"><a href="#HTTP3-0" class="headerlink" title="HTTP3.0"></a>HTTP3.0</h2><p>HTTP2.0无法解决TCP队首阻塞问题。因为TCP使用滑动窗口机制来保证数据传输的可靠性，所以当出现一个数据包丢失时，当前连接就需要等待丢失的数据包重新传输，会将所有的HTTP请求都阻塞掉。HTTP3.0通过是使用QUIC协议替换TCP协议来解决该问题。QUIC底层使用UDP协议实现数据传输，所以该数据包看你被运营商丢弃。</p>
+<h2 id="HTTP3-0-队头阻塞"><a href="#HTTP3-0-队头阻塞" class="headerlink" title="HTTP3.0 - 队头阻塞"></a>HTTP3.0 - <a href="https://zhuanlan.zhihu.com/p/330300133" target="_blank" rel="noopener">队头阻塞</a></h2><p>HTTP2.0无法解决TCP队首阻塞问题。因为TCP使用滑动窗口机制来保证数据传输的可靠性，所以当出现一个数据包丢失时，当前连接就需要等待丢失的数据包重新传输，会将所有的HTTP请求都阻塞掉。HTTP3.0通过是使用QUIC协议替换TCP协议来解决该问题。QUIC底层使用UDP协议实现数据传输，所以该数据包看你被运营商丢弃。</p>
 
       
     </div>
