@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>加密算法基础 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="加密算法基础">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">加密算法基础</h1>
+  
+
+      
+        <time datetime="2020-11-14T11:38:05.000Z">2020-11-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="基础加密技术"><a href="#基础加密技术" class="headerlink" title="基础加密技术"></a>基础加密技术</h3><ul>
+<li>对称密码(AES)：加密和解密使用同一把密匙的加密算法。<ul>
+<li>ECB模式：直接切割明文然后加密成密文，简单、快速、不安全。</li>
+<li>CBC模式：TLS/SSL使用该模式，推荐使用。</li>
+<li>CFB模式、OFB模式和CTR模式都是安全的模式，不太能分清优缺点。</li>
+</ul>
+</li>
+<li>公钥密码(RSA)：使用公匙加密，私匙解密的加密算法。<a id="more"></a>
+</li>
+</ul>
+<h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><ul>
+<li>单向散列函数：通过计算数据的Hash值来保证文件或数据的完整性。具体算法包括MD5和SHA-3等。</li>
+<li>消息认证码(HMAC)：一种与密匙相关联的单向散列函数。不仅可以保证数据的完整性，确认消息是否被篡改。而且可以确认消息是否来自所期待的对象。<ul>
+<li>消息认证码的输入包括任意长度的消息和一个发送者和接收者之间共享的密钥，输出为固定长度的数据，这个数据称为MAC值。</li>
+<li>要计算MAC必须持有密钥，没有密钥就无法计算MAC，该特性保证了消息来自期待的对象。</li>
+</ul>
+</li>
+<li>数字签名：不但可以保证数据的完整性和确认消息是否来自期待的对象。而且可以保证消息的不可否认性。<ul>
+<li>消息认证码无法防止否认是因为消息的发送者和接收者共享同一个密钥。两者都可以用该密钥构建出MAC。</li>
+<li>而数字签名是使用签名密钥来生成签名，使用验证密钥来验证签名是否期待的对象签发，验证密钥无法生成签名。和非对称加密类似。但是是使用私钥加密、公钥解密。</li>
+</ul>
+</li>
+<li>公钥证书：对公钥添加数字签名后就得到了公钥证书。<ul>
+<li>CA是证书的签发机构，是负责签发证书、认证证书、管理已颁发证书的机关。如果一个用户想鉴别另一个证书的真伪，可以用CA的公钥对那个证书上的签字进行验证，一旦验证通过，该证书就被认为是有效的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="数字签名实现"><a href="#数字签名实现" class="headerlink" title="数字签名实现"></a>数字签名实现</h3><ol>
+<li>通常是先对数据进行一次Hash摘要(SHA1/SHA256/SHA512等)，然后再使用非对称加密算法(RSA/ECC等)对这个摘要进行加密，这样得到的结果就是原始数据的一个签名。</li>
+<li>用户在验证数据时，只需要使用公钥解密出Hash摘要，然后自己再对数据进行一次同样的摘要，对比两个摘要是否相同即可。</li>
+</ol>
+<h3 id="SSH-RSA工作原理"><a href="#SSH-RSA工作原理" class="headerlink" title="SSH-RSA工作原理"></a>SSH-RSA工作原理</h3><ol>
+<li>生成一对密钥，一把专用密钥和一把公用密钥。公用密钥用于对消息进行加密，只有拥有专用密钥的人才能对该消息进行解密。</li>
+<li>把公用密钥拷贝到远程服务器的文件(~/.ssh/authorized_keys)里。</li>
+<li>本地输入ssh drobbins@remotebox登录到远程。</li>
+<li>服务端的sshd会生成一个伪随机数，并用我们先前拷贝过去的公用密钥对这个随机数进行加密。然后，sshd把加密了的随机数发回给客户端的ssh。</li>
+<li>客户端对这个随机数进行解密后，再把它发回给服务端。</li>
+<li>服务端允许客户端登录。</li>
+</ol>
+<h3 id="OpenVPN消息发送流程"><a href="#OpenVPN消息发送流程" class="headerlink" title="OpenVPN消息发送流程"></a>OpenVPN消息发送流程</h3><ol>
+<li>客户端将自己的公钥发送给服务端。</li>
+<li>服务端通过CA证书验证公钥是自己签发的，并将密匙通过客户端公钥加密后发送给客户端。</li>
+<li>客户端使用私钥解密获取对称加密的密钥。</li>
+<li>客户端通过对称加密的密匙加密消息并发送给服务端，服务端通过该密钥解密。</li>
+<li>服务端发送消息给客户端同理。</li>
+</ol>
+<h3 id="JWT实现方式"><a href="#JWT实现方式" class="headerlink" title="JWT实现方式"></a><a href="https://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JWT实现方式</a></h3><ol>
+<li>HS256(HMAC-SHA256)：使用同一个secret_key进行签名与验证(对称加密)。一旦secret_key泄漏，就毫无安全性可言了。因此HS256只适合集中式认证，签名和验证都必须由可信方进行。</li>
+<li>RS256(RSA-SHA256)：使用RSA私钥进行签名，使用RSA公钥进行验证。公钥即使泄漏也毫无影响，只要确保私钥安全就行。RS256可以将公钥给第三方应用，让第三方应用也可以验证登录信息(微信登录原理)。</li>
+<li>ES256(ECDSA-SHA256)： 和RS256一样，都使用私钥签名，公钥验证。算法速度上差距也不大，但是它的签名长度相对短很多(省流量)，并且算法强度和RS256差不多。</li>
+</ol>
+<h3 id="SSL-TLS协议运行机制的概述"><a href="#SSL-TLS协议运行机制的概述" class="headerlink" title="SSL/TLS协议运行机制的概述"></a><a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html" target="_blank" rel="noopener">SSL/TLS协议运行机制的概述</a></h3>
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/计算机基础/">计算机基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

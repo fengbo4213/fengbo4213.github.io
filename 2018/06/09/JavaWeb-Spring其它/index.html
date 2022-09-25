@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Spring其它 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Spring其它">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Spring其它</h1>
+  
+
+      
+        <time datetime="2018-06-09T01:05:52.000Z">2018-06-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Spring定时任务"><a href="#Spring定时任务" class="headerlink" title="Spring定时任务"></a>Spring定时任务</h2><p><a href="http://www.cnblogs.com/haoxinyue/p/6663720.html" target="_blank" rel="noopener">实现延迟任务的几种方式</a> | <a href="https://segmentfault.com/a/1190000013077817" target="_blank" rel="noopener">Spring定时任务</a><br><a id="more"></a></p>
+<h2 id="Spring缓存"><a href="#Spring缓存" class="headerlink" title="Spring缓存"></a><a href="http://tom-seed.iteye.com/blog/2104430" target="_blank" rel="noopener">Spring缓存</a></h2><ul>
+<li>@Cacheable(value=”accountCache”)：当调用这个方法的时候，会从一个名叫accountCache的缓存中查询，如果没有，则执行实际的方法（即查询数据库），并将执行的结果存入缓存中，否则返回缓存中的对象。这里的缓存中的key就是参数，value就是返回的对象。</li>
+<li>@CacheEvict(value=”accountCache”, key=”#account.getName()”)：当调用这个方法的时候会清空缓存，其中的Key是用来指定缓存的key的，这里因为我们保存的时候用的是account对象的name字段，所以这里还需要从参数account对象中获取name的值来作为key，前面的#号代表这是一个SpEL表达式，此表达式可以遍历方法的参数对象。<ul>
+<li>@CacheEvict(value=”accountCache”, key=”#account.getName()”)：清空accountCache key=account.getName()的缓存；</li>
+<li>@CacheEvict(value=”accountCache”, allEntries=true)：清空accountCache所有缓存。</li>
+<li>@Cacheable(value=”accountCache”, condition=”#userName.length() &lt;= 4”)：缓存名叫accountCache，参数userName长度小于4的缓存。</li>
+</ul>
+</li>
+<li>@CachePut(value=”accountCache”, key=”#account.getName()”)：该注释可以确保方法被执行，同时方法的返回值也被记录到缓存中，实现缓存与数据库的同步更新。</li>
+<li>Caching：缓存分组，能够同时应用多个其他的缓存。</li>
+<li><a href="https://blog.csdn.net/u011244202/article/details/55667868" target="_blank" rel="noopener">在SpringBoot中的使用</a></li>
+</ul>
+<h2 id="各个jar包的作用"><a href="#各个jar包的作用" class="headerlink" title="各个jar包的作用"></a>各个jar包的作用</h2><ul>
+<li>spring-aop：提供AOP（面向切面编程）的实现。</li>
+<li>spring-aspects：提供了对AspectJ的支持。AspectJ是一个面向切面的框架。AspectJ定义了AOP语法，所以它有一个专门的编译器用来生成遵守Java字节编码规范的Class文件。</li>
+<li>spring-beans：IoC的基础实现，包含访问配置文件、创建和管理bean等。如果应用只需基本的IoC/DI 支持，引入Spring Core及Spring Beans文件就可以了。</li>
+<li>spring-context：在基础IoC功能上提供了扩展服务，此外还提供许多企业级服务的支持，有邮件服务、任务调度、JNDI定位，EJB集成、远程访问、缓存以及多种视图层框架的支持。</li>
+<li>spring-context-support：spring-context的扩展支持，用于MVC方面。</li>
+<li>spring-core：包含了基本的核心工具类。Spring其他组件都要使用这个包里面的类。</li>
+<li>spring-expression：Spring表达式语言。</li>
+<li>spring-instrument：</li>
+<li>spring-instrument-tomcat：</li>
+<li>spring-jdbc：对JDBC的简单封装</li>
+<li>spring-jms：为简化JMS（Java消息服务）的使用而做的简单封装。</li>
+<li>spring-message：</li>
+<li>spring-orm：整合第三方的orm实现，如hibernate、ibatis、jdo和spring的jpa实现。</li>
+<li>spring-oxm：Spring对于object/xml映射的支持，可以让JAVA与XML之间来回切换。</li>
+<li>spring-test：对JUNIT等测试框架的简单封装。</li>
+<li>spring-tx：为JDBC、Hibernate、JDO、JPA等提供的一致的声明式和编程式事务管理。</li>
+<li>spring-web：包含Web应用开发时，用到Spring框架时所需的核心类，包括自动载入WebApplicationContext特性的类、Struts与JSF集成类、文件上传的支持类、Filter类和大量工具辅助类。</li>
+<li>spring-webmvc：包含SpringMVC框架相关的所有类。包含国际化、标签、Theme、视图展现的FreeMarker、JasperReports、Tiles、Velocity、XSLT相关类。当然，如果你的应用使用了独立的MVC框架，则无需这个JAR文件里的任何类。</li>
+<li>spring-webmvc-portlet：对SpringMVC的增强。</li>
+<li>spring-websocket：Spring对WebSocket的支持。</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/JavaWeb/">JavaWeb</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>IoC源码解析-实例化阶段 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="IoC源码解析-实例化阶段">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">IoC源码解析-实例化阶段</h1>
+  
+
+      
+        <time datetime="2018-07-07T01:42:36.000Z">2018-07-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/SpringIoC/01.png"><br><a id="more"></a><br>Img1.2.调用AbstractBeanFactory的getBean(String name)方法。</p>
+<h3 id="Img20"><a href="#Img20" class="headerlink" title="Img20"></a>Img20</h3><p><img src="/img/SpringIoC/20.png"><br>调用本类的doGetBean(String name, Class<t> requireType, Object[] args, boolean typeCheckOnly)方法。</t></p>
+<h3 id="Img21"><a href="#Img21" class="headerlink" title="Img21"></a>Img21</h3><p><img src="/img/SpringIoC/21-1.png"><br><img src="/img/SpringIoC/21-2.png"><br><img src="/img/SpringIoC/21-3.png"><br><img src="/img/SpringIoC/21-4.png"><br>Img21.1.转换beanName。<br>Img21.2.调用DefaultSingletonBeanRegistry类的getSingleton(String beanName)方法。</p>
+<h3 id="Img21-1"><a href="#Img21-1" class="headerlink" title="Img21#1"></a>Img21#1</h3><p><img src="/img/SpringIoC/21.1.png"><br>调用本类的重载方法getSingleton(String beanName, boolean allowEarlyReference)。</p>
+<h3 id="Img21-2"><a href="#Img21-2" class="headerlink" title="Img21#2"></a>Img21#2</h3><p><img src="/img/SpringIoC/21.2.png"><br>这部分代码主要是用来解决<b>循环依赖</b>问题。循环依赖指两个或两个以上的bean互相持有对方，最终形成闭环。如A依赖B，B依赖C，C又依赖A。<br>Img21#2.1.根据beanName从<b>单例bean容器singletonObjects（又称为一级缓存）</b>中获取实例化对象。如果该对象实例以及存在直接返回该对象。<br>Img21#2.2.如果单例容器没有该实例且<b>当前正在创建的单例bean容器singletonsCurrentlyInCreation</b>中有该实例，即当前对象正在创建中（比如A的构造器依赖了B对象所以得先去创建B对象， 或则在A的populateBean过程中依赖了B对象，得先去创建B对象，这时的A就是处于创建中的状态）。从<b>二级缓存earlySingletonObjects容器</b>中获取该实例对象。<br>Img21#2.3.如果earlySingletonObjects中也没有该实例且允许singletonFactories通过getObject()获取（allowEarlyReference属性为true），尝试从<b>单例对象工厂容器singletonFactories（又称三季缓存）</b>中获取该实例。如果singletonFactories中存在该beanName实例，则通过单例工厂的getObject()方法获取真正的实例。并将该实例添加到earlySingletonObjects容器中且从singletonFactories容器中删除该实例。<br>Img21#2.4.返回创建的单例对象，如果还没有开始创建则返回NULL。</p>
+<p>Img21.3.调用本类的getObjectForBeanInstance(Object beanInstance, String name, String beanName, RootBeanDefinition mbd)方法。</p>
+<h3 id="Img21-3"><a href="#Img21-3" class="headerlink" title="Img21#3"></a>Img21#3</h3><p><img src="/img/SpringIoC/21.3-1.png"><br><img src="/img/SpringIoC/21.3-2.png"><br>处理FactoryBean类型的bean。<br>Img21#3.1.如果name是以&amp;开头且beanInstance不是FactoryBean类型的就抛出异常。<br>Img21#3.2.如果beanInstance不是FactoryBean类型或者name以&amp;开头直接返回该实例。<br>Img21#3.3.检查父类FactoryBeanRegistrySupport类名为factoryBeanObjectCache的Map容器是否已经缓存了该对象。如果有就直接返回。<br>Img21#3.4.获取合并之后的BeanDefinition。<br>Img21#3.6.调用父类FactoryBeanRegistrySupport的getObjectFromFactoryBean(FactoryBean factory, String beanName, boolean shouldPostProcess)方法。</p>
+<h3 id="Img21-3-1"><a href="#Img21-3-1" class="headerlink" title="Img21#3#1"></a>Img21#3#1</h3><p><img src="/img/SpringIoC/21.3.1-1.png"><br><img src="/img/SpringIoC/21.3.1-2.png"><br>从FactoryBean中获取Bean。<br>Img21#3#1.1.判断该FactoryBean实例是单例的且已经被创建，即已经被缓存到singletonObjects容器中。<br>Img21#3#1.2.判断该bean实例是否被创建，即被缓存到factoryBeanObjectCache容器中。如果是直接返回。<br>Img21#3#1.4.执行后置处理器接口的方法BeanPostProcessor中的postProcessAfterInitialization(Object result, String beanName)方法。<br>Img21#3#1.5.将通过factoryBean.getObject()方法得到的bean对象存到factoryBeanObjectCache容器中。<br>Img21#3#1.6.调用本类的doGetObjectFromFactoryBean(FactoryBean factory, String beanName)方法。</p>
+<h3 id="Img21-3-2"><a href="#Img21-3-2" class="headerlink" title="Img21#3#2"></a>Img21#3#2</h3><p><img src="/img/SpringIoC/21.3.2.png"><br>调用自己实现的FactoryBean实现类的getObject()方法返回真正的bean实例。</p>
+<p>Img21.4.如果存在循环引用，则抛出异常。<br>Img21.5.获取父容器。如果父容器存在，并且beanName在当前的容器不存在，那就去父容器查找。<br>Img21.6.判断beanName是否存在&amp;，如果有的话去掉、检查是不是别名，如果是别名改成正真的beanName、判断如果传进来的带有  &amp;，则给它重新加上。<br>Img21.7.委托父容器的getBean(String beanName, Object[] args)来获取bean。<br>Img21.8.标记这个bean被创建过，即将该beanName加入到AbstractBeanFactory的名为alreadyCreated的Set集合中。<br>Img21.9.调用本类的getMergedLocalBeanDefinition(String beanName)方法。</p>
+<h3 id="Img21-4"><a href="#Img21-4" class="headerlink" title="Img21#4"></a>Img21#4</h3><p><img src="/img/SpringIoC/21.4.png"><br><img src="/img/SpringIoC/21.4-1.png"><br>父子bean的合并。当给定的bean是一个childe类型，它还有parent属性；则将parent的属性和childe属性合并一下。即newsListener会基础djNewsProvider的所有属性。<br>Img21#4.1.从mergedBeanDefinitions获取BeanDefinition，如果有就直接返回。mergedBeanDefinitions是已经合并过的BeanDefinition容器。<br>Img21#4.2.如果mergedBeanDefinition容器中没有，就调用本类的getMergedBeanDefinition(String beanName, BeanDefinition bd)方法。</p>
+<h3 id="Img21-5"><a href="#Img21-5" class="headerlink" title="Img21#5"></a>Img21#5</h3><p><img src="/img/SpringIoC/21.5.png"><br>调用本类中的重载方法getMergedBeanDefinition(String beanName, BeanDefinition bd, BeanDefinition containingBd)方法。</p>
+<h3 id="Img21-6"><a href="#Img21-6" class="headerlink" title="Img21#6"></a>Img21#6</h3><p><img src="/img/SpringIoC/21.6-1.png"><br><img src="/img/SpringIoC/21.6-2.png"><br><img src="/img/SpringIoC/21.6-3.png"><br><img src="/img/SpringIoC/21.6-4.png"><br>Img21#6.1.如果之前没有合并过，即mergedBeanDefinitions容器中没有该bean实例。<br>Img21#6.2.如果没有配置parent属性。<br>Img21#6.3.判断BeanDefinition是不是RootBeanDefinition类型。<br>Img21#6.4.克隆新的实例。<br>Img21#6.5.如果设置了parent属性。<br>Img21#6.6.根据父beanName获取父类的BeanDefinition，如果父类还有父类会递归调用。<br>Img21#6.7.如果父类的beanName和当前beanName相同。<br>Img21#6.8.根据父BeanDefinition创建RootBeanDefinition。<br>Img21#6.9.然后将子类的BeanDefinition所有已配置的数据覆盖父类的属性。<br>Img21#6.10.如果没有设置作用域，默认Singleton。<br>Img21#6.11.一个bean中包含了一个非单例的bean，则它本身就不能够是单例的。<br>Img21#6.12.缓存合并之后的BeanDefinition，即将其加入到mergedBeanDefinitions容器中。</p>
+<p>Img21.10.检查mbd是不是设置了属性abstract=true，如果设置了，不能去实例化，抛出异常。<br>Img21.11.检查是否有依赖的bean。这里是deponse-on属性的依赖，跟bean内部依赖另外的bean不是一回事。<br>Img21.12.调用本类的isDependent(String beanName, String dependentBeanName)方法。</p>
+<h3 id="Img21-7"><a href="#Img21-7" class="headerlink" title="Img21#7"></a>Img21#7</h3><p><img src="/img/SpringIoC/21.7.png"><br>检查是否有循环依赖。<br>Img21#7.1.如果beanName已经检查过了就直接返回。<br>Img21#7.2.<b>dependentBeanMap保存的是beanName的所有依赖的beanName。</b></p>
+<p>Img21.13.标记依赖。<br>Img21.14.依赖注入。<br>Img21.15.调用DefaultSingletonBeanRegistry类的getSingleton(String beanName, ObjectFactory&lt;?&gt; singletonFactory)方法创建单例实例。</p>
+<h3 id="Img22"><a href="#Img22" class="headerlink" title="Img22"></a>Img22</h3><p><img src="/img/SpringIoC/22-1.png"><br><img src="/img/SpringIoC/22-2.png"><br><img src="/img/SpringIoC/22-3.png"><br>Img22.1.如果正在销毁对象则抛出异常，不能继续创建单例对象。<br>Img22.2.创建之前的一些操作。如将beanName放到singletonsCurrentlyInCreation集合中。<br>Img22.3.调用ObjectFactory类的getObject()方法。参考Img21.15可以发现最终调用的是AbstractAutowireCapableBeanFactory类的createBean(String beanName, RootBeanDefinition mbd, Object[] args)方法。</p>
+<h3 id="Img23"><a href="#Img23" class="headerlink" title="Img23"></a>Img23</h3><p><img src="/img/SpringIoC/23-1.png"><br><img src="/img/SpringIoC/23-2.png"><br>负责创建bean实例，填充bean实例，以及后置处理器等待等。<br>Img23.1.填充BeanClass属性。<br>Img23.2.准备overides数据。<br>Img23.3.调用本类的resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd)方法。</p>
+<h3 id="Img23-1"><a href="#Img23-1" class="headerlink" title="Img23#1"></a>Img23#1</h3><p><img src="/img/SpringIoC/23.1.png"><br><img src="/img/SpringIoC/23.1-1.png"><br><img src="/img/SpringIoC/23.1-2.png"><br>给BeanPostProcessors一个机会返回一个代理对象，主要调用的是接口InstantiationAwareBeanPostProcessor里面的方法。<br>Img23#1.1.调用本类的applyBeanPostProcessorsBeforeInstantiation(Class beanClass, String beanName)方法。该方法会循环调用所有实现InstantiationAwareBeanPostProcessor接口的实现类的postProcessBeforeInstantiation(Class beanClass, String beanName)方法。如果该方法返回null，则部分逻辑结束，接着调用doCreateBean方法创建bean。如果postProcessBeforeInstantiation返回不为null说明修改了bean对象，则直接返回修改后的bean对象。<br>Img23#1.2.调用本类的applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)。该方法会循环调用所有实现InstantiationAwareBeanPostProcessor接口的postProcessAfterInitialization方法（注意这个是初始化之后的方法，也就是通过这个方法实例化了之后，直接执行初始化之后的方法，中间的实例化之后和初始化之前都不执行）如果postProcessAfterInitialization方法返回null，则接着返回并执行执行后面的初始化方法doCreateBean方法。如果不返回null那这个bean就直接返回给ioc容器。</p>
+<p>Img23.4.调用本类的doCreateBean(String beanName, RootBeanDefinition mbd, Object[] args)方法。</p>
+<h3 id="Img24"><a href="#Img24" class="headerlink" title="Img24"></a>Img24</h3><p><img src="/img/SpringIoC/24-1.png"><br><img src="/img/SpringIoC/24-2.png"><br><img src="/img/SpringIoC/24-3.png"><br>Img24.1.factoryBeanInstanceCache是缓存未完成的FactoryBean的实例对象的容器。<br>Img24.2.调用本类的createBeanInstance(String beanName, RootBeanDefiniton mbd, Object[] args)方法。</p>
+<h3 id="Img25"><a href="#Img25" class="headerlink" title="Img25"></a>Img25</h3><p><img src="/img/SpringIoC/25-1.png"><br><img src="/img/SpringIoC/25-2.png"><br>使用工厂方法为指定的bean创建一个新的实例，返回的是一个BeanWrapper包装类。<br>Img25.1.如果配置了factory-method属性，则用工厂方法生成对象。<br>Img25.3.BeanPostProcessor接口的调用。<br>Img25.4.调用本类的instantiateBean(String beanName, RootBeanDefinition mbd)方法。</p>
+<h3 id="Img26"><a href="#Img26" class="headerlink" title="Img26"></a>Img26</h3><p><img src="/img/SpringIoC/26.png"><br>使用默认的构造函数实例化bean，并且返回一个bean的包装类。<br>调用SimpleInstantiationStrategy类的instantiate(RootBeanDefinition bd, String beanName, BeanFactory owner)方法。</p>
+<h3 id="Img27"><a href="#Img27" class="headerlink" title="Img27"></a>Img27</h3><p><img src="/img/SpringIoC/27-1.png"><br><img src="/img/SpringIoC/27-2.png"><br>Img27.1.根据bd的MethodOverrides属性来判断，只有在设置了lookup-method或replace-method的时候才会有。这里是在没有设置这两个属性的情况下就用反射来实例化对象。<br>Img27.2.获取默认的构造函数。<br>Img27.3.resolvedConstructorOrFactoryMethod字段保存的是使用哪个构造器生成实例化的或者是使用工厂方法生成实例化的。<br>Img27.4.利用默认的构造函数反射生成实例化对象，里面调用了ctor.newInstance(args)。<br>Img27.5.如果配置了lookup-method或replace-method就利用CGlib调用enhancer.createClass()生成了子类Class类型。</p>
+<p>Img24.3.得到生成的实例。<br>Img24.4.允许post-processors修改mergedBeanDefinition。<br>Img24.5.判断PostProcessors后置处理器是否执行过。<br>Img24.6.修改一下mergedBeanDefinition。<br>Img24.7.调用DefaultSingletonBeanRegistry类的addSingletonFactory(String beanName, ObjectFactory singletonFactory)方法。</p>
+<h3 id="Img24-3"><a href="#Img24-3" class="headerlink" title="Img24#3"></a>Img24#3</h3><p><img src="/img/SpringIoC/24.3.png"><br>提前暴露实例化的引用，即将bean实例添加到三级缓存singletonFactories中，主要是解决循环引用问题。此时单例对象已经通过createBeanInstance方法被创建出来，即调用了构造器，虽然还没有进行依赖注入，但是已经可以根据对象引用定位到堆中的对象。</p>
+<p>Img24.9.获取提前暴露引用。<br>Img24.10.填充bean属性。<br>Img24.11.调用本类的initializeBean(String beanName, Object name, RootBeanDefinition mbd)方法。</p>
+<h3 id="Img24-1"><a href="#Img24-1" class="headerlink" title="Img24#1"></a>Img24#1</h3><p><img src="/img/SpringIoC/24.1-1.png"><br><img src="/img/SpringIoC/24.1-2.png"><br>Img24#1.1.将Aware接口定义中规定的依赖注入给当前对象实例。<br>Img24#1.2.分别遍历调用BeanPostProcessor接口的postProcessBeforeInitialization(Object bean, String beanName)和postProcessAfterInitialization(Object bean, String beanName)方法。<br>Img24#1.3.检查当前实例是否实现了InitializingBean接口以决定是否调用afterPropertiesSet()方法。</p>
+<h3 id="Img24-2"><a href="#Img24-2" class="headerlink" title="Img24#2"></a>Img24#2</h3><p><img src="/img/SpringIoC/24.2-1.png"><br><img src="/img/SpringIoC/24.2-2.png"><br>Img24#2.1.判断当前bean是否实现了InitializingBean接口且afterPropertiesSet这个方法没有注册为外部管理的初始化方法。如果没有就回调afterPropertiesSet()方法。<br>Img24#2.2.调用本类的invokeCustomInitMethod(String beanName, Object bean, RootBeanDefinition mbd)方法<b>执行用户配置的初始化方法。</b></p>
+<p>Img22.4.调用本类的afterSingletonCreation(String beanName)方法结束创建bean。</p>
+<h3 id="Img22-1"><a href="#Img22-1" class="headerlink" title="Img22#1"></a>Img22#1</h3><p><img src="/img/SpringIoC/22.1.png"><br>从singletonsCurrentlyInCreation容器remove掉该beanName。</p>
+<p>Img22.5.调用本类的addSingleton(String beanName, Object singletonObject)方法。</p>
+<h3 id="Img22-2"><a href="#Img22-2" class="headerlink" title="Img22#2"></a>Img22#2</h3><p><img src="/img/SpringIoC/22.2.png"><br>如果是一个新的实例，则把这个实例放入到一级缓存singletonObjects中，然后把二级和三级缓存都删除掉。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Spring基础/">Spring基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

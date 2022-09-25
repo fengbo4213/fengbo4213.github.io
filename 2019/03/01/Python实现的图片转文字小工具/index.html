@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Python实现的图片转文字小工具 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Python实现的图片转文字小工具">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Python实现的图片转文字小工具</h1>
+  
+
+      
+        <time datetime="2019-03-01T07:27:16.000Z">2019-03-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>阅读PDF书籍时如果该书是扫描版的那么记笔记就需要手打文字。个人感觉及其麻烦（主要还是懒）。所以想着实现一个简单的图片转文字小工具提升一下自己的阅读效率。<br><a id="more"></a><br>操作系统：Ubuntu18.04<br>编程语言：Python3.6</p>
+<h3 id="监听文件夹"><a href="#监听文件夹" class="headerlink" title="监听文件夹"></a>监听文件夹</h3><p>使用系统自带的截图工具（Ubuntu为screenshot，快捷键是Shift+PrtSc）选择截取屏幕，screenshot会将截取的图片自动保存到“/home/用户/图片”目录下，那么我只需要监听该目录就可以获取到截取的图片。<br>使用Python文件监听工具pyinotify来实现目录监听。使用pip3 install pyinotify安装该模块，具体监听代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EventHandler</span><span class="params">(ProcessEvent)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_IN_CREATE</span><span class="params">(self, event)</span>:</span></span><br><span class="line">        text = os.path.join(event.path,event.name)</span><br><span class="line">        print(text)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">auto_compile</span><span class="params">(path=<span class="string">'.'</span>)</span>:</span></span><br><span class="line">    wm = WatchManager()</span><br><span class="line">    mask = IN_CREATE</span><br><span class="line">    notifier = ThreadedNotifier(wm, EventHandler())</span><br><span class="line">    notifier.start()</span><br><span class="line">    wm.add_watch(path, mask, rec=<span class="literal">True</span>, auto_add=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            notifier.process_events()</span><br><span class="line">            <span class="keyword">if</span> notifier.check_events():</span><br><span class="line">                notifier.read_events()</span><br><span class="line">        <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">            notifier.stop()</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="https://www.jb51.net/article/148891.htm" target="_blank" rel="noopener">代码参考</a><br>pyinotify使用的是Linux底层的<a href="https://blog.csdn.net/longwang155069/article/details/54016789" target="_blank" rel="noopener">Inotify机制</a>。</p>
+<h3 id="使用tesseract-ocr识别获取的图片"><a href="#使用tesseract-ocr识别获取的图片" class="headerlink" title="使用tesseract-ocr识别获取的图片"></a>使用tesseract-ocr识别获取的图片</h3><p>获取到截取的图片的地址后就可以通过Python的tesserocr模块调用tesseract-ocr来识别图片中的文字。具体代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def image2word(path):</span><br><span class="line">    try:</span><br><span class="line">        time.sleep(1) # 停1秒，否则可能会读取图片失败</span><br><span class="line">        image = Image.open(path)</span><br><span class="line">        words = tesserocr.image_to_text(image)</span><br><span class="line">        print(words)</span><br><span class="line">    except (OSError, NameError):</span><br><span class="line">        print(&quot;os error&quot;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Ubuntu下安装tesserocr"><a href="#Ubuntu下安装tesserocr" class="headerlink" title="Ubuntu下安装tesserocr"></a>Ubuntu下安装tesserocr</h4><ol>
+<li>安装tesseract-ocr：sudo apt-get install -y tesseract-ocr libtesseract-dev libleptonica-dev。</li>
+<li>查看语言支持：tesseract –list-langs。</li>
+<li>安装语言：<br>git clone <a href="https://github.com/tesseract-ocr/tessdata.git" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tessdata.git</a><br>sudo mv tessdata/* /usr/share/tesseract-ocr/tessdata</li>
+<li>安装 tesserocr：pip3 install tesserocr pillow。<br>笔者安装使出现error: command ‘x86_64-linux-gnu-gcc’ failed with exit status 1 ‘错误。<br> sudo apt install python3-dev \<br>  build-essential libssl-dev libffi-dev \<br>  libxml2-dev libxslt1-dev zlib1g-dev</li>
+</ol>
+<h3 id="使用pyperclip模块将识别后的文字添加到剪切版"><a href="#使用pyperclip模块将识别后的文字添加到剪切版" class="headerlink" title="使用pyperclip模块将识别后的文字添加到剪切版"></a>使用pyperclip模块将识别后的文字添加到剪切版</h3><ol>
+<li>在Ubuntu中使用该模块需要先安装xsel和xclip。<br>sudo apt-get install xsel<br>sudo apt-get install xclip</li>
+<li>使用pip安装pyperclip：pip3 install pyperclip。</li>
+<li>具体代码只需要一行：pyperclip.copy(words)。</li>
+</ol>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a><a href="https://gitee.com/fb4213/c-linux/blob/master/python/image2word.py" target="_blank" rel="noopener">源码</a></h4><h3 id="改善目标"><a href="#改善目标" class="headerlink" title="改善目标"></a>改善目标</h3><ol>
+<li>使用Python实现截图后解析替代使用系统自带截图工具。</li>
+<li>提高中文识别率。</li>
+<li>解决跨平台问题。</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Python/">Python</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

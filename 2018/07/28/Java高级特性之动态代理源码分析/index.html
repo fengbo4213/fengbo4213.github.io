@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>动态代理源码分析 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="动态代理源码分析">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">动态代理源码分析</h1>
+  
+
+      
+        <time datetime="2018-07-28T06:18:58.000Z">2018-07-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>Java动态代理是利用反射机制在运行时创建代理对象，灵活的实现了代理模式。将-Dsun.misc.ProxyGenerator.saveGeneratedFiles=true参数加入到JVM启动参数中，可以将JDK动态生成的代理类的字节码保存到硬盘上。<br><a id="more"></a></p>
+<h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/Proxy/01.png"><br>上面的写法是Proxy类的newProxyInstance(ClassLoader, Class&lt;?&gt;[], InvocationHandler)方法内部的写法相似。所以从上面的代码入手分析。即首先通过Prosy类的getProxyClass(ClassLoader loader, Class&lt;?&gt;… interfaces)方法获取代理类的字节码对象。</p>
+<h3 id="Img2"><a href="#Img2" class="headerlink" title="Img2"></a>Img2</h3><p><img src="/img/Proxy/02.png"><br>调用本类的getProxyClass0(ClassLoader loader, Class&lt;?&gt;… interfaces)方法。</p>
+<h3 id="Img3"><a href="#Img3" class="headerlink" title="Img3"></a>Img3</h3><p><img src="/img/Proxy/03.png"><br>如果实现当前接口的代理类存在，直接从缓存中返回，如果不存在，则通过ProxyClassFactory类的apply方法来创建。这里可以明显看到有对interface接口数量的限制，不能超过65535。</p>
+<h3 id="Img4"><a href="#Img4" class="headerlink" title="Img4"></a>Img4</h3><p><img src="/img/Proxy/04-1.png"><br><img src="/img/Proxy/04-2.png"><br><img src="/img/Proxy/04-3.png"><br><img src="/img/Proxy/04-4.png"><br>Img4.1.代理类的名字前缀统一为$Proxy。<br>Img4.2.每个代理类前缀后面都会跟着一个唯一的编号，如$Proxy0、$Proxy1、$Proxy2。<br>Img4.3.验证类加载器加载接口得到对象是否与由apply函数参数传入的对象相同。<br>Img4.4.验证这个Class对象是不是接口。<br>Img4.5.验证这个接口是否重复。<br>Img4.6.生成非公共代理接口的包名，即用和被代理类接口一样的包名。<br>Img4.7.如果全是公共代理接口，包名生成逻辑默认是com.sun.proxy。<br>Img4.8.生成代理类的类名，类名默认是$Proxy加上一个自增的整数值，由4.1和4.2生成。<br>Img4.9.调用ProxyGenerator类的generateProxyClass(String, Class&lt;?&gt;[], int)方法根据具体传入的接口创建代理字节码。</p>
+<h3 id="Img5"><a href="#Img5" class="headerlink" title="Img5"></a>Img5</h3><p><img src="/img/Proxy/05.png"><br>Img5.1.调用ProxyGenerator类的generateClassFile()方法生成代理类字节码文件。</p>
+<h3 id="Img6"><a href="#Img6" class="headerlink" title="Img6"></a>Img6</h3><p><img src="/img/Proxy/06-1.png"><br><img src="/img/Proxy/06-2.png"><br><img src="/img/Proxy/06-3.png"><br>Img6.1.将Object类中的hashCode、equals和toString方法添加到代理类中。<br>Img6.2.将接口中的所有方法添加到代理类中。<br>Img6.3.验证具有相同方法签名的方法的返回类型是否一致。<br>Img6.4.生成代理类的构造函数。<br>Img6.5.为代理类生成静态代码块对某些字段进行初始化。<br>Img6.6.代理类中的方法数量超过65535就抛异常。<br>Img6.7.代理类中字段数量超过65535也抛异常。<br>Img6.8.下面是对文件进行处理的过程。<br>Img5.2.保存代理类的字节码文件，saveGeneratedFiles变量获取的就是-Dsun.misc.ProxyGenerator.saveGeneratedFiles=true配置的值。<br>Img4.10.调用本类的native方法把字节码通过传入的类加载器加载到JVM中。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java高级特性/">Java高级特性</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

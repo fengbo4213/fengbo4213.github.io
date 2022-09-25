@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>IoC源码解析-容器启动阶段 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="IoC源码解析-容器启动阶段">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">IoC源码解析-容器启动阶段</h1>
+  
+
+      
+        <time datetime="2018-07-01T01:49:40.000Z">2018-07-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/SpringIoC/01.png"><br><a id="more"></a><br>Img1.1.调用AbstractBeanDefinitionReader类的loadBeanDefinitions(String)方法。</p>
+<h3 id="Img2"><a href="#Img2" class="headerlink" title="Img2"></a>Img2</h3><p><img src="/img/SpringIoC/02.png"><br>调用本类的loadBeanDefinitions(String, Set<resource>)方法。</resource></p>
+<h3 id="Img3"><a href="#Img3" class="headerlink" title="Img3"></a>Img3</h3><p><img src="/img/SpringIoC/03.png"><br>Img3.1.获取ResourceLoader类。</p>
+<h3 id="Img3-1"><a href="#Img3-1" class="headerlink" title="Img3#1"></a>Img3#1</h3><p><img src="/img/SpringIoC/03.1.png"><br>如果传递进来的BeanDefinitionRegistry接口的实现类没有实现ResourceLoader接口，会在AbstractBeanDefinitionReader抽象类的构造方法中默认创建一个PathMatchingResourcePatternResolver实例。</p>
+<h3 id="org-springframework-core-io-support-PathMatchingResourcePatternResolver"><a href="#org-springframework-core-io-support-PathMatchingResourcePatternResolver" class="headerlink" title="org.springframework.core.io.support.PathMatchingResourcePatternResolver"></a>org.springframework.core.io.support.PathMatchingResourcePatternResolver</h3><ol>
+<li>该类实现了ResourcePatternResolver接口，而ResourcePatternResolver接口继承了ResourceLoader接口并扩展了一个获取Resource数组的getResources(String)方法。</li>
+<li>如下图Img3#2所示，该类内部默认持有一个DefaultResourceLoader实例，PathMatchingResourcePatternResolver会调用该实例去加载各种资源。所以如果不在构建该实例时传递一个ResourceLoader进去，该实例加载资源的模式就和DefaultResourceLoader相同。</li>
+</ol>
+<h3 id="Img3-2"><a href="#Img3-2" class="headerlink" title="Img3#2"></a>Img3#2</h3><p><img src="/img/SpringIoC/03.2.png"><br>Img3.2.调用AbstractBeanDefinitionReader内部的重载方法。</p>
+<h3 id="Img4"><a href="#Img4" class="headerlink" title="Img4"></a>Img4</h3><p><img src="/img/SpringIoC/04.png"><br>通过模板方法模式调用子类的loadDefinitions(Resource)方法，本案例使用的是XmlBeanDefinitionReader，所以调用的是XmlBeanDefinitionReader类的loadDefinitions(Resource)方法。</p>
+<h3 id="Img5"><a href="#Img5" class="headerlink" title="Img5"></a>Img5</h3><p><img src="/img/SpringIoC/05.png"><br>调用自己重载的方法loadBeanDefinitions(EncodedResource)。</p>
+<h3 id="Img6"><a href="#Img6" class="headerlink" title="Img6"></a>Img6</h3><p><img src="/img/SpringIoC/06.png"><br>调用本类的doLoadBeanDefinitions(InputSource, Resource)方法。</p>
+<h3 id="Img7"><a href="#Img7" class="headerlink" title="Img7"></a>Img7</h3><p><img src="/img/SpringIoC/07.png"><br>Img7.1.将XML资源文件解析成org.w3c.dom.Document对象。<br>Img7.2.调用本类的registerBeanDefinitions(Document, Resource)方法。</p>
+<h3 id="Img8"><a href="#Img8" class="headerlink" title="Img8"></a>Img8</h3><p><img src="/img/SpringIoC/08.png"><br>Img8.1.调用本类的createBeanDefinitionDocumentReader()方法创建BeanDefinitionDocumentReader对象。</p>
+<h3 id="Img8-1"><a href="#Img8-1" class="headerlink" title="Img8#1"></a>Img8#1</h3><p><img src="/img/SpringIoC/08.1.png"><br>根据XmlBeanDefinitionReader中的documentReaderClass属性判断创建BeanDefinitionDocumentReader类型，但是Spring中该接口只有DefaultBeanDefinitionDocumentReader一个实现类。<br>Img8.2.调用DefaultBeanDefinitionDocumentReader的registerBeanDefinitions(Document, XmlReaderContext)方法。</p>
+<h3 id="Img9"><a href="#Img9" class="headerlink" title="Img9"></a>Img9</h3><p><img src="/img/SpringIoC/09.png"><br>调用本类的doRegisterBeanDefinitions(Element)方法。</p>
+<h3 id="Img10"><a href="#Img10" class="headerlink" title="Img10"></a>Img10</h3><p><img src="/img/SpringIoC/10.png"><br>Img10.1.调用本类的createDelegate(XmlReaderContex, Element, BeanDefinitionParserDelegate)方法。</p>
+<h3 id="Img10-1"><a href="#Img10-1" class="headerlink" title="Img10#1"></a>Img10#1</h3><p><img src="/img/SpringIoC/10.1.png"><br>调用BeanDefinitionParserDelegate类的initDefaults(Element, BeanDefinitionParserDelegate)方法。</p>
+<h3 id="org-springframework-beans-factory-xml-BeanDefinitionParserDelegate"><a href="#org-springframework-beans-factory-xml-BeanDefinitionParserDelegate" class="headerlink" title="org.springframework.beans.factory.xml.BeanDefinitionParserDelegate"></a>org.springframework.beans.factory.xml.BeanDefinitionParserDelegate</h3><p>在DefaultBeanDefinitionDocumentReader处理Document元素时，将Document文档内元素具体解析工作委托给BeanDefinitionParserDelegate类来处理，默认BeanDefinitionParserDelegate会处理<a href="http://www.springframework.org/schema/beans" target="_blank" rel="noopener">http://www.springframework.org/schema/beans</a> 命名空间下元素及其属性。</p>
+<h3 id="Img10-2"><a href="#Img10-2" class="headerlink" title="Img10#2"></a>Img10#2</h3><p><img src="/img/SpringIoC/10.2.png"><br>调用本类的populateDefaults(DocumentDefaultsDefinition, DocumentDefaultsDefinition, Element)方法。</p>
+<h3 id="Img10-3"><a href="#Img10-3" class="headerlink" title="Img10#3"></a>Img10#3</h3><p><img src="/img/SpringIoC/10.3.png"><br>将XML文件中的一些命名空间的基本配置转如default、lazy-init、autowire、dependency、check、settings、init-method、destroy-method等解析到DocumentDefaultsDefinition对象。图中标红的就是检查beans标签中default-lazy-init属性的值。<br>Img10.2.调用本类的parseBeanDefinitions(Element, BeanDefinitionParserDelegate)方法。</p>
+<h3 id="Img11"><a href="#Img11" class="headerlink" title="Img11"></a>Img11</h3><p><img src="/img/SpringIoC/11.png"><br>Img11.1.判断root的NamespaceURI是不是默认的命名空间URI=<a href="http://www.springframework.org/schema/beans" target="_blank" rel="noopener">http://www.springframework.org/schema/beans</a><br>Img11.2.调用本类的parseDefaultElement(Element, BeanDefinitionParserDelegate)方法解析属于beans命名空间的标签。</p>
+<h3 id="Img12"><a href="#Img12" class="headerlink" title="Img12"></a>Img12</h3><p><img src="/img/SpringIoC/12.png"><br>Img12.1.调用本类的importBeanDefinitionResource(Element)方法解析import标签。<br>Img12.2.调用本类的processAliasRegistration(Element)方法解析alias标签。<br>Img12.3.调用本类的processBeanDefinition(Element, BeanDefinitionParserDelegate)方法解析bean标签。</p>
+<h3 id="Img13"><a href="#Img13" class="headerlink" title="Img13"></a>Img13</h3><p><img src="/img/SpringIoC/13.png"><br>Img13.1.调用BeanDefinitionParserDelegate类的parseBeanDefinitionElement(Element, BeanDefinition)方法。</p>
+<h3 id="Img14"><a href="#Img14" class="headerlink" title="Img14"></a>Img14</h3><p><img src="/img/SpringIoC/14-1.png"><br><img src="/img/SpringIoC/14-2.png"><br>Img14.1.获取XML中的bean的id和name属性的值。<br>Img14.2.如果neme属性有值，就按照字符串”,; “分割成数组放到别名列表aliases中.<br>Img14.3.如果id没有值且name有值，那么就把name别名中的第一个当做id，并且从aliases中删除掉。<br>Img14.4.调用本类的checkNameUniqueness(String beanName, List<string> aliases, Element beanElement)方法。</string></p>
+<h3 id="Img14-1"><a href="#Img14-1" class="headerlink" title="Img14#1"></a>Img14#1</h3><p><img src="/img/SpringIoC/14.1.png"><br>检查当前的beanName和aliases是否被使用。<br>Img14#1.1.先判断this.usedNames是否包含beanName(this.usedNames是一个 set集合，专门保存所有的beanName和aliases)。<br>Img14#1.2.如果this.usedNames不包含，再判断当前aliases集合中是否存在已经被保存到this.usedNames集合中的元素。<br>Img14#1.3.如果上述beanName或者aliases中有元素已久存在在this.usedNames中就抛出异常。<br>Img14#1.4.否则将beanName和aliase一起add到this.usedNames中去。</p>
+<p>Img14.5.调用本类的parseBeanDefinitionElement(Element, String, BeanDefinition)方法，获取AbstractBeanDefinition实例。</p>
+<h3 id="Img15"><a href="#Img15" class="headerlink" title="Img15"></a>Img15</h3><p><img src="/img/SpringIoC/15.png"><br>解析BeanDefinition，不包括名称和别名（Img14已经解析过了）。<br>Img15.1.BeanEntry是一个bean的实体类，它实现了ParseState.Entry接口，Entry是一个标志接口，什么都没有做，BeanEntry只有一个beanDefinitionName属性；ParseState类里面有一个名为state的栈，存放的对象类型是Entry；ParseState简单的栈结构来跟踪逻辑位置中解析过程，主要是记录异常信息，在异常的时候Spring调用error方法，会把ParseState栈中的信息一起抛出。<br>Img15.2.获取Element中的class属性。<br>Img15.3.获取Element中的parent属性。<br>Img15.4.调用本类的createBeanDefinition(String, String)方法获取AbstractBeanDefinition实例，并设置相应的属性。</p>
+<h3 id="Img16"><a href="#Img16" class="headerlink" title="Img16"></a>Img16</h3><p><img src="/img/SpringIoC/16.png"><br>调用BeanDefinitionReaderUtils工具类的createBeanDefinition(String, String, ClassLoader)方法创建AbstractBeanDefinition实例。</p>
+<h3 id="Img17"><a href="#Img17" class="headerlink" title="Img17"></a>Img17</h3><p><img src="/img/SpringIoC/17.png"><br>创建AbstractBeanDefinition的实现类GenericBeanDefinition的实例并返回。</p>
+<p>Img15.5.调用本类的parseBeanDefinitionAttributes(Element, String, BeanDefinition, AbstractBeanDefinition)方法。</p>
+<h3 id="Img15-1"><a href="#Img15-1" class="headerlink" title="Img15#1"></a>Img15#1</h3><p><img src="/img/SpringIoC/15.1-1.png"><br><img src="/img/SpringIoC/15.1-2.png"><br><img src="/img/SpringIoC/15.1-3.png"><br>解析bean标签里面所有的属性值，例如scope、abstract、lazy-init、autowire、primary、depends-on等，并设置AbstractBeanDefinition中。<br>Img15#1.1.解析singleton属性，现已废弃。<br>Img15#1.2.设置作用域scope。默认是””。<br>Img15#1.4.设置abstractFlag属性，默认是false。<br>Img15#1.5.设置懒加载lazyInit属性。<br>Img15#1.6.设置注入方式即autowireMode属性；byName、byType等。<br>Img15#1.7.设置依赖检查的类型，即dependencyCheck属性。<br>Img15#1.8.设置dependsOn属性。<br>Img15#1.9.设置autowireCandidate属性。<br>Img15#1.10.设置primary属性。装配时当出现多个Bean候选者时，被标记为Primary的Bean将作为首选者，否则将抛出异常；默认为false。<br>Img15#1.11.设置初始化方法，即initMethodName属性。<br>Img15#1.12.如果当前元素没有设置initMethodName属性，则判断xml全局配置有没有设置。<br>Img15#1.13.设置destroyMethodName属性。<br>Img15#1.14.设置factoryMethodName属性，即Spring通过工厂方法配置Bean。<br>Img15#1.15.设置factoryBeanName属性。</p>
+<p>Img15.6.设置description属性的值。<br>Img15.7.解析元数据Meta，将meta中的key和value放入到new BeanMetadataAttribute(key, value)中。<br>Img15.8.Spring有一种机制，可以动态的实现或重写bean容器中指定bean的指定方法，然后将返回值指定为bean容器中的另一个bean。<br>Img15.9.跟上面类似replaced method注入是spring动态改变bean里方法的实现。需要改变的方法，使用spring内原有其他类（需要继承接口org.springframework.beans.factory.support.MethodReplacer）的逻辑，替换这个方法。通过改变方法执行逻辑来动态改变方法。内部实现为使用cglib方法，重新生成子类，重写配置的方法和返回对象，达到动态改变的效果。<br>Img15.10.调用本类的parseConstructorArgElements(Element, BeanDefinition)方法，<b>解析bean标签内部包含的标签。</b></p>
+<h3 id="Img15-2"><a href="#Img15-2" class="headerlink" title="Img15#2"></a>Img15#2</h3><p><img src="/img/SpringIoC/15.2.png"><br>调用本类的parseConstructorArgElement(Element, BeanDefinition)方法。</p>
+<h3 id="Img15-3"><a href="#Img15-3" class="headerlink" title="Img15#3"></a>Img15#3</h3><p><img src="/img/SpringIoC/15.3-1.png"><br><img src="/img/SpringIoC/15.3-2.png"><br>解析构造函数，即constructor-arg标签。<br>Img15#3.1.判断XML是否配置了index。<br>Img15#3.3.调用本类的parsePropertyValue(Element, BeanDefinition, String)方法获取属性值。</p>
+<h3 id="Img15-4"><a href="#Img15-4" class="headerlink" title="Img15#4"></a>Img15#4</h3><p><img src="/img/SpringIoC/15.4-1.png"><br><img src="/img/SpringIoC/15.4-2.png"><br>该方法负责解析property标签和constructor-arg标签。<br>Img15#4.1.如果ref属性和value属性同时存在抛异常；如果ref或者value存在一个并且subElement也存在抛异常。<br>Img15#4.2.如果存在的是ref属性，返回RuntimeBeanReference实例。<br>Img15#4.3.如果是value属性，返回TypedStringValue实例。<br>Img15#4.4.如果是list标签，调用本类的parsePropertySubElement(Element, BeanDefinition)方法。</p>
+<h3 id="Img15-5"><a href="#Img15-5" class="headerlink" title="Img15#5"></a>Img15#5</h3><p><img src="/img/SpringIoC/15.5.png"><br>调用本类的parsePropertySubElement(Element, BeanDefinition, String)方法。</p>
+<h3 id="Img15-6"><a href="#Img15-6" class="headerlink" title="Img15#6"></a>Img15#6</h3><p><img src="/img/SpringIoC/15.6-1.png"><br><img src="/img/SpringIoC/15.6-2.png"><br><img src="/img/SpringIoC/15.6-3.png"><br>Img15#6.1.判断是不是默认的命名空间，如果不是调用本类的parseNestedCustomElement(Element, BeanDefinition)方法。<br>Img15#6.2.解析bean元素。<br>Img15#6.3.如果是ref标签，构建RuntimeBeanReference实例。<br>Img15#6.4.解析idref标签。<br>Img15#6.5.解析value标签。<br>Img15#6.6.解析null标签。<br>Img15#6.7.解析array标签。<br>Img15#6.8.解析list标签。<br>Img15#6.9.解析set标签。<br>Img15#6.10.解析map标签。<br>Img15#6.11.解析props标签。</p>
+<p>Img15#4.5.都不是返回null。</p>
+<p>Img15#3.4.新建一个ValueHolder实例，专门存放构造参数的一些属性值。<br>Img15#3.5.设置类型。<br>Img15#3.6.设置name。<br>Img15#3.7.验证index是否设置正确。</p>
+<p>Img15.11.set方法注入的处理。即解析property标签。<br>Img15.12.解析qualifier元素。</p>
+<p>Img14.6.判断beanName是否为””，即bean标签是否是既没有设置id也没有设置name属性。<br>Img14.7.如果是则自动生成beanName。<br>Img14.8.返回一个BeanDefinitionHolder对象。这个对象持有beanDefinition、beanName和aliases。</p>
+<p>Img13.3.调用BeanDefinitionReaderUtils工具类的registerBeanDefinition(BeanDefinitionHolder, BeanDefinitionRegistry)方法。</p>
+<h3 id="Img18"><a href="#Img18" class="headerlink" title="Img18"></a>Img18</h3><p><img src="/img/SpringIoC/18.png"><br>通过Img1中new XmlBeanDefinitionReader(beanFactory)中构造方法中传递进去的DefaultListableBeanFactory实例的registerBeanDefinition(String, BeanDefinition)方法将BeanDefinition注册到beanDefinitionMap容器中。</p>
+<h3 id="org-springframework-beans-factory-support-DefaultListableBeanFactory"><a href="#org-springframework-beans-factory-support-DefaultListableBeanFactory" class="headerlink" title="org.springframework.beans.factory.support.DefaultListableBeanFactory"></a>org.springframework.beans.factory.support.DefaultListableBeanFactory</h3><ol>
+<li>该类间接继承了AbstractBeanFactory类，所以间接实现了BeanFactory接口。该接口是从容器中获取对象实例的顶层接口。</li>
+<li>该类还实现了BeanDefinitionRegistry接口，该接口定义了对BeanDefinition容器的操作（注册到容器、从容器中获取BeanDefinition等）。</li>
+</ol>
+<h3 id="Img19"><a href="#Img19" class="headerlink" title="Img19"></a>Img19</h3><p><img src="/img/SpringIoC/19-1.png"><br><img src="/img/SpringIoC/19-2.png"><br><img src="/img/SpringIoC/19-3.png"><br><img src="/img/SpringIoC/19-4.png"><br>Img19.1.对BeanDefinition进行一些验证。例如，如果设置了MethodOverrides效果就不能同时存在工厂方法。<br>Img19.2.从beanDefinitionMap中更加beanName获取BeanDefinition，并判断该容器是否已经存在该BeanDefinition。<b>beanDefinitionMap中使用beanName为键，BeanDefinition为值存放了所以的BeanDefinition。</b><br>Img19.3.覆盖beanDefinition容器中已经存在的beanName相同的BeanDefinition。<br>Img19.4.注册到beanDefinition容器中。<br>Img19.5.在beanDefinitionNames容器中添加beanName（大概是为了线程安全才这么做）。<b>beanDefinitionNames容器存放了所有已经注册到beanDefinition的beanName。</b><br>Img19.6.判断<b>manualSingletonNames（单例对象注册容器）</b>中是否存在相同的对象名，如果存在就表示不是单例对象了，就在manualSingletonNames中remove掉。<br>Img19.7.如果走到else中，则证明还在启动阶段，就可以直接在上述三个容器中添加相应的实例。</p>
+<p>Img12.4.调用本类的doRegisterBeanDefinitions(Element)方法解析beans标签。<br>Img11.3.调用BeanDefinitionParserDelegate类的parseCustomElement(Element)方法。</p>
+<h3 id="Img11-1"><a href="#Img11-1" class="headerlink" title="Img11#1"></a>Img11#1</h3><p><img src="/img/SpringIoC/11.1.png"><br>解析bean以外格式的自定义标签标签，如aop、context等。<br>Img11#1.1.获取当前Element的命名空间。<br>Img11#1.2.调用DefaultNamespaceHandlerResolver类的resolve(String)方法，然后根据命名空间得到具体的NamespaceHandler处理类。</p>
+<h3 id="org-springframework-beans-factory-xml-DefaultNamespaceHandlerResolver"><a href="#org-springframework-beans-factory-xml-DefaultNamespaceHandlerResolver" class="headerlink" title="org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver"></a>org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver</h3><p>默认的命名空间解析对象选择器；主要作用就是根据不同的命名空间来选择对应的解析器。</p>
+<h3 id="Img11-2"><a href="#Img11-2" class="headerlink" title="Img11#2"></a>Img11#2</h3><p><img src="/img/SpringIoC/11.2.png"><br>Img11#2.1.调用本类的getHandlerMappings()方法。</p>
+<h3 id="Img11-3"><a href="#Img11-3" class="headerlink" title="Img11#3"></a>Img11#3</h3><p><img src="/img/SpringIoC/11.3.png"><br>加载所有jar包下的META-INF/spring.handlers文件，并将内容解析到DefaultNamespaceHandlerResolver类的名为handlerMappings的属性的Map集合中。<br>Img11#2.2.判断是否已经把全类名路径转换成具体的实例了，如果是就直接返回。<br>Img11#2.3.根据全类名路径来加载这个NamespaceHandler类。<br>Img11#2.4.加载完类后，通过反射生成具体的实例对象，如ContextNamespaceHandler等。<br>Img11#2.5.调用该实例对象的init()方法，注册对应的解析类到NamespaceHandlerSupport抽象类的名为parsers的属性的Map结合中。<br>Img11#2.6.将DefaultNamespaceHandlerResolver实例的名为handlerMappings的属性的Map集合中的value值由解析出来的全类名替换成上面由该全类名构建的实例。<br>Img11#1.3.使用NamespaceHandler处理类去解析Element，返回BeanDefinition对象。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Spring基础/">Spring基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

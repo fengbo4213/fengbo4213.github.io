@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Spring事务 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Spring事务">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Spring事务</h1>
+  
+
+      
+        <time datetime="2018-06-30T08:28:27.000Z">2018-06-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="事务基础概念"><a href="#事务基础概念" class="headerlink" title="事务基础概念"></a>事务基础概念</h2><ul>
+<li>原子性：事务包含的所有操作是一个整体，这些操作要么全部提交成功，要么只要有一个操作失败，就全部失败。</li>
+<li>一致性：甲乙共有400元钱，甲提交转账100给乙的请求后，不管操作成功还是失败，甲乙依旧共有400元钱。</li>
+<li>持久性：一旦整个事务提交成功，对数据所做的变更将被记录并不可逆转。</li>
+<li>隔离性：规定了各个事务之间相互影响的程度。一般为事务指定4种隔离级别，即下面的事务隔离级别。<a id="more"></a>
+</li>
+</ul>
+<h3 id="脏读、不可重复读、幻读"><a href="#脏读、不可重复读、幻读" class="headerlink" title="脏读、不可重复读、幻读"></a>脏读、不可重复读、幻读</h3><ul>
+<li>脏读：一个事务读到另一个事务尚未提交的修改。如果后一个事务回滚，前一个事务读到的数据就是脏数据。</li>
+<li>不可重复读：同一个事务在整个事务过程中对<b>同一个数据进行</b>多次读取，读取到的结果不同。如果事务1在事务2更新之前读取一次数据，更新之后又读取一次数据，那么这两次读取的结果可能不同。解决办法是对该条数据进行锁定，即每次只能有一个事务操作。</li>
+<li>幻读：同一个查询在整个事务中多次执行后，查询到的结果集是不一样的。即在两次读取间隙，另一个事务插入了一条数据。只能对整个数据库进行锁定，即每次只能有一个事务操作该数据库。</li>
+</ul>
+<h3 id="事务各个成员"><a href="#事务各个成员" class="headerlink" title="事务各个成员"></a>事务各个成员</h3><ul>
+<li>Resource Manager（RM）：负责存储并管理系统数据资源的状态，比如数据库服务器、JMS消息服务器等都是相应</li>
+<li>Transaction Processing Monitor（TPM）：负责在分布式事务中协调包含RM的事务处理，TPM通常对应特定的软件中间件。</li>
+<li>Transaction Manager（TM）：TPM的核心模块，直接负责多RM之间事务处理的协调工作，并且提供事务界定、事务上下文传播等功能接口。</li>
+</ul>
+<h3 id="事务类型"><a href="#事务类型" class="headerlink" title="事务类型"></a>事务类型</h3><ul>
+<li>全局事务：又称分布式事务。如果整个事务处理过程中有多个RM参与，那么就需要引入TPM来协调多个RM之间的事务处理。TPM将采用<b>两段式提交协议</b>来保证整个事务的ACID属性。<ul>
+<li>两段式提交：TM会分别询问两个RM，如果任何一个RM提交失败，则整个事务失败，双方都要回滚到之前的状态。</li>
+</ul>
+</li>
+<li>局部事务：当前事务只有一个RM参加。如对一个数据库进行更新，或者向一个消息队列中发送信息等。</li>
+</ul>
+<h2 id="Spring事务"><a href="#Spring事务" class="headerlink" title="Spring事务"></a>Spring事务</h2><p>事务处理过程中出现的异常应该都是不可恢复的，所以应该抛出unchecked exception，并且有一个统一的父类，便于客户端处理。</p>
+<h3 id="org-springframework-transaction-TransactionDefinition"><a href="#org-springframework-transaction-TransactionDefinition" class="headerlink" title="org.springframework.transaction.TransactionDefinition"></a>org.springframework.transaction.TransactionDefinition</h3><p>该接口定义了事务的相关属性如事务的隔离级别（IsolationLevel）、事务的传播行为（PropagationBehavior）、事务的超时时间（Timeout）、是否为只读事务（ReadyOnly）。</p>
+<h3 id="org-springframework-transaction-TransactionStatus"><a href="#org-springframework-transaction-TransactionStatus" class="headerlink" title="org.springframework.transaction.TransactionStatus"></a>org.springframework.transaction.TransactionStatus</h3><p>该接口定义表示了整个事务处理过程中的事务状态，一般在编程式事务中使用该接口。可以使用该接口查询事务状态、通过setRollbackOnly()方法标记事务以使其回滚、还可以通过Savepoint在当前事务中创建内嵌事务。</p>
+<h3 id="org-springframework-transaction-PlatformTransactionManager"><a href="#org-springframework-transaction-PlatformTransactionManager" class="headerlink" title="org.springframework.transaction.PlatformTransactionManager"></a>org.springframework.transaction.PlatformTransactionManager</h3><p><img src="/img/Spring-Transaction.JPG"></p>
+<h3 id="org-springframework-transaction-support-AbstractPlatformTransactionManager"><a href="#org-springframework-transaction-support-AbstractPlatformTransactionManager" class="headerlink" title="org.springframework.transaction.support.AbstractPlatformTransactionManager"></a>org.springframework.transaction.support.AbstractPlatformTransactionManager</h3><p>PlatformTransactionManager接口的抽象实现类，以模板方法的形式封装了固定的事物处理逻辑，而只将与事物资源相关的操作以protected或abstract方式留给具体的实现类来实现。作为模板方法的父类，该类实现以下固定的事务内部处理逻辑：</p>
+<ul>
+<li>判断是否存在当前事务，然后根据判断结果执行不同的处理逻辑。</li>
+<li>结合是否存在当前逻辑的情况，根据TransactionDefinition中指定的传播行为的不同语义执行后继逻辑。</li>
+<li>根据情况挂起或恢复事务。</li>
+<li>提交事务之前检查readOnly字段是否被设置，如果是，以事务的回滚代替事务的提交。</li>
+<li>在事务回滚的情况下，清理并恢复事务状态。</li>
+<li>如果事务的Synchronization处于active状态，在事务处理的规定时点触发注册的Synchronization回调接口。</li>
+</ul>
+<h3 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h3><ul>
+<li>ISOLATION_DEFAULT：PlatformTransactionManager默认的隔离级别，使用数据库默认的事务隔离级别，另外四个与JDBC的隔离级别相对应。</li>
+<li>ISOLATION_READ_UNCOMMITTED：对应Read Uncommitted，这是事务最低的隔离级别，它充许另外一个事务可以看到这个事务未提交的数据。这种隔离级别会产生脏读，不可重复读和幻读。</li>
+<li>ISOLATION_READ_COMMITTED(Oracle数据库默认的隔离级别)：对应Read Committed，保证一个事务修改的数据提交后才能被另外一个事务读取。该隔离级别可以避免脏读出现。</li>
+<li>ISOLATION_REPEATABLE_READ(InnoDB默认的隔离级别)：对应Repeatable Read，保证在整个事务的过程中，对同一笔数据的读取结果是相同的，不管其他事务是否对同一个数据进行更新，也不管该数据提交与否。该隔离级别避免了脏读和不可重复读。<ul>
+<li>InnoDB虽然默认是该隔离级别，但是使用了Next-Key Lock锁的算法，因此可以避免幻读的产生。Next-Key Lock是结合了间隙锁(Gap Lock)和Record Lock的一种锁定算法。</li>
+</ul>
+</li>
+<li>ISOLATION_SERIALIZABLE：对应Serializable，所有的事务都必须依次执行，所以可以避免脏读、不可重复读和幻读。</li>
+</ul>
+<h3 id="事务的传播行为"><a href="#事务的传播行为" class="headerlink" title="事务的传播行为"></a>事务的传播行为</h3><ul>
+<li>PROPAGATION_REQUIRED(默认)：如果存在一个事务，则加入当前事务。如果没有事务则开启一个新的事务。</li>
+<li>PROPAGATION_SUPPORTS：如果存在一个事务，加入当前事务。如果没有事务，则非事务的执行。</li>
+<li>PROPAGATION_MANDATORY：如果已经存在一个事务，加入当前事务。如果没有一个活动的事务，则抛出异常。</li>
+<li>PROPAGATION_REQUIRES_NEW：总是开启一个新的事务。如果一个事务已经存在，则将这个存在的事务挂起。</li>
+<li>PROPAGATION_NOT_SUPPORTED：总是非事务地执行，并挂起任何存在的事务。</li>
+<li>PROPAGATION_NEVER：总是非事务地执行，如果存在一个活动事务，则抛出异常。</li>
+<li>PROPAGATION_NESTED：如果一个活动的事务存在，则运行在一个嵌套的事务中。如果没有活动事务, 则按PROPAGATION_REQUIRED属性执行。</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Spring基础/">Spring基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

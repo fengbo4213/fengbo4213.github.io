@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>C语言基础 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="C语言基础">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">C语言基础</h1>
+  
+
+      
+        <time datetime="2017-12-19T09:49:45.000Z">2017-12-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="C语言基础"><a href="#C语言基础" class="headerlink" title="C语言基础"></a>C语言基础</h2><h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">存储大小</th>
+<th>值范围 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">unsigned char</td>
+<td style="text-align:center">1字节</td>
+<td>0到255</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1字节</td>
+<td>-128到127</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned int</td>
+<td style="text-align:center">2或4字节</td>
+<td>0到65535或0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">2或4字节</td>
+<td>-32768到32787或-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned short</td>
+<td style="text-align:center">2字节</td>
+<td>0到65535</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2字节</td>
+<td>-32768到32767</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned long</td>
+<td style="text-align:center">4字节</td>
+<td>0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4字节</td>
+<td>-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4字节</td>
+<td>1.2E-38到3.4E+38，精度为6位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8字节</td>
+<td>2.3E-308到1.7E+308，精度为15位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">16字节</td>
+<td>3.4E-4932到1.1E+4932，精度为19位小数</td>
+</tr>
+</tbody>
+</table>
+<p>ps：</p>
+<ol>
+<li>布尔类型可以使用int替代，1为TRUE，0为FALSE。</li>
+<li>C语言使用常量来判断是否匹配返回值或信号时，这些常量需要设置为2的n次方。<a id="more"></a>
+</li>
+</ol>
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h3><ul>
+<li>与(&amp;)是有0则0，全1为1；或(|)是有1为1，全0为0。</li>
+<li>异或：相同为0，不同为1。一个整数与自己异或的结果是0，一个整数与0异或的结果是自己，异或操作满足交换律，即a^b=b^a。</li>
+</ul>
+<h3 id="GDB调试工具"><a href="#GDB调试工具" class="headerlink" title="GDB调试工具"></a>GDB调试工具</h3><ol>
+<li>使用GCC编译时加参数–g，例：gcc tmp01.c –o tmp01 -g。</li>
+<li>gdb tmp01</li>
+<li>(gdb) l：查看载入的文件(list)。</li>
+<li>(gdb) b 6：在第6行处设置断点。</li>
+<li>(gdb) info b：查看设置的断点情况。</li>
+<li>(gdb) r：开始运行程序，+行号可以从指定行开始运行。</li>
+<li>(gdb) p n：查看变量的值。</li>
+<li>(gdb) watch n：设置观察点（变量）。</li>
+<li>(gdb) n：单步运行(next)。</li>
+<li>(gdb) c：程度继续运行(continue)到下一个断点。</li>
+</ol>
+<h2 id="C语言变量"><a href="#C语言变量" class="headerlink" title="C语言变量"></a>C语言变量</h2><h3 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h3><p>C语言中所有变量都有自己的作用域，按照作用域的范围可分为局部变量和全局变量。</p>
+<ul>
+<li>局部变量也称为内部变量。局部变量是在函数内作定义说明的。其作用域仅限于函数内， 离开该函数后再使用这种变量是非法的。</li>
+<li>全局变量也称为外部变量，它是在函数外部定义的变量。 它不属于哪一个函数，它属于一个源程序文件。其作用域是整个源程序。</li>
+</ul>
+<h3 id="静态存储和动态存储变量"><a href="#静态存储和动态存储变量" class="headerlink" title="静态存储和动态存储变量"></a>静态存储和动态存储变量</h3><p>变量的存储方式可分为静态存储和动态存储两种，具体地又分为自动的（auto）、静态的（static）、寄存器的（register）、外部的（extern）。所谓存储方式，即存储类型是指变量占用内存空间的方式。静态存储方式是指在程序运行期间分配固定的存储空间的方式；动态存储方式是在程序运行期间根据需要进行动态的分配存储空间的方式。</p>
+<ul>
+<li>auto：在声明局部变量时，若不指定static，默认均是auto，这类变量都是动态分配存储空间的，数据存储在动态存储区中。</li>
+<li>static：在声明局部变量时，使用关键字static将局部变量指定为静态局部变量，这样在函数调用结束后不消失而保留原值，在下一次函数调用时，该变量已有值就是上次函数调用结束时的值。当全局变量被static修饰时，该变量的作用域局限于一个源文件内，只能为该源文件内的函数公用， 因此可以避免在其它源文件中引起错误。</li>
+<li>extern：用于扩展全局变量的作用域，比如如果函数想引用一个外部变量，但该外部变量在该函数后定义，那么这个函数需要使用extern来声明变量，这样才能使用在该函数后面定义的全局变量。<b>此外，extern还可以在多文件的程序中声明外部变量。</b></li>
+<li>register：寄存器运算速度远高于内存；在声明动态局部变量或者函数形参时，可将变量声明为register，这样编译系统就会为变量分配一个寄存器而不是内存空间，通过这种方式可提升对某些局部变量频繁调用的程序的性能。</li>
+</ul>
+<h2 id="C语言程序的开发与执行过程"><a href="#C语言程序的开发与执行过程" class="headerlink" title="C语言程序的开发与执行过程"></a>C语言程序的开发与执行过程</h2><h3 id="从源程序到可执行程序"><a href="#从源程序到可执行程序" class="headerlink" title="从源程序到可执行程序"></a>从源程序到可执行程序</h3><ol>
+<li>代码编写：通过程序编辑软件得到main.c文件。main.c在计算机中以ASCII字符方式存放。</li>
+<li>预处理：使用预处理程序（cpp main.c main.i或gcc -E main.c -o main.i）对源程序中以字符#开头的命令进行处理，例如，将#include命令后面的.h文件内容嵌入到源程序文件中,替换define定义的宏。预处理程序输出结果还是一个源程序文件。</li>
+<li>编译：编译程序（cc1 main.i或gcc -S main.i -o main.s）对预处理后的源程序进行编译，生成一个汇编语言源程序文件，同时生成符号和符号表。</li>
+<li>汇编：汇编程序（as main.s -o main.o或gcc -c main.s -o main.o）对汇编语言源程序进行汇编，生成一个可重定位目标文件。该文件是一个二进制文件，因为其中的代码已经是机器指令，数据以及其它信息都是用二进制表示。</li>
+<li>链接：链接程序（ld -o main main.o sum.o或gcc -o main main.o sum.o）将多个可重定位目标文件和标准库函数合并成为一个可执行目标文件，简称可执行文件。</li>
+</ol>
+<h3 id="可重定位目标文件的链接"><a href="#可重定位目标文件的链接" class="headerlink" title="可重定位目标文件的链接"></a>可重定位目标文件的链接</h3><p>链接可以在编译时执行，也就是源代码被翻译成机器代码时；也可以在加载时执行，也就是程序被加载器加载到内存并执行时；甚至可以在运行时执行，也就是由应用程序来执行。</p>
+<ul>
+<li>静态链接：以一组可重定位目标文件和命令行参数作为输出，生成一个完全链接的、可以加载和运行的可执行目标文件作为输出。</li>
+<li>动态链接：在运行或加载时，可以加载到任意的内存地址，并和一个在内存中的程序链接起来。</li>
+</ul>
+<h3 id="链接操作的步骤"><a href="#链接操作的步骤" class="headerlink" title="链接操作的步骤"></a>链接操作的步骤</h3><ul>
+<li>符号解析：将每个符号引用和一个符号定义关联起来。每个符号对应一个函数、一个全局变量或一个静态变量。</li>
+<li>重定位：编译器和汇编器生成从地址0开始的代码和数据节。链接器通过把每个符号定义与一个内存位置关联起来，从而重定位这些节，然后修改所有对这些符号的引用，使得他们指向这个内存位置。</li>
+</ul>
+<h3 id="静态库与共享库"><a href="#静态库与共享库" class="headerlink" title="静态库与共享库"></a>静态库与共享库</h3><ul>
+<li>将所有相关的目标模块打包成一个单独的文件(扩展名.a)，该文件称为静态库。当链接器构造一个可执行文件时，只复制静态库里面被应用程序引用的目标模块。静态库的存在使得我们在链接时不需要指定系统定义的大量标准函数的可重定位目标文件。</li>
+<li>静态库的问题：<ol>
+<li>静态库在更新是需要手动重新链接，即每次操作系统升级都需要重新链接所有的软件。</li>
+<li>使用标准库函数(例如标准I/O)时需要复制这些库函数的代码到可执行目标文件的文本段，运行时会浪费内存。</li>
+</ol>
+</li>
+<li>而共享库(.so文件)可以在启动或运行时被动态链接，被链接的库函数的代码不会被复制到可执行目标文件，而是复制了一些重定位条目和符号表。</li>
+</ul>
+<h3 id="可执行目标文件的加载"><a href="#可执行目标文件的加载" class="headerlink" title="可执行目标文件的加载"></a>可执行目标文件的加载</h3><ul>
+<li>Linux系统中的每一个都运行在一个进程上下文中，有自己的虚拟地址空间。当shell运行一个程序时，父shell进程生成一个子进程，他是父进程的一个复制。</li>
+<li>子进程通过execve系统调用启动加载器。</li>
+<li>加载器删除子进程现有的虚拟内存段，同时根据可执行文件的程序（段）头表中的信息，将可执行文件的代码和数据从磁盘”拷贝”到存储器中（实际上并不会真正的拷贝，而是建立一种映射）并创建一组新的代码、数据、堆和栈段。新的栈和堆段被初始化为零。</li>
+<li>通过将虚拟地址空间中的页映射到可执行文件的页大小的片，新的代码和数据段被初始化为可执行文件的内容。</li>
+<li>加载后，将PC（RIP）设定执行Entry point（即符号_start处），调用应用程序的main函数。</li>
+</ul>
+<h3 id="可执行文件的启动与执行"><a href="#可执行文件的启动与执行" class="headerlink" title="可执行文件的启动与执行"></a>可执行文件的启动与执行</h3><p>在Linux操作系统中，一般通过shell脚本执行可执行程序。即输入./hello并回车。</p>
+<ol>
+<li>shell程序会将用户从键盘输入的每个字符逐一读入到CPU寄存器中，然后保存到主内存中，在主内存的缓冲区形成字符串”./hello”。</li>
+<li>收到[Enter]按键时，shell将调出操作系统内核中相应的服务例程，由内核来加载磁盘上的可执行文件hello到存储器。</li>
+<li>内核加载完可执行文件中的代码及其所要处理的数据后，将hello的第一条指令的地址送到程序计数器（简称PC）中。</li>
+<li>处理器开始执行hello程序。</li>
+</ol>
+<h3 id="进程中的内存布局"><a href="#进程中的内存布局" class="headerlink" title="进程中的内存布局"></a>进程中的内存布局</h3><p><img src="/img/C语言内存布局.jpeg"><br>进程刚被创建的时候Program break位于Data Segment的结束位置。当进行堆内存分配时，会调用brk和sbrk来改变Program break的位置。其中brk通过传递的addr来重新设置Program break，成功则返回0，否则返回-1。而sbrk用来增加heap，增加的大小通过参数increment决定，返回增加大小前的heap的Program break，如果increment为0则返回当前Program break。</p>
+<ul>
+<li>数据段(initialized)：存储已经初始化的全局和静态变量。</li>
+<li>BSS段(uninitialized)：未初始化的全局变量和静态变量，并不会给该段的数据分配空间，只是记录一下大小。</li>
+<li>代码段(Test Segment)：只能读取，存放的是程序的全部代码（指令），来源于二进制可执行文件中的代码部分，也有可能包含一些只读常量(.rodata)，可以被多进程共享。</li>
+</ul>
+<h3 id="反编译工具"><a href="#反编译工具" class="headerlink" title="反编译工具"></a>反编译工具</h3><ul>
+<li>size a.out：显示一个目标文件或者链接库文件中的目标文件的各个段的大小，当没有输入文件名时，默认为a.out。</li>
+<li>objdump -S a.out：反汇编目标文件或者可执行文件，输出C源代码和反汇编出来的指令对照的格式。</li>
+</ul>
+<h2 id="构建一个内存分配器"><a href="#构建一个内存分配器" class="headerlink" title="构建一个内存分配器"></a>构建一个内存分配器</h2><p>内存分配器将堆视为一组不同大小的块的集合，每个块都是一个连续的虚拟内存片。要么是已分配，要么是未分配。</p>
+<ol>
+<li>构建一个空闲链表存放空闲块，其中隐式空闲链表是通过空闲块头部的块大小字段隐含链接的。下图是一个隐式空闲链表的块和其链接形式：<br><img src="/img/Malloc-块.png"><br><img src="/img/Malloc-隐式空闲链表.png"></li>
+<li>搜索空闲块：查找一个足够大可以放置请求块的空闲块(首次适配、最佳适配、下一次适配等)。</li>
+<li>查找到空闲块后将空闲块分割为合适的大小。</li>
+<li>当空闲链表上所有空闲块都不满足要求时，使用sbrk请求堆内存。</li>
+<li>释放内存时将相邻的空闲块合并为一个大的空闲块。</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/计算机基础/">计算机基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

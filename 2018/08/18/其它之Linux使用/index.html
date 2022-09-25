@@ -1,0 +1,512 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Linux使用 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Linux使用">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Linux使用</h1>
+  
+
+      
+        <time datetime="2018-08-18T12:02:41.000Z">2018-08-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程"><a href="#CentOS7配置网络-Vim使用教程-Make命令教程-Diff命令教程" class="headerlink" title="CentOS7配置网络 | Vim使用教程 | Make命令教程 | Diff命令教程"></a><a href="http://www.cnblogs.com/txk1452/p/5617639.html" target="_blank" rel="noopener">CentOS7配置网络</a> | <a href="http://vimzijun.net/categories/vim/page/2/" target="_blank" rel="noopener">Vim使用教程</a> | <a href="http://www.ruanyifeng.com/blog/2015/02/make.html" target="_blank" rel="noopener">Make命令教程</a> | <a href="http://www.ruanyifeng.com/blog/2012/08/how_to_read_diff.html" target="_blank" rel="noopener">Diff命令教程</a></h3><a id="more"></a>
+<h2 id="Linux文件"><a href="#Linux文件" class="headerlink" title="Linux文件"></a>Linux文件</h2><h3 id="文件种类"><a href="#文件种类" class="headerlink" title="文件种类"></a>文件种类</h3><ul>
+<li>正规文件：一般用来进行存取的文件，ls -al显示的第一个字符为[-]。<ul>
+<li>文本文件（ASCII）：人类可以直接阅读的数据。</li>
+<li>二进制文件（binary）：可执行文件，.o文件等。</li>
+<li>数据格式文件（data）：有些程序在运行时会读取某些特定格式的文件，例如Linux用户在登录时，都会将登录的数据记录在/var/log/wtmp文件中，该文件就是数据格式文件。</li>
+</ul>
+</li>
+<li>目录：第一个字符属性为[d]。</li>
+<li>设备文件（device）：I/O设备及存储相关的一些文件，通常集中在/dev目录中。<ul>
+<li>区块（block）设备文件：随机存储设备，如硬盘（/var/sda）等。第一个字符属性为[b]。</li>
+<li>字符（character）设备文件：即一次性读取，不能截断输出的设备，如键盘、鼠标等。第一个字符属性为[c]。</li>
+</ul>
+</li>
+<li>数据结构文件（sockets）：承接网络上的数据。第一个字符属性为[s]，/run和/tem目录中可以看到该类型文件。</li>
+<li>数据输送文件（FIFO，pipo）：存在的主要目的是为了解决多个程序同时存取一个文件所造成的错误问题。第一个字符属性为[p]。</li>
+<li>连接文件：类似Windows系统中的快捷方式。第一个字符属性为[l]。<h3 id="常用的日志文件"><a href="#常用的日志文件" class="headerlink" title="常用的日志文件"></a>常用的日志文件</h3></li>
+<li>/var/log/messages或者 /var/log/syslog文件：记录了系统错误信息、系统的启动和关闭、网络配置修改等信息。可以用来排查进程为什么被系统杀死。</li>
+<li>dmesg命令：用于查看ring buffer中的信息，ring buffer中存储了类似于设备驱动的初始化信息等。可以用于启动过程中故障排除。</li>
+<li>turbostat命令：用于统计处理器的频率、空闲状态、电源状态、温度等状态。</li>
+</ul>
+<h3 id="各目录的作用"><a href="#各目录的作用" class="headerlink" title="各目录的作用"></a>各目录的作用</h3><ul>
+<li>根目录(/)：所有的目录都是由根目录衍生出来的，同时根目录也与开机、还原、系统修复等动作有关。</li>
+<li>/bin目录：放置在单人维护模式下还能被操作的指令。</li>
+<li>/boot目录：放置开机会使用文件，包括Linux核心文件以及开机菜单与开机所需配置文件等。</li>
+<li>/dev目录：在Linux系统中，任何设备都是以文件的形态存在于这个目录中。</li>
+<li>/etc目录：系统中主要的配置文件几乎都放置在这个目录中，例如人员的账号密码、各种服务的启动配置等。</li>
+<li>/lib目录：放置开机时会用到的函数库和/bin或/sbin目录下面的指令会调用的函数库。</li>
+<li>/media目录：放置可移除的设备。包括软盘、光盘、DVD等。</li>
+<li>/mnt目录：一般用来暂时挂载某些额外的设备。</li>
+<li>/opt目录：第三方软件安装目录，也可以用来当做用户软件安装目录，不过一般用户软件还是会安装到/usr/local目录中。</li>
+<li>/run目录：FHS 规定系统开机后所产生的各项信息应该要放置到该目录。</li>
+<li>/srv目录：作为一些网络服务启动后需要取用的数据的目录。</li>
+<li>/tmp目录：一般使用者或者正在执行的程序暂时存放文件的地方。这个目录是任何人都能够存取的，所以需要定期的清理一下。</li>
+<li>/usr目录：其下的目录结构和根目录相似，但根目录中的文件多是系统级的文件，而/usr中是用户级的文件，一般与具体的系统无关。</li>
+<li>/var目录：包括了一些数据文件，如系统日志等。/var的存放使得/usr被只读挂载成为可能。</li>
+<li>/home目录：系统默认的使用者主文件夹。</li>
+<li>/root目录：系统管理员（root）的主文件夹。</li>
+<li>/lost+found：使用标准的ext2/ext3/ext4文件系统格式才会产生的一个目录，目的在于当文件系统发生错误时，将一些遗失的片段放置到这个目录下。</li>
+<li>/proc：这个目录本身是一个虚拟文件系统（virtual filesystem），他放置的数据都是在内存当中，例如系统核心、行程信息（process）、周边设备的状态及网络状态等等。不占硬盘容量。</li>
+<li>/sys：这个目录其实跟/proc非常类似，也是一个虚拟的文件系统，主要也是记录核心与系统硬件信息较相关的信息。包括目前已载入的核心模块与核心侦测到的硬件设备信息等等。同样不占硬盘容量。</li>
+</ul>
+<h2 id="Linux操作命令"><a href="#Linux操作命令" class="headerlink" title="Linux操作命令"></a>Linux操作命令</h2><ul>
+<li>pwd：显示当前目录。</li>
+<li>file：查看文件所属的类型。</li>
+<li>sync：将内存中尚未被写回到硬盘的数据写回硬盘。</li>
+<li>screen：打开一个子界面；在子界面按Ctrl+a+d退出子界面；screen -ls会显示所有的子界面；screen -r id可以进入子界面。</li>
+<li>source 配置文件名：使修改的配置文件不需要重新登录立即生效。</li>
+<li>tar -cf 压缩文件 被压缩的文件夹；tar -xf 压缩文件。</li>
+<li>nohup command &gt; myout.file 2&gt;&amp;1 &amp;：将command后台运行并将输出重定向到myout.file文件。</li>
+<li>ln -s 源文件 目标文件：创建一个软连接，一般在/usr/local/bin目录中创建一个连接到其它命令的软连接。</li>
+<li>gnome-screensaver-command -l：锁屏。</li>
+<li>iostat -d 1：<a href="https://blog.csdn.net/zhangjay/article/details/6656771" target="_blank" rel="noopener">每秒打印一下磁盘的访问信息</a>。</li>
+<li>iftop -i eth0 -n：实时查看网卡eth0的流量信息。</li>
+<li>ps -p 3224 etime/lstart：列出3224进程的运行时间/开始时间。</li>
+</ul>
+<h3 id="系统问题排查"><a href="#系统问题排查" class="headerlink" title="系统问题排查"></a>系统问题排查</h3><ul>
+<li>内存不够导致进程被kill可以查看/var/log/messages文件，如果出现 kernel: Out of memory: Kill process意味着整个系统的内存已经不足，如果不杀死进程的话，就会导致系统的崩溃。</li>
+</ul>
+<h3 id="日志操作命令"><a href="#日志操作命令" class="headerlink" title="日志操作命令"></a>日志操作命令</h3><ul>
+<li>动态打印后200条日志：tail -fn 200 log/ladybird-web-1.0.log</li>
+<li>根据关键字过滤日志：cat -n log/ladybird-web-1.0.log | grep “key”</li>
+<li>根据日期过滤日志：sed -n ‘/2020-04-22 11:30:00/,/2020-04-22 11:33:00/p’ log/ladybird-web-1.0.log</li>
+<li>查询开始时间到当前时间日志：sed -n ‘/2020-04-22 11:40:00/,$p’ log/ladybird-web-1.0.log</li>
+</ul>
+<h3 id="查找命令"><a href="#查找命令" class="headerlink" title="查找命令"></a>查找命令</h3><ul>
+<li>whereis [-bmsu] 文件或目录名：在一些特定的目录中寻找文件。如/bin/sbin和/usr/share/man等目录。</li>
+<li>locate -i / config：忽略大小写查询根目录中文件路径包括config的文件。</li>
+<li>find：强大的文件查找命令。find ~/nginx/ -name “nginx.c”代表在工作目录下的nginx目录查找nginx.c。find ~/nginx/ -iname “*.C”代表忽略大小写的通配符查找。</li>
+</ul>
+<h3 id="查看磁盘命令"><a href="#查看磁盘命令" class="headerlink" title="查看磁盘命令"></a>查看磁盘命令</h3><ul>
+<li>du –max-depth=1 -h：查看当前目录下各文件和文件夹大小。</li>
+<li>du -sh *：当前目录各文件和文件夹大小</li>
+<li>df -h：列出文件系统的整体磁盘使用量。</li>
+<li>lsblk：列出系统上的所有磁盘列表。</li>
+<li>blkid：列出磁盘的UUID等参数。</li>
+<li>parted：列出磁盘的分区表类型与分区信息。</li>
+</ul>
+<h3 id="进程管理命令"><a href="#进程管理命令" class="headerlink" title="进程管理命令"></a>进程管理命令</h3><ul>
+<li>Ctrl + z：将当前任务丢到背景中暂停。</li>
+<li>jobs：观察目前背景中的任务状态。</li>
+<li>fg jobnum：将背景中任务拿到前台来处理。</li>
+<li>bg jobnum：让任务在背景下接着运行。</li>
+<li>kill -9 %jobnum：杀死一个背景任务。-9代表立刻强制删除一个工作；-15代表以正常的程序方式终止一项工作。</li>
+<li>ps -aux：列出所有系统运行的进程；ps -l则是列出自己bash下的进程。</li>
+<li>pstree：以进程树的方式列出进程。</li>
+<li>top：监视系统中不同的进程所使用的资源。它提供实时的系统状态信息。</li>
+<li>fusre和lsof：查看某个文件被哪些进程使用。</li>
+</ul>
+<h3 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h3><ul>
+<li>chgrp -R fengbo practice：改变文件所属的群组。</li>
+<li>chown -R fengbo practice：改变文件的所有者。</li>
+<li>chmod -R 741 practice：改变文件的权限。</li>
+<li>lsof：<a href="https://www.cnblogs.com/sparkbj/p/7161669.html" target="_blank" rel="noopener">查看当前系统打开的文件</a>。</li>
+</ul>
+<h2 id="Vim命令"><a href="#Vim命令" class="headerlink" title="Vim命令"></a>Vim命令</h2><ul>
+<li>c2l：删除后面两字符，并进入输入模式.</li>
+<li>c2w：删除后面两个词，并进入输入模式。</li>
+<li>dl：删除当前元素，相当于x命令。</li>
+<li>d2l：删除当前元素和当前元素后面的一个元素；dj删除光标所在行。</li>
+<li>Ctrl + r：重做。</li>
+</ul>
+<h3 id="文件切换"><a href="#文件切换" class="headerlink" title="文件切换"></a>文件切换</h3><ul>
+<li>:ls 显示所有打开的文件。</li>
+<li>:bn：切换到下一个文件，bn2则是切换到下两个文件。</li>
+<li>:bp：切换到上一个文件。</li>
+</ul>
+<h3 id="窗口分割"><a href="#窗口分割" class="headerlink" title="窗口分割"></a>窗口分割</h3><ul>
+<li>:sp filename：上下分割，并打开一个新的文件。</li>
+<li>:vsp filename：左右分割，并打开一个新的文件。</li>
+<li>Ctrl + w + w：切换到下一个窗口。</li>
+<li>Ctrl + w + h：切换到左边的窗口。</li>
+</ul>
+<h3 id="代码折叠"><a href="#代码折叠" class="headerlink" title="代码折叠"></a>代码折叠</h3><ul>
+<li>za：打开或关闭当前折叠。</li>
+<li>zm：关闭所有折叠。</li>
+<li>zr：打开所有折叠。</li>
+</ul>
+<h3 id="编辑二进制文件"><a href="#编辑二进制文件" class="headerlink" title="编辑二进制文件"></a>编辑二进制文件</h3><ol>
+<li>使用vi -b filename打开文件。</li>
+<li>输入:%!xxd将其转换为十六进制显示。</li>
+<li>使用:%!xxd -r在编辑完成后将其转换回去。</li>
+</ol>
+<h3 id="替换命令"><a href="#替换命令" class="headerlink" title="替换命令"></a>替换命令</h3><ul>
+<li>:s/vivian/sky/：替换当前行第一个vivian为sky。</li>
+<li>:s/vivian/sky/g：替换当前行所有vivian为sky。</li>
+<li>:n,$s/vivian/sky/：替换第n行开始到最后一行中每一行的第一个vivian为sky。</li>
+<li>:n,$s/vivian/sky/g：替换第n行开始到最后一行中每一行所有vivian为sky。n为数字，若n为.，表示从当前行开始到最后一行。</li>
+<li>:%s/vivian/sky/：替换每一行的第一个vivian为sky。</li>
+<li>:%s/vivian/sky/g：替换每一行中所有vivian为sky。</li>
+</ul>
+<h2 id="网络管理基础命令"><a href="#网络管理基础命令" class="headerlink" title="网络管理基础命令"></a>网络管理基础命令</h2><ul>
+<li>route -n：查看本机的路由表。</li>
+<li>traceroute -n <a href="http://www.baidu.com：检查本机到百度所经过的各个路由器。traceroute" target="_blank" rel="noopener">www.baidu.com：检查本机到百度所经过的各个路由器。traceroute</a> -nT <a href="http://www.baidu.com通过TCP来检测。" target="_blank" rel="noopener">www.baidu.com通过TCP来检测。</a></li>
+<li>netstat -nlpt：查看监听的端口服务。</li>
+<li>netstat -nta | grep 100 | wc -l：查看100端口的连接数。</li>
+<li>netstat -nt 2&gt;/dev/null | grep :100 | grep “ESTABLISHED” | awk ‘{print $5}’ | cut -d: -f 4 | sort | uniq -c | sort -nr | head</li>
+<li>nmap localhost：扫瞄本机所启用的端口；nmap -sTU localhost会同时扫描UDP端口；nmap -sP 192.168.1.0/24会分析内网中有几台主机是启动的；yum install nmap安装nmap。 </li>
+<li>vi /etc/sysconfig/iptables：修改防火墙出站及入站规则。<!-- more -->
+</li>
+</ul>
+<h3 id="TCPDUMP抓包"><a href="#TCPDUMP抓包" class="headerlink" title="TCPDUMP抓包"></a><a href="https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html" target="_blank" rel="noopener">TCPDUMP抓包</a></h3><ul>
+<li>tcpdump tcp -i eth2.2 -s 0 and dst port ! 22 and src net ! 118.31.167.239 -w /mnt/sda1/target.cap</li>
+</ul>
+<h3 id="System入门教程"><a href="#System入门教程" class="headerlink" title="System入门教程"></a><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html" target="_blank" rel="noopener">System入门教程</a></h3><h2 id="systemctl命令"><a href="#systemctl命令" class="headerlink" title="systemctl命令"></a>systemctl命令</h2><h3 id="service和systemctl"><a href="#service和systemctl" class="headerlink" title="service和systemctl"></a>service和systemctl</h3><ul>
+<li>service命令会去启动/etc/init.d/目录的脚本。</li>
+<li>systemctl是用于替换service命令的，默认从目录/etc/systemd/system/读取配置文件。但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/或者/lib/systemd/system/。<h3 id="systemctl常用命令"><a href="#systemctl常用命令" class="headerlink" title="systemctl常用命令"></a>systemctl常用命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 重启系统</span><br><span class="line">systemctl reboot</span><br><span class="line"># 关闭系统，切断电源</span><br><span class="line">systemctl poweroff</span><br><span class="line"># CPU停止工作</span><br><span class="line">systemctl halt</span><br><span class="line"># 暂停系统</span><br><span class="line">systemctl suspend</span><br><span class="line"># 让系统进入冬眠状态</span><br><span class="line">systemctl hibernate</span><br><span class="line"># 让系统进入交互式休眠状态</span><br><span class="line">systemctl hybrid-sleep</span><br><span class="line"># 启动进入救援状态（单用户状态）</span><br><span class="line">systemctl rescue</span><br><span class="line"># 列出所有服务（包括启用和禁用）</span><br><span class="line">systemctl list-unit-files --type=service</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Unit-File"><a href="#Unit-File" class="headerlink" title="Unit File"></a><a href="https://www.cnblogs.com/usmile/p/13065594.html" target="_blank" rel="noopener">Unit File</a></h3><h4 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h4><p>Systemd 将系统资源划分为12类，对应12种类型的单元文件。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">系统资源类型</th>
+<th style="text-align:center">单元文件扩展名</th>
+<th style="text-align:center">单元文件描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Service</td>
+<td style="text-align:center">.service</td>
+<td style="text-align:center">封装守护进程的启动、停止、重启和重载操作，是最常见的一种 Unit 文件</td>
+</tr>
+<tr>
+<td style="text-align:center">Target</td>
+<td style="text-align:center">.target</td>
+<td style="text-align:center">定义 target 信息及依赖关系，一般仅包含 Unit 段</td>
+</tr>
+<tr>
+<td style="text-align:center">Device</td>
+<td style="text-align:center">.device</td>
+<td style="text-align:center">对于 /dev 目录下的硬件设备，主要用于定义设备之间的依赖关系</td>
+</tr>
+<tr>
+<td style="text-align:center">Mount</td>
+<td style="text-align:center">.mount</td>
+<td style="text-align:center">定义文件系统的挂载点，可以替代过去的 /etc/fstab 配置文件</td>
+</tr>
+<tr>
+<td style="text-align:center">Automount</td>
+<td style="text-align:center">.automount</td>
+<td style="text-align:center">用于控制自动挂载文件系统，相当于 SysV-init 的 autofs 服务</td>
+</tr>
+<tr>
+<td style="text-align:center">Path</td>
+<td style="text-align:center">.path</td>
+<td style="text-align:center">用于监控指定目录或文件的变化，并触发其它 Unit 运行</td>
+</tr>
+<tr>
+<td style="text-align:center">Scope</td>
+<td style="text-align:center">.scope</td>
+<td style="text-align:center">这种 Unit 文件不是用户创建的，而是 Systemd 运行时产生的，描述一些系统服务的分组信息</td>
+</tr>
+<tr>
+<td style="text-align:center">Slice</td>
+<td style="text-align:center">.slice</td>
+<td style="text-align:center">用于表示一个 CGroup 的树</td>
+</tr>
+<tr>
+<td style="text-align:center">Snapshot</td>
+<td style="text-align:center">.snapshot</td>
+<td style="text-align:center">用于表示一个由 systemctl snapshot 命令创建的 Systemd Units 运行状态快照，可以切回某个快照</td>
+</tr>
+<tr>
+<td style="text-align:center">Socket</td>
+<td style="text-align:center">.socket</td>
+<td style="text-align:center">监控来自于系统或网络的数据消息</td>
+</tr>
+<tr>
+<td style="text-align:center">Swap</td>
+<td style="text-align:center">.swap</td>
+<td style="text-align:center">定义一个用户做虚拟内存的交换分区</td>
+</tr>
+<tr>
+<td style="text-align:center">Timer</td>
+<td style="text-align:center">.timer</td>
+<td style="text-align:center">用于配置在特定时间触发的任务，替代了 Crontab 的功能</td>
+</tr>
+</tbody>
+</table>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><p>Unit 文件可以分为三个配置区段：</p>
+<ul>
+<li>Unit 段：所有Unit文件通用，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系<ul>
+<li>Description：当前服务的简单描述</li>
+<li>Documentation：文档地址，可以是一个或多个文档的URL路径。<br>【依赖关系】只涉及依赖关系，默认情况下两个Unit同时启动。</li>
+<li>Requires：与其它Unit的强依赖关系，如果其中任意一个Unit启动失败或异常退出，当前Unit也会被退出。</li>
+<li>Wants：与其它Unit的弱依赖关系，如果其中任意一个Unit启动失败或异常退出，不影响当前Unit继续执行。</li>
+<li>Binds To：与Requires相似，该字段指定的Unit如果退出，会导致当前Unit停止运行。</li>
+<li>Part Of：一个Bind To作用的子集，仅在列出的Unit失败或重启时，终止或重启当前Unit，而不会随列出Unit的启动而启动。<br>【启动顺序】只涉及启动顺序，不影响启动结果和运行情况</li>
+<li>After：该字段指定的Unit全部启动完成以后，才会启动当前Unit。</li>
+<li>Before：该字段指定的Unit必须在当前Unit启动完成之后再启动。</li>
+</ul>
+</li>
+<li>Install 段：所有Unit文件通用，用来定义如何启动，以及是否开机启动。<ul>
+<li>WantedBy：它的值是一个或多个target，执行enable命令时，符号链接会放入/etc/systemd/system目录下以 target 名+.wants后缀构成的子目录中。</li>
+<li>RequiredBy：它的值是一个或多个target，执行enable命令时，符号链接会放入/etc/systemd/system目录下以target名+.required后缀构成的子目录中。</li>
+<li>Alias：当前Unit可用于启动的别名。</li>
+<li>Also：当前Unit被 enable/disable 时，会被同时操作的其他Unit。</li>
+</ul>
+</li>
+<li>Service 段：服务（Service）类型的Unit文件（后缀为 .service）特有的，用于定义服务的具体管理和执行动作。所有的启动设置之前，都可以加上一个连词号（-），表示”抑制错误”，即发生错误的时候，不影响其他命令的执行。比如，ExecStart=-/etc/sysconfig/sshd（注意等号后面的那个连词号），就表示即使/etc/sysconfig/sshd文件不存在，也不会抛出错误。<ul>
+<li>Type：定义启动时的进程行为。<ul>
+<li>Type=simple：默认值，ExecStart字段启动的进程为主进程，服务进程不会fork，如果该服务要启动其他服务，不要使用此类型启动，除非该服务是socket激活型。</li>
+<li>Type=forking：ExecStart字段将以fork()方式从父进程创建子进程启动，创建后父进程会立即退出，子进程成为主进程。通常需要指定PIDFile字段，以便Systemd能够跟踪服务的主进程。对于常规的守护进程（daemon），除非你确定此启动方式无法满足需求，使用此类型启动即可。</li>
+<li>Type=oneshot：只执行一次，Systemd会等当前服务退出，再继续往下执行。适用于只执行一项任务、随后立即退出的服务。通常需要指定RemainAfterExit=yes字段，使得Systemd在服务进程退出之后仍然认为服务处于激活状态。</li>
+<li>Type=dbus：当前服务通过D-Bus信号启动。当指定的BusName出现在DBus系统总线上时，Systemd认为服务就绪。</li>
+<li>Type=notify：当前服务启动完毕会发出通知信号，通知Systemd，然后Systemd再启动其他服务。</li>
+<li>Type=idle：Systemd会等到其他任务都执行完，才会启动该服务。一种使用场合是：让该服务的输出，不与其他服务的输出相混合</li>
+</ul>
+</li>
+<li>ExecStart：启动当前服务的命令。</li>
+<li>ExecStartPre：启动当前服务之前执行的命令。</li>
+<li>ExecStartPost：启动当前服务之后执行的命令。</li>
+<li>ExecReload：重启当前服务时执行的命令。</li>
+<li>ExecStop：停止当前服务时执行的命令。</li>
+<li>ExecStopPost：停止当前服务之后执行的命令。</li>
+<li>RemainAfterExit：当前服务的所有进程都退出的时候，Systemd仍认为该服务是激活状态。这个配置主要是提供给一些并非常驻内存，而是启动注册后立即退出，然后等待消息按需启动的特殊类型服务使用的。</li>
+<li>TimeoutSec：定义Systemd停止当前服务之前等待的秒数。</li>
+<li>RestartSec：Systemd重启当前服务间隔的秒数。</li>
+<li>KillMode：定义Systemd如何停止服务，可能的值包括：<ul>
+<li>control-group（默认值）：当前控制组里面的所有子进程，都会被杀掉。</li>
+<li>process：只杀主进程（sshd服务，推荐值）。</li>
+<li>mixed：主进程将收到SIGTERM信号，子进程收到SIGKILL信号。</li>
+<li>none：没有进程会被杀掉，只是执行服务的stop命令。</li>
+</ul>
+</li>
+<li>Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括：<ul>
+<li>no（默认值）：退出后不会重启。</li>
+<li>on-success：只有正常退出时（退出状态码为0），才会重启。</li>
+<li>on-failure：非正常退出时（退出状态码非0），包括被信号终止和超时，才会重启（守护进程，推荐值）。</li>
+<li>on-abnormal：只有被信号终止和超时，才会重启（对于允许发生错误退出的服务，推荐值）。</li>
+<li>on-abort：只有在收到没有捕捉到的信号终止时，才会重启。</li>
+<li>on-watchdog：超时退出，才会重启。</li>
+<li>always：不管是什么退出原因，总是重启。</li>
+</ul>
+</li>
+<li>PIDFile：指向当前服务PID file的绝对路径。</li>
+<li>User：指定运行服务的用户。</li>
+<li>Group：指定运行服务的用户组。</li>
+<li>EnvironmentFile：指定当前服务的环境参数文件。该文件内部的key=value键值对，可以用$key的形式，在当前配置文件中获取。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/其它/">其它</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

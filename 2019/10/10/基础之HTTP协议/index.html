@@ -1,0 +1,349 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>HTTP协议 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="HTTP协议">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">HTTP协议</h1>
+  
+
+      
+        <time datetime="2019-10-10T02:22:43.000Z">2019-10-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><a href="https://github.com/duoani/HTTP-RFCs.zh-cn" target="_blank" rel="noopener">RFC文档</a><br><a id="more"></a></p>
+<h3 id="HTTP请求消息的解析"><a href="#HTTP请求消息的解析" class="headerlink" title="HTTP请求消息的解析"></a>HTTP请求消息的解析</h3><p>解析HTTP消息的一般流程是先将起始行读入到一个构造体中，将所有头字段读入到一个哈希表中（以字段的名称作为键）直到遇到空行，然后使用以上解析得到的信息来决定是否需要消息体。如果消息头表明消息带有消息体，那么将消息体以流的方式读入，直到已读字节数等于消息体的长度或者连接已被关闭为止。</p>
+<h3 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h3><ul>
+<li>1xx(Informational)：这是一个过渡响应，用于在完成所请求的动作以及发送一个最终响应之前传递连接状态或请求进展。</li>
+<li>2xx(Successful)：客户端的请求已经被成功接收、理解和接受。</li>
+<li>3xx (Redirection)：需要用户代理采取进一步的动作才能实现这个请求。如果提供了一个 Location头字段，用户代理可以自动重定向它的请求到Location的字段值所指定的URI引用，即使它不理解具体的状态码。<ul>
+<li>301：在请求的URL已被移除时使用。响应的Location首部中应该包含资源现在所处的URL。</li>
+<li>302：与301状态码类似，但是，客户端应该使用Location首部给出的URL来临时定位资源，将来的请求仍然使用老的URL。</li>
+<li>304：如果客户端发送了一个带条件的GET 请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个304状态码。</li>
+</ul>
+</li>
+<li>4xx(Client Error)状态码种类表明客户端貌似有错误。</li>
+<li>5xx(Server Error)状态码种类表明服务器意识到它有错误或者它无法执行所请求的方法。</li>
+</ul>
+<h2 id="HTTP首部"><a href="#HTTP首部" class="headerlink" title="HTTP首部"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers" target="_blank" rel="noopener">HTTP首部</a></h2><h3 id="通用首部：客户端和服务器都可以使用"><a href="#通用首部：客户端和服务器都可以使用" class="headerlink" title="通用首部：客户端和服务器都可以使用"></a>通用首部：客户端和服务器都可以使用</h3><ul>
+<li>Cache-Control：指定缓存的工作机制。</li>
+<li>Connection：<ul>
+<li>Connection: 不再转发的首部字段名 – 指明那些首部不会被转发，即这些首部为逐跳hop-by-hop首部。</li>
+<li>Connection: keep-alive – 在HTTP1.0中表明该连接时长连接。</li>
+<li>Connection: close – 在HTTP1.1中表示关闭该连接。</li>
+</ul>
+</li>
+<li>Transfer-Encoding：告诉接收端为了保证报文的可靠传输，对报文采用什么编码方式。该首部是一个逐跳传输消息首部，即仅应用于两个节点之间的消息传递，而不是所请求的资源本身。<ul>
+<li>Transfer-Encoding: chunked – 表明报文时分块传输的。</li>
+</ul>
+</li>
+<li>Date：表明创建HTTP报文的日期和时间。</li>
+<li>Via：显示报文经过的中间节点（代理、网关）。</li>
+</ul>
+<h3 id="请求首部：请求报文特有"><a href="#请求首部：请求报文特有" class="headerlink" title="请求首部：请求报文特有"></a>请求首部：请求报文特有</h3><ul>
+<li>Host：告知服务器，请求的资源所处的互联网主机名和端口号。虚拟主机运行在同一个IP上，因此使用首部字段Host加以区分。Host头字段的内容是一个关键信息，所以用户代理应该将Host作为头部的第一个字段，紧随于请求行之后。</li>
+<li>Referer：使服务器知道客户端是从哪里获得其请求的URL。</li>
+<li>User-Agent：创建请求的浏览器和用户代理名称等信息传达给服务器。</li>
+<li>Cookie：客户端用它向服务器传递一个令牌。</li>
+<li>Accept：相当于（Accept-type），用来通知服务器用户代理能够处理的媒体类型及媒体类型的相对优先级。例如accept: application/json, text/javascript, <em>/</em>; q=0.01。权重值q的范围是0~1（可精确到小数点后3位），且1为最大值。不指定权重q值时，默认权重为q=1.0。</li>
+<li>Accept-Charset：来通知服务器用户代理支持的字符集及字符集的相对优先顺序。</li>
+<li>Accept-Encoding：段用来告知服务器用户代理支持的内容编码及内容编码的优先级顺序</li>
+<li>Accept-Language：用来告知服务器用户代理能够处理的自然语言集。例如Accept-Language: zh-cn,zh;q=0.7,en-us,en;q=0.3。</li>
+</ul>
+<h3 id="响应首部：响应报文特有"><a href="#响应首部：响应报文特有" class="headerlink" title="响应首部：响应报文特有"></a>响应首部：响应报文特有</h3><ul>
+<li>Age：从最初创建开始的响应持续时间。</li>
+<li>Location：对于201(Created)响应，Location的值引用的是由于这个请求而创建的主要资源。对于3xx(Redirection)响应，Location的值引用的是重定向的目标。</li>
+<li>Allow：列出了声明目标资源所支持的一系列方法。这个字段的目的是确切通知给接收端这个资源有哪些有效的请求方法。</li>
+<li>Server：告诉客户端当前服务器上安装的HTTP服务器应用程序信息。</li>
+</ul>
+<h3 id="实体首部：用于说明实体的属性"><a href="#实体首部：用于说明实体的属性" class="headerlink" title="实体首部：用于说明实体的属性"></a>实体首部：用于说明实体的属性</h3><ul>
+<li>Allow：用于通知客户端能够支持Request-URI指定资源的所有HTTP方法。例如Allow: GET, HEAD。</li>
+<li>Content-Encoding：告知客户端服务器对实体的主体部分选用的内容编码方式。例如Content-Encoding: gzip。</li>
+<li>Content-Language：告知客户端，实体主体使用的自然语言（指中文或英文等语言）。例如Content-Language: zh-CN。</li>
+<li>Content-Length：表明了实体主体部分的大小（单位是字节）。例如Content-Length: 15000。</li>
+<li>Content-Type：说明了实体主体内对象的媒体类型。例如Content-Type: text/html; charset=UTF-8。</li>
+</ul>
+<h3 id="常用的Content-Type类型"><a href="#常用的Content-Type类型" class="headerlink" title="常用的Content-Type类型"></a>常用的Content-Type类型</h3><ol>
+<li>application/json：目前的最常用的Content-Type类型，即传递JSON数据。</li>
+<li>application/octet-stream：Postman中的raw模式使用该类型，只可以上传二进制数据。</li>
+<li>application/x-www-form-urlencoded：浏览器使用表单提交数据时默认的编码格式，会将参数转换成key=value&amp;key=value格式，并对数据进行URLEncoder编码，即<b>将键值对的参数用&amp;连接起来，如果有空格，将空格转换为+加号；有特殊符号，将特殊符号转换为ASCII HEX值</b>。对于Get请求，是将参数放在?后面，即?key=value&amp;key=value格式，Post请求则是将key=value&amp;key=value放在请求体（Form Data）中。</li>
+<li>multipart/form-data：一般格式为multipart/form-data; boundary=————————–138759662723671253948031。boundary的值用来分隔每个参数。该类型即可以上传键值对，也可以上传文件，相当于2和3的混合体。</li>
+</ol>
+<h2 id="HTTP性能瓶颈"><a href="#HTTP性能瓶颈" class="headerlink" title="HTTP性能瓶颈"></a>HTTP性能瓶颈</h2><ul>
+<li>TCP连接建立握手和TCP慢启动拥塞控制：慢启动是指TCP连接会随着时间进行自我调谐，起初会限制连接的最大速度，如果数据成功传输，会随着时间的推移提高传输的速度。</li>
+<li>用于捎带确认的TCP延迟确认算法:<ul>
+<li>TCP协议为了确保数据的可靠传输实现了自己的确认机制。每个 TCP 段都有一个序列号和数据完整性校验和。每个段的接收者收到完好的段时，都会向发送者回送小的确认分组。如果发送者没有在指定的窗口时间内收到确认信息，发送者就认为分组已被破坏或损毁，并重发数据。</li>
+<li>由于确认报文很小，所以TCP允许在发往相同方向的输出数据分组中对其进行捎带。TCP将返回的确认信息与输出的数据分组结合在一起，可以更有效地利用网络。为了增加确认报文找到同向传输数据分组的可能性，很多TCP栈都实现了一种延迟确认算法。延迟确认算法会在一个特定的窗口时间（通常是100～200毫秒）内将输出确认存放在缓冲区中，以寻找能够捎带它的输出数据分组。如果在那个时间段内没有输出数据分组，就将确认信息放在单独的分组中传送。</li>
+<li>但是，HTTP具有双峰特征的请求，应答行为降低了捎带信息的可能。当希望有相反方向回传分组的时候，偏偏没有那么多。通常，延迟确认算法会引入相当大的时延。根据所使用操作系统的不同，可以调整或禁止延迟确认算法。</li>
+</ul>
+</li>
+<li>数据聚集的Nagle算法:<ul>
+<li>Nagle算法是指在发送的数据在未被确认前，如果有新的小数据生成，那就把小数据收集起来，等凑足一个MSS或者收到确认后再发送。</li>
+<li>Nagle算法会引发几种HTTP性能问题。首先，小的HTTP报文可能无法填满一个分组，可能会因为等待那些永远不会到来的额外数据而产生时延。其次，Nagle算法与延迟确认之间的交互存在问题——Nagle算法会阻止数据的发送，直到有确认分组抵达为止，但确认分组自身会被延迟确认算法延迟100～200毫秒。 </li>
+<li>HTTP应用程序常常会在自己的栈中设置参数TCP_NODELAY，禁用Nagle算法，提高性能。如果要这么做的话，一定要确保会向TCP写入大块的数据，这样就不会产生一堆小分组了。</li>
+</ul>
+</li>
+<li>TIME_WAIT时延和端口耗尽：当某个TCP端点关闭TCP连接时，会在内存中维护一个小的控制块，用来记录最近所关闭连接的IP地址和端口号。这类信息只会维持一小段时间，通常是所估计的最大分段试用期的两倍（称为2MSL,通常为2分钟）左右，以确保在这段时间内不会创建具有相同地址和端口号的新连接。实际上，这个算法可以防止在2分钟内创建、关闭并重新创建2个相同IP地址和端口号的连接。2MSL的连接关闭延迟通常只有在进行性能基准测试时才有可能出现问题。</li>
+</ul>
+<h3 id="HTTP长连接"><a href="#HTTP长连接" class="headerlink" title="HTTP长连接"></a>HTTP长连接</h3><p>为了解决TCP连接建立握手和TCP慢启动拥塞控制所带来的网络时延问题，在HTTP/1.0和HTTP/1.1中都引入了长连接的概念。不过长连接需要注意以下几点：</p>
+<ul>
+<li>长连接必须有Content-Length首部或分块传输编码方式编码的连接。</li>
+<li>HTTP/1.0和HTTP/1.1的长连接方式不同。HTTP/1.1的代理服务器不应该与HTTP/1.0客户端建立持久连接。</li>
+<li>Content-Length字段必须真实反映实体长度，通常如果Content-Length比实际长度短，会造成内容被截断；如果比实体内容长，会造成等待。</li>
+</ul>
+<h3 id="Content-Length的问题"><a href="#Content-Length的问题" class="headerlink" title="Content-Length的问题"></a>Content-Length的问题</h3><ul>
+<li>实际应用中，有些时候实体长度并没那么好获得，例如实体来自于网络文件，或者由动态语言生成。这时候要想准确获取长度，只能开一个足够大的Buffer，等内容全部生成好再计算。但这样做一方面需要更大的内存开销，另一方面也会让客户端等更久。</li>
+<li>所以可以使用分块编码(chunked)的方式来传输。在头部加入Transfer-Encoding: chunked之后，就代表这个报文采用了分块编码。这时，报文中的实体需要改为用一系列分块来传输。每个分块包含十六进制的长度值和数据，长度值独占一行，长度不包括它结尾的CRLF(\r\n)，也不包括分块数据结尾的CRLF。最后一个分块长度值必须为0，对应的分块数据为CRLF，表示实体结束。</li>
+</ul>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>HTTP加上加密处理和认证以及完整性保护后即是HTTPS。</p>
+<h3 id="对称加密和非对称加密"><a href="#对称加密和非对称加密" class="headerlink" title="对称加密和非对称加密"></a>对称加密和非对称加密</h3><ul>
+<li>加密和解密同用一个密钥的方式称为对称加密。对称加密进行加密时必须将密钥也发给对方。如果通信被监听那么密钥就可会落入攻击者之手，同时也就失去了加密的意义。</li>
+<li>非对称加密使用一对非对称的密钥。一把叫做私有密钥（private key），另一把叫做公开密钥（public key）。发送密文的一方使用对方的公开密钥进行加密处理，对方收到被加密的信息后，再使用自己的私有密钥进行解密。利用这种方式，不需要发送用来解密的私有密钥，也不必担心密钥被攻击者窃听而盗走。</li>
+</ul>
+<h3 id="HTTPS加密方式"><a href="#HTTPS加密方式" class="headerlink" title="HTTPS加密方式"></a>HTTPS加密方式</h3><p>非对称加密处理起来更为复杂效率更低，所以HTTPS使用非对称加密的方式传递对称加密的密匙，再使用对称加密的方式来进行通信。</p>
+<h3 id="HTTPS通信过程"><a href="#HTTPS通信过程" class="headerlink" title="HTTPS通信过程"></a>HTTPS通信过程</h3><ol>
+<li>客户端通过发送Client Hello报文开始SSL通信。报文中包含客户端支持的SSL的指定版本、加密组件列表(所使用的加密算法及密钥长度等)。</li>
+<li>服务器可进行SSL通信时，会以Server Hello报文作为应答。和客户端一样，在报文中包含SSL版本以及加密组件。服务器的加密组件内容是从接收到的客户端加密组件内筛选出来的。</li>
+<li>之后服务器发送Certificate报文。报文中包含公开密钥证书。</li>
+<li>最后服务器发送Server Hello Done报文通知客户端，SSL第一次握手结束。</li>
+<li>客户端以Client Key Exchange报文作为回应。报文中包含通信加密中使用的一种被称为Pre-master secret的随机密码串(对称加密的密钥)。</li>
+<li>接着客户端继续发送Change Cipher Spec报文。该报文会提示服务器，在此报文之后的通信会采用Pre-master secret密钥加密。</li>
+<li>客户端发送Finished报文。该报文包含连接至今全部报文的整体校验值。这次握手协商是否能够成功，要以服务器是否能够正确解密该报文作为判定标准。</li>
+<li>服务器同样发送Change Cipher Spec报文和Finished报文。</li>
+<li>服务器和客户端的Finished报文交换完毕之后，SSL连接就算建立完成。</li>
+<li>应用层协议通信，即发送HTTP响应。</li>
+</ol>
+<h3 id="证明公开密钥正确性的证书"><a href="#证明公开密钥正确性的证书" class="headerlink" title="证明公开密钥正确性的证书"></a>证明公开密钥正确性的证书</h3><p>公开密钥加密方式还是存在一些问题的。那就是无法证明公开密钥本身就是货真价实的公开密钥。比如，正准备和某台服务器建立公开密钥加密方式下的通信时，如何证明收到的公开密钥就是原本预想的那台服务器发行的公开密钥。或许在公开密钥传输途中，真正的公开密钥已经被攻击者替换掉了。为了解决上述问题，可以使用由数字证书认证机构（CA，Certificate Authority）和其相关机关颁发的公开密钥证书。</p>
+<ol>
+<li>服务器的运营人员向数字证书认证机构提出公开密钥的申请。数字证书认证机构在判明提出申请者的身份之后，会对已申请的公开密钥做数字签名，然后分配这个已签名的公开密钥，并将该公开密钥放入公钥证书后绑定在一起。</li>
+<li>服务器会将这份由数字证书认证机构颁发的公钥证书发送给客户端，以进行公开密钥加密方式通信。公钥证书也可叫做数字证书或直接称为证书。</li>
+<li>接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确服务器的公开密钥是值得信赖的。</li>
+<li>多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥。</li>
+</ol>
+<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a><a href="https://www.oschina.net/question/1397765_172789" target="_blank" rel="noopener">HTTP2.0</a></h2><h3 id="HTTP2-0优势"><a href="#HTTP2-0优势" class="headerlink" title="HTTP2.0优势"></a>HTTP2.0优势</h3><ol>
+<li>基于二进制分帧的多路复用，解决了HTTP1.X的对头阻塞(Head-Of-Line Blocking)问题。</li>
+<li>可以定义请求的优先级。</li>
+<li>使用了首部压缩技术，压缩算法使用HPACK。</li>
+<li>使用首部表来跟踪和存储之前发送的键-值对。首部表在连接过程中始终存在，新增的键-值对会更新到表尾，不需要每次通信都需要再携带首部。 </li>
+<li>增加了服务端推送功能，服务端可以根据客户端的请求，提前返回多个响应，推送额外的资源给客户端。</li>
+</ol>
+<h3 id="HTTP2-0协商"><a href="#HTTP2-0协商" class="headerlink" title="HTTP2.0协商"></a>HTTP2.0协商</h3><ol>
+<li>基于ALPN的协商过程：客户端在TLS握手Client Hello阶段表明自身支持HTTP2.0。服务端收到后，响应Server Hello，表示自己也支持HTTP2.0。双方开始HTTP 2.0通信。</li>
+<li>基于HTTP的协商过程：客户端也可以使用HTTP Upgrade机制来使用HTTP2.0。客户端和服务端都可以使用Upgrade请求头来携带升级的协议。</li>
+</ol>
+<h2 id="HTTP3-0-队头阻塞"><a href="#HTTP3-0-队头阻塞" class="headerlink" title="HTTP3.0 - 队头阻塞"></a>HTTP3.0 - <a href="https://zhuanlan.zhihu.com/p/330300133" target="_blank" rel="noopener">队头阻塞</a></h2><p>HTTP2.0无法解决TCP队首阻塞问题。因为TCP使用滑动窗口机制来保证数据传输的可靠性，所以当出现一个数据包丢失时，当前连接就需要等待丢失的数据包重新传输，会将所有的HTTP请求都阻塞掉。HTTP3.0通过是使用QUIC协议替换TCP协议来解决该问题。QUIC底层使用UDP协议实现数据传输，所以该数据包看你被运营商丢弃。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/计算机基础/">计算机基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

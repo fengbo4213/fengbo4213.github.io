@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>AQS源码分析 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="AQS源码分析">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">AQS源码分析</h1>
+  
+
+      
+        <time datetime="2017-11-02T06:42:13.000Z">2017-11-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://ifeve.com/java-special-troops-aqs/" target="_blank" rel="noopener">AQS原理浅析</a>，AQS的全称为（AbstractQueuedSynchronizer），是java.util.concurrent.locks包下面的一个抽象类。ReentrantLock/Semaphore/CountDownLatch等都是该类的子类。<b>该类实现了锁升级（即由轻量级锁到重量级锁的过程）、锁自旋等逻辑。</b><br><a id="more"></a><br>下面以ReentrantLock的非公平锁为依托分析AQS源码。</p>
+<h2 id="获取锁"><a href="#获取锁" class="headerlink" title="获取锁"></a>获取锁</h2><h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/AQS/01.png"><br>调用本类的静态内部类NonfairSync的lock()方法。NonfairSync继承了Sync抽象类，而Sync抽象类是AbstractQueuedSynchronizer类的子类。</p>
+<h3 id="Img2"><a href="#Img2" class="headerlink" title="Img2"></a>Img2</h3><p><img src="/img/AQS/02.png"><br>Img2.1.如果state状态位为0，即当前没有线程持有该锁。则使用CAS将state状态位设置为1，并把该锁的持有线程设置为当前线程。<br>Img2.2.如果已经有线程持有该锁则调用AbstractQueuedSynchronizer类的acquire(int)方法。</p>
+<h3 id="Img3"><a href="#Img3" class="headerlink" title="Img3"></a>Img3</h3><p><img src="/img/AQS/03.png"><br>Img3.1.使用模板方法模式调用子类NonfairSync的tryAcquire(int acquires)方法。</p>
+<h3 id="Img4"><a href="#Img4" class="headerlink" title="Img4"></a>Img4</h3><p><img src="/img/AQS/04.png"><br>调用父类Sync的nonfairTryAcquire(int acquires)方法。</p>
+<h3 id="Img5"><a href="#Img5" class="headerlink" title="Img5"></a>Img5</h3><p><img src="/img/AQS/05.png"><br>Img5.1.重复Img2.1的逻辑。<br>Img5.2.如果请求该锁的是之前持有该锁的线程，则进行一个可重入操作，即将state状态位加1。<br>Img5.3.如果不是，则说明存在锁竞争。接着走Img3.2的逻辑。<br>Img3.2.调用本类的acquireQueued(final Node node, int arg)方法。其中addWaiter(Node mode)方法用于将当前线程加入到等待队列的对尾，并返回当前线程所在的节点。</p>
+<h3 id="Img6"><a href="#Img6" class="headerlink" title="Img6"></a>Img6</h3><p><img src="/img/AQS/06.png"><br>Img6.1.自旋锁。<br>Img6.2.如果前驱是head，即该结点已成老二，那么便有资格去尝试获取资源。<br>Img6.3.拿到资源后，将head指向该结点。所以head所指的标杆结点，就是当前获取到资源的那个结点或null。<br>Img6.4.此处再将head.next置为null，就是为了方便GC回收以前的head结点。<br>Img6.5.调用本类的shouldParkAfterFailedAcquire(Node pred, Node node)方法判断当前线程是否可以wait。<br>Img6.6.如果可以wait则在线程找好安全休息点后，进入wait状态。<br>Img6.7.将interrupted设置为true，即中断过。那么就可以走到Img3.3。<br>Img3.3.如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。</p>
+<h2 id="释放锁"><a href="#释放锁" class="headerlink" title="释放锁"></a>释放锁</h2><h3 id="Img7"><a href="#Img7" class="headerlink" title="Img7"></a>Img7</h3><p><img src="/img/AQS/07.png"><br>调用AbstractQueuedSynchronizer类的release(int arg)方法。</p>
+<h3 id="Img8"><a href="#Img8" class="headerlink" title="Img8"></a>Img8</h3><p><img src="/img/AQS/08.png"><br>模板方法模式调用子类的tryRelease(int releases)方法。</p>
+<h3 id="Img9"><a href="#Img9" class="headerlink" title="Img9"></a>Img9</h3><p><img src="/img/AQS/09.png"><br>Img9.1.如果该线程完全释放了锁，则将锁持有的线程设置为null。<br>Img9.2.设置标志位，每次减1，即退出可重入锁。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java高级特性/">Java高级特性</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,370 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Java并发编程 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Java并发编程">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Java并发编程</h1>
+  
+
+      
+        <time datetime="2017-08-23T10:49:55.000Z">2017-08-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期"></a>线程的生命周期</h2><a id="more"></a>
+<p><img src="/img/Java线程生命周期.png"></p>
+<ul>
+<li>新建状态：当程序使用new关键字创建一个线程之后，该线程就处于新建状态，此时仅由JVM为其分配内存，并初始化其成员变量。</li>
+<li>就绪状态：当线程对象调用了start()方法后，该线程就处于就绪状态（即拥有执行资格）,JVM会为其创建方法调用栈和程序计数器，等待调度运行。</li>
+<li>运行状态：如果处于就绪状态的线程获得了CPU的执行权，开始执行run()方法的线程执行体，则该线程处于运行状态。</li>
+<li>阻塞状态：当处于运行状态的线程失去所占用的资源后，便进入阻塞状态。<ul>
+<li>线程调用sleep()方法主动放弃所占用的处理器资源；</li>
+<li>线程调用了一个阻塞式IO方法，在该方法返回之前，该线程被阻塞；</li>
+<li>线程试图获得一个同步监视器，但该同步监视器正被其他线程所持有；</li>
+<li>线程在等待某个通知(notify)；</li>
+<li>程序调用了线程的suspend()方法将该线程挂起。</li>
+</ul>
+</li>
+<li>死亡状态：run()方法或者call()执行完、线程抛出一个未捕获的Exception或Error或者调用该线程的stop()方法（不推荐，容易死锁）。</li>
+</ul>
+<p><b>ps：</b>yield方法释放本次执行权，但不会阻塞当前线程；wait方法释放执行权，释放锁，所以wait方法必须在锁里面；sleep方法释放执行权，不释放锁；notify方法不释放执行权，也不释放锁。</p>
+<h2 id="线程通信"><a href="#线程通信" class="headerlink" title="线程通信"></a>线程通信</h2><h3 id="线程通信的方式"><a href="#线程通信的方式" class="headerlink" title="线程通信的方式"></a>线程通信的方式</h3><ul>
+<li>共享内存：通过写-读内存中的公共区域进行隐式通信（Java的堆内存）。</li>
+<li>消息传递：通过发送消息来显示传递（生产者-消费者模式）。</li>
+</ul>
+<h3 id="原子性、可见性和有序性"><a href="#原子性、可见性和有序性" class="headerlink" title="原子性、可见性和有序性"></a>原子性、可见性和有序性</h3><ul>
+<li>原子性：即一个操作或者多个操作要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。</li>
+<li>可见性：当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。</li>
+<li>有序性：程序执行的顺序按照代码的先后顺序执行，即不会进行重排序。</li>
+</ul>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h2><p>ThreadLocal为每一个使用该变量的线程都提供了一个该变量的副本，每一个线程都可以改变自己的副本而不会其他线程的副本相冲突。ThreadLocal自身不会保存这些特定的数据资源，而是由每个线程自己来管理。每个Thread对象都有一个ThreadLocal.ThreadLocalMap类型的名为threadLocals的实例变量，它保存了ThreadLocal设置给这个线程的数据。<b>当通过ThreadLocal的set(data)方法来设置数据的时候，ThreadLocal会首先获取当前线程的引用，然后通过该引用获取当前线程持有的threadLocals，最后，以当前ThreadLocal的ThreadLocalHashCode作为key，将要设置的数据设置到当前线程。</b></p>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><ol>
+<li>当把变量声明为volatile后，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作与其他内存操作一起重排序。同时volatile变量不会被缓存在寄存器或者其它处理器不可见的地方。</li>
+<li>原理是使用lock前缀使得本CPU的Cache写入内存，该写入操作会同时引起其它CPU或内核无效化其Cache。因为该变量需要同步到内存，意味着所有之前的操作都已经执行完成，这样便形成了指令重排序无法越过内存屏障的效果。</li>
+</ol>
+<h2 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h2><h3 id="synchronized可重入的实现"><a href="#synchronized可重入的实现" class="headerlink" title="synchronized可重入的实现"></a>synchronized可重入的实现</h3><p>每个锁对象关联一个监视器和一个计数器。当计数器为0时表示该锁没有被任何线程持有，那么任意线程都可以获得该锁并调用相应方法。当一个线程请求成功后，JVM会记下持有的线程，并将计数器设置为1。此时其他线程请求该锁，则必须等待。而该持有锁的线程如果再次请求这个锁，就可以再次拿到这个锁，同时计数器会递增。当线程退出一个synchronized方法/块时，计数器会递减，如果计数器为0则释放该锁。</p>
+<h3 id="ReentrantLock、ReentrantReadWriteLock和synchronized的区别"><a href="#ReentrantLock、ReentrantReadWriteLock和synchronized的区别" class="headerlink" title="ReentrantLock、ReentrantReadWriteLock和synchronized的区别"></a>ReentrantLock、ReentrantReadWriteLock和synchronized的区别</h3><ul>
+<li>ReentrantLock的tryLock方法可以尝试获取锁并指定等待时间，然后可以进行判断，获取到锁可以干什么，获取不到又会干什么。</li>
+<li>ReentrantLock可以指定为公平锁（默认非公平，ReentrantLock的构造方法中传入true时为公平锁）。</li>
+<li>ReentrantLock可以同时绑定多个Condition对象。</li>
+<li>ReentrantReadWriteLock是读写锁，读写分离，读多写少用这个锁效率高（读读共享，写写互斥，读写互斥）。</li>
+<li>StampedLock(1.8)：读写锁的改进版本。读写锁虽然分离了读和写的功能，使得读读之间可以完全并发。但是读写之间还是会冲突。读锁会完全阻塞写锁，它使用的是悲观的锁策略。而StampedLock则提供了一种乐观的锁策略。</li>
+</ul>
+<h3 id="无锁并发"><a href="#无锁并发" class="headerlink" title="无锁并发"></a>无锁并发</h3><ul>
+<li>非阻塞同步，即基于冲突检测的乐观并发策略；通俗上说，就是<b>先进行操作，如果没有其他线程争用共享数据，那么就让操作成功，如果产生了冲突，就采取其他补偿措施（最常用的就是不断重试，直到成功为止）。</b></li>
+<li>CAS(比较并交换)：该指令需要三个操作数，分别是内存位置（Java中可以简单的理解为变量的内存地址，用V表示）、旧的预期值（用A表示）、和新值（用B表示）。当且仅当V的值符合旧的预期值A时，处理器才用新值B更新V的值，否则不执行更新，但是无论是否更新了V的值，都会返回V的旧值，上述处理过程是一个原子操作。</li>
+<li>CAS自己的理解：例如i++时，将i的值复制一份作为旧值，然后取出i并加1为新值，判断旧值是否等于i，如果等于将新值赋值给i，判断和赋值为原子操作。</li>
+<li>ABA问题：如果在复制后比较前，先被修改为B，又被修改回A，那么CAS操作就会认为它没有被修改过（并不影响并发程序的正确性）。</li>
+</ul>
+<h2 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h2><p>Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“偏向锁”和“轻量级锁”，在Java1.6中，锁一共有4种状态，级别从低到高依次是：无锁状态、偏向锁状态、轻量级锁状态和重量级锁状态，这几个状态会随着竞争情况逐渐升级。锁可以升级但不能降级，意味着偏向锁升级成轻量级锁后不能降级成偏向锁。</p>
+<h3 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h3><p>引入偏向锁是为了在无多线程竞争的情况下减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在Mark Word中记录ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能。</p>
+<h4 id="加锁"><a href="#加锁" class="headerlink" title="加锁"></a>加锁</h4><ol>
+<li>访问Mark Word中偏向锁的标识是否设置成01(可偏向状态)。</li>
+<li>如果为可偏向状态，则检查当前线程ID是否等于Mark Word中记录的线程ID，如果是进入步骤5，否则进入步骤3。</li>
+<li>如果线程ID并未指向当前线程，则通过CAS操作竞争锁。如果竞争成功（之前没用线程竞争过该锁），则将Mark Word中线程ID设置为当前线程ID，然后执行5；如果竞争失败，执行4。</li>
+<li>如果CAS获取偏向锁失败，则表示有竞争。当到达全局安全点（safepoint）时获得偏向锁的线程被挂起，偏向锁升级为轻量级锁，然后被阻塞在安全点的线程继续往下执行同步代码。</li>
+<li>执行同步代码。</li>
+</ol>
+<h4 id="解锁"><a href="#解锁" class="headerlink" title="解锁"></a>解锁</h4><p>偏向锁的撤销在上述第四步骤中有提到。偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，线程不会主动去释放偏向锁。偏向锁的撤销，需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，判断锁对象是否处于被锁定状态，撤销偏向锁后恢复到未锁定（标志位为“01”）或轻量级锁（标志位为“00”）的状态。</p>
+<h3 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h3><h4 id="加锁-1"><a href="#加锁-1" class="headerlink" title="加锁"></a>加锁</h4><ol>
+<li>在代码进入同步块的时候，如果此同步对象没有被锁定（锁标志位为01状态），虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储锁对象目前的Mark Word的拷贝，官方称之为Displaced Mark Word。</li>
+<li>虚拟机将使用CAS操作将对象的Mark Word更新为指向当前线程的栈帧的指针，如果这个更新操作成功了执行步骤3，否则执行步骤4。</li>
+<li>线程获取该对象的锁，并且对象的Mark Word的锁标志位（Mark Word的最后2bit）更新为00，即表示处于轻量级锁定状态。</li>
+<li>虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是说明当前线程已经拥有了这个对象的锁，就可以直接进入同步块继续执行，否则说明该对象已经被其它线程抢占。这就表明有两个以上的线程争用同一个锁，那轻量级锁就不在有效，要膨胀为重量级锁，锁标志的状态值变为10，Mark Word中存储的就是指向重量级锁（互斥量）的指针，后面等待锁的线程也要进入阻塞状态。</li>
+</ol>
+<h4 id="解锁-1"><a href="#解锁-1" class="headerlink" title="解锁"></a>解锁</h4><ol>
+<li>通过CAS操作尝试将线程中复制的Displaced Mark Word对象替换当前的Mark Word。</li>
+<li>如果替换成功，整个同步过程就结束了。</li>
+<li>如果替换失败，说明有其他线程尝试过获取该锁（此时锁已膨胀），那就要在释放锁的同时，唤醒被挂起的线程。</li>
+</ol>
+<h3 id="自旋锁自适应自旋"><a href="#自旋锁自适应自旋" class="headerlink" title="自旋锁自适应自旋"></a>自旋锁自适应自旋</h3><ul>
+<li>互斥同步最大的影响是阻塞的实现，挂起线程和恢复线程的操作都需要转入内核态中完成，这些操作给系统的并发性能带来了很大压力。同时，虚拟机的开发团队也主要到在许多应用共享数据的锁定状态只会持续很短的一段时间，为了这段时间挂起和恢复线程并不值得。如果物理机上有一个以上的处理器，能让两个或以上的线程同时并行执行，就可以让后面的请求锁的线程执行一个忙循环（自旋）。</li>
+<li>在JDK1.6中引入自适应的自旋锁，自适应意味着自旋的时间不在固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。如果在同一个锁对象上，自旋等待刚刚成功获得过锁，并且持有锁的线程正在运行中，那么虚拟机会认为这次自旋也有可能获得成功，进而允许自旋等待持续相对更长的时间。</li>
+<li><b>当线程在获取轻量级锁的过程中执行CAS操作失败时，是要通过自旋来获取重量级锁的，而不是直接挂起当前线程。</b>问题在于，自旋是需要消耗CPU的，如果一直获取不到锁的话，那该线程就一直处在自旋状态，白白浪费CPU资源。解决这个问题最简单的办法就是指定自旋的次数，例如让其循环10次，如果还没获取到锁就进入阻塞状态。所以在JDK1.6中引入了自适应的自旋锁，可以让自旋的时间不再固定，而是你由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。</li>
+</ul>
+<h2 id="java-util-concurrent包"><a href="#java-util-concurrent包" class="headerlink" title="java.util.concurrent包"></a>java.util.concurrent包</h2><h3 id="并发集合"><a href="#并发集合" class="headerlink" title="并发集合"></a>并发集合</h3><ul>
+<li>ConcurrentLinkedQueue：非阻塞的无界安全队列，不允许null元素，可以看做线程安全LinkedList；</li>
+<li>BlockingQueue：阻塞队列<ul>
+<li>ArrayBlockingQueue：有界阻塞队列。</li>
+<li>LinkedBlockingQueue：无界阻塞队列。</li>
+<li>LinkedBlockingDeque：无界阻塞双向队列。</li>
+<li>DelayQueue：无界阻塞队列，只有在延迟期满时才能从中提取元素。</li>
+<li>PriorityBlockingQueue：无界阻塞队列，与类PriorityQueue相同的顺序规则，并且提供了阻塞获取操作。</li>
+<li>SynchronousQueue：没有缓冲的队列，每个插入操作必须等待另一个线程的对应移除操作 ，反之亦然。</li>
+<li>LinkedTransferQueue(1.7)：如果有消费者，就直接给消费者，如果没有消费者就阻塞。</li>
+</ul>
+</li>
+<li>ConcurrentMap：ConcurrentMap内部结构和Map相同，但ConcurrentMap是线程安全的。他将数据分为多个segment，默认是16个，然后每次操作对一个segment加锁，降低锁竞争。<a href="http://www.importnew.com/23610.html" target="_blank" rel="noopener">1.8改为通过CAS+重量级锁来实现。</a> <ul>
+<li>putIfAbsent(K key, V value)：仅当集合中没有key相对应的值时才插入。</li>
+<li>remove(K key, V value)：仅当集合中存在key相对应的值时才移除。</li>
+<li>replace(K key, V oldValue, V newValue)：仅当集合中存在key相对应的值为oldValue时才替换为newValue。</li>
+<li>replace(K key, V value)：仅当集合中存在key相对应的值时才替换为value。</li>
+</ul>
+</li>
+<li>CopyOnWriteArrayList：写时复制，当需要向一个容器添加元素时，不直接向当前容器添加，而是先将当前容器进行Copy，然后向Copy出来的容器中添加，添加完成后，将原容器的引用指向新容器。这样就可以对CopyOnWrite容器进行并发的读，而不需要加锁。该容器实现了读写分离。但是他牺牲了写的性能。</li>
+</ul>
+<h3 id="同步器"><a href="#同步器" class="headerlink" title="同步器"></a>同步器</h3><ul>
+<li>CountDownLatch：提供一个计数器，当计数器为0时，所有线程才会释放资源。可以用来监听某些初始化操作，等初始化完毕后，通知主线程继续工作。</li>
+<li>CyclicBarrier：使用屏障点来阻塞一组线程，当该组线程有没有到达屏障点的线程时其他线程会等待该线程到达。</li>
+<li>Semaphore(信号量)：锁只允许一个线程访问同一个资源，而信号量确可以同时指定多个线程访问某一个资源。</li>
+<li>Exchanger：在两个线程的同步点之间实行数据的交换。</li>
+</ul>
+<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><p><img src="/img/Java线程池.png"></p>
+<ul>
+<li>Executor接口是线程池的顶层接口，里面只有一个execute方法，接受一个Runnable任务，并执行。</li>
+<li>ExecutorService是Executor的子接口，该接口提供的submit方法可以提交Callable任务。同时提供了对线程池生命周期进行管理的方法：<ul>
+<li>shutdown()：将执行平缓的关闭过程；即不再接受新的任务，同时等待已提交的任务执行完成（包括那些还未开始执行的任务）。</li>
+<li>shutdownNow()：将执行粗暴的关闭过程，即它将尝试取消所有运行中任务，并且不再启动尚未开始执行的任务。</li>
+</ul>
+</li>
+<li>AbstractExecutorService：实现了线程池的一些公共方法。</li>
+<li>ThreadPoolExecutor：用来构建基本的自定义线程池。</li>
+<li>ForkJoinPool(1.7)：用来把大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果的框架。</li>
+<li>ScheduledThreadPoolExecutor：用来开启延迟与周期任务。<ul>
+<li>scheduleAtFixedRate(Runnable, 0, 100, TimeUnit.MILLISECONDS)：初始化延迟0ms开始执行，每隔100ms重新执行一次任务（当我们要执行的任务大于我们指定的执行间隔时，并不会在指定间隔时开辟一个新的线程并发执行这个任务。而是等待该线程执行完毕）。</li>
+<li>scheduleWithFixedDelay(Runnable, 0, 100, TimeUnit.MILLISECONDS)：初始化时延时0ms开始执行，本次执行结束后延迟100ms开始下次执行。</li>
+<li>schedule(Runnable, 100, TimeUnit.MILLISECONDS)：100ms后执行一次本任务。</li>
+</ul>
+</li>
+<li>线程池队列：基本的任务排列方法有3种，无界阻塞队列、有界阻塞队列和同步移交（即没有缓冲的队列）。</li>
+<li>线程池的饱和策略：当有界队列满了且线程池已经达到最大线程数的时候，对新来的任务执行的策略。<ol>
+<li>中止策略（AbortPolicy）：默认的饱和策略，抛出RejectedExecutionException。</li>
+<li>抛弃策略（DiscardPolicy）：抛弃新来的任务。</li>
+<li>抛弃最旧的（DiscardOldestPolicy）：抛弃下一个将被执行的任务，然后尝试重新提交新的任务。</li>
+<li>调用者运行（CallerRunsPolicy）：将任务回退给调用者。</li>
+</ol>
+</li>
+</ul>
+<pre><code>ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
+ExecutorService pool = Executors.newFixedThreadPool(5);
+// 自定义线程池
+ThreadPoolExecutor pool = new ThreadPoolExecutor(  
+    1,      // 初始化时线程池里的线程数
+    2,      // 线程池中的线程最大数
+    60,     // 线程执行完后被回收的时间值
+    TimeUnit.SECONDS,       // 线程执行完后被回收的时间单位（s）
+    new ArrayBlockingQueue(3)   // 指定一种队列，存放当线程满的时候存放添加进来的线程
+); 
+</code></pre><p>Future接口：一般用来接受Callable执行完成后的返回值。FutureTask是该接口的实现类。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">FutureTask&lt;Integer&gt; task = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(<span class="keyword">new</span> Callable&lt;Integer&gt;() &#123;<span class="comment">//使用Callable接口作为构造参数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        TimeUnit.MICROSECONDS.sleep(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">10000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">new</span> Thread(task).start();</span><br><span class="line">System.out.println(task.get());</span><br><span class="line"><span class="comment">/***************************************************************************/</span></span><br><span class="line">ExecutorService service = Executors.newFixedThreadPool(<span class="number">5</span>);</span><br><span class="line">Future&lt;Integer&gt; future = service.submit(<span class="keyword">new</span> Callable&lt;Integer&gt;() &#123;<span class="comment">//使用Callable接口作为构造参数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        TimeUnit.MICROSECONDS.sleep(<span class="number">50000</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">System.out.println(future.isDone());</span><br><span class="line">System.out.println(future.get());</span><br><span class="line">service.shutdown();</span><br></pre></td></tr></table></figure></p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeadLockDemo</span> </span>&#123;</span><br><span class="line">    privat <span class="keyword">static</span> String A = <span class="string">"A"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String B = <span class="string">"B"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> DeadLockDemo().deadLock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">deadLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Thread t1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function">publicvoid <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (A) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123; </span><br><span class="line">                        Thread.currentThread().sleep(<span class="number">2000</span>);</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">synchronized</span> (B) &#123;</span><br><span class="line">                        System.out.println(<span class="string">"1"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        Thread t2 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function">publicvoid <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (B) &#123;</span><br><span class="line">                    <span class="keyword">synchronized</span> (A) &#123;</span><br><span class="line">                        System.out.println(<span class="string">"2"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="避免死锁的几个常见方法。"><a href="#避免死锁的几个常见方法。" class="headerlink" title="避免死锁的几个常见方法。"></a>避免死锁的几个常见方法。</h3><ul>
+<li>避免一个线程同时获取多个锁。</li>
+<li>避免一个线程在锁内同时占用多个资源，尽量保证每个锁只占用一个资源。</li>
+<li>尝试使用定时锁，使用lock.tryLock（timeout）来替代使用内部锁机制。</li>
+<li>对于数据库锁，加锁和解锁必须在一个数据库连接里，否则会出现解锁失败的情况。</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java高级特性/">Java高级特性</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

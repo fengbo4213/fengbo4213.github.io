@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Redis基础 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Redis基础">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Redis基础</h1>
+  
+
+      
+        <time datetime="2017-06-25T09:35:46.000Z">2017-06-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://www.cnblogs.com/huangjacky/p/3700473.html" target="_blank" rel="noopener">redis配置文件解析</a>，Redis是一种基于键值对（key-value）的NoSQL数据库。Redis中的值可以是由string（字符串）、hash（哈希）、list（列表）、set（集合）、zset（有序集合）、Bitmaps（位图）、HyperLogLog、GEO（地理信息定位）等多种数据结构和算法组成。Redis使用了单线程架构和I/O多路复用模型来实现高性能的内存数据库服务。因为Redis是单线程来处理命令，所以一条命令从客户端到服务器端不会被立即执行，所有命令都会进入一个队列中，然后被逐个执行。</p>
+<a id="more"></a>
+<h2 id="五种数据结构"><a href="#五种数据结构" class="headerlink" title="五种数据结构"></a>五种数据结构</h2><h3 id="String类型"><a href="#String类型" class="headerlink" title="String类型"></a>String类型</h3><p>字符串类型实际可以是字符串（简单的字符串、JSON、XML）、数字（整数、浮点数）、二进制（图片、视频、音频），但是最大值不能超过512M。</p>
+<ul>
+<li>set key value：给给定的key赋值。</li>
+<li>get key：获取存储在key中的值。</li>
+<li>del key：删除存储在给定的key中的值。</li>
+</ul>
+<h3 id="数字类型的String"><a href="#数字类型的String" class="headerlink" title="数字类型的String"></a>数字类型的String</h3><ul>
+<li>incr key：使数字类型字符自增1。<ul>
+<li>值不是整数，返回错误。</li>
+<li>值是整数，返回自增后的结果。</li>
+<li>键不存在，按照值为0自增，返回结果为1。</li>
+</ul>
+</li>
+<li>incrby key num：使数字类型的字符增num。</li>
+<li>decr key：使数字类型字符自减1。</li>
+<li>decrby key num：使数字类型的字符减num。</li>
+<li>incrbyfloat key num：使数字类型的字符加浮点数num。</li>
+</ul>
+<h3 id="String类型的应用-Redis开发与运维2-2-3"><a href="#String类型的应用-Redis开发与运维2-2-3" class="headerlink" title="String类型的应用(Redis开发与运维2.2.3)"></a>String类型的应用(Redis开发与运维2.2.3)</h3><ol>
+<li><p>缓存功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UserInfo <span class="title">getUserInfo</span><span class="params">(<span class="keyword">long</span> id)</span></span>&#123;</span><br><span class="line">    userRedisKey = <span class="string">"user:info:"</span> + id</span><br><span class="line">    value = redis.get(userRedisKey);</span><br><span class="line">    UserInfo userInfo;</span><br><span class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</span><br><span class="line">        userInfo = deserialize(value); </span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	    userInfo = mysql.get(id);</span><br><span class="line">	    <span class="keyword">if</span> (userInfo != <span class="keyword">null</span>)</span><br><span class="line">			 redis.setex(userRedisKey, <span class="number">3600</span>, serialize(userInfo));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> userInfo;</span><br><span class="line">					</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">incrVideoCounter</span><span class="params">(<span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">    key = <span class="string">"video:playCount:"</span> + id;</span><br><span class="line">    <span class="keyword">return</span> redis.incr(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>共享Session</p>
+</li>
+<li>限速：很多应用出于安全的考虑，会在每次进行登录时，让用户输入手机验证码，从而确定是否是用户本人。但是为了短信接口不被频繁访问，会限制用户每分钟获取验证码的频率，例如一分钟不能超过5次<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">phoneNum = <span class="string">"138xxxxxxxx"</span>;</span><br><span class="line">key = <span class="string">"shortMsg:limit:"</span> + phoneNum;</span><br><span class="line"><span class="comment">// SET key value EX 60 NX</span></span><br><span class="line">isExists = redis.set(key,<span class="number">1</span>,<span class="string">"EX 60"</span>,<span class="string">"NX"</span>);</span><br><span class="line"><span class="keyword">if</span>(isExists != <span class="keyword">null</span> || redis.incr(key) &lt;=<span class="number">5</span>)&#123;</span><br><span class="line">    <span class="comment">// 通过</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">// 限速</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="Hash类型"><a href="#Hash类型" class="headerlink" title="Hash类型"></a>Hash类型</h3><p>Hash类型可以很方便的映射关系型数据库。也可以用来做缓存功能，要注意过期时间的问题，Hash是统一过期。</p>
+<ul>
+<li>hset key sub-key value：向散列表中插入一个键值对。</li>
+<li>hget key sub-key：根据key和sub-key从散列表中获取元素。</li>
+<li>hgetall key：获取散列表包含的所有键值对。</li>
+<li>hlen key：获取散列表中的元素个数。</li>
+<li>hdel key sub-key：删除散列表中的元素。</li>
+<li>hmget key key1 key2：同时获取key1和key2中的值</li>
+<li>hmset key key1 val1 key2 val2：同时set多个键值对。</li>
+</ul>
+<h3 id="List类型"><a href="#List类型" class="headerlink" title="List类型"></a>List类型</h3><p>列表类型可重复，可以通过索引获取元素，可以从两端压入或者弹出原素，即可以用来当做栈和队列。List还具备分页查询的功能。</p>
+<ul>
+<li>lpush/rpush key value：从列表左边/右边压入一个元素。</li>
+<li>lpop/rpop key：从列表左边/右边弹出一个元素。</li>
+<li>llen key：获取列表中的元素个数。</li>
+<li>lrange key 0 -1：遍历列表。</li>
+<li>lindex key 1：根据下标获取队列中的元素。</li>
+<li>ltrim key start end：对列表进行修剪，只保留从start偏移量到end偏移量范围内的元素，其中start和end也会被保留。</li>
+<li>blpop/brpop key：阻塞去列表左边/右边的元素。</li>
+<li>rpoplpush source-key dest-key：从source的右端弹出元素插入到dest左端，并向用户返回该元素。</li>
+<li>brpoplpush  source-key dest-key timeout：从source的右端弹出元素插入到dest左端，并向用户返回该元素。如果当前source为空，那么在timeout秒内阻塞等待可弹出的元素。</li>
+</ul>
+<h3 id="集合类型"><a href="#集合类型" class="headerlink" title="集合类型"></a>集合类型</h3><p>集合类型也可以保存多个字符串元素，但和列表不同的是，集合中元素不可重复，并且集合汇总的元素时无序的，不可以使用索引获取元素。同时集合除了增删改查还可以进行取交集、并集和差集等运算。经典的场景是用来给用户添加标签。</p>
+<ul>
+<li>sadd key value：向集合中插入一个元素。</li>
+<li>spop key：随机移除并返回集合中的一个元素。</li>
+<li>sismember key value：检查给定元素是否存在于集合中。</li>
+<li>srem key value：如果给定的与元素存在于集合中，就从集合中删除该元素。</li>
+<li>scard key：获取集合中的元素个数。</li>
+<li>smembers key：遍历集合中里面的所有元素。</li>
+</ul>
+<h3 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h3><p>有序集合和散列一样都用于存储键值对，有序集合的键被称为成员(member)，相当于集合中value，每个成员都是各不相同的，而有序集合的值被称为分值(score)，分值必须为浮点数。有序集合即可以通过成员访问元素，又可以通过分值的排列顺序访问元素。</p>
+<ul>
+<li>zadd key score member：向集合中插入键为member值为score的键值对。</li>
+<li>zcard key：返回集合中包含的元素数量。</li>
+<li>zincrby key num member：将member成员的分值加num。</li>
+<li>zcount key min max：返回分值介于min和max之间的成员的数量。</li>
+<li>zrank key member：返回成员在集合中的排名。</li>
+<li>zscore key member：返回成员的分值。</li>
+<li>zrange key 0 -1：显示集合里面所有的member。</li>
+<li>zrange key 0 -1 withscores：显示集合里面所有的member和score。</li>
+<li>zrangebyscore key 0 10：获取有序集合在给定分值范围内的所有member。</li>
+<li>zrem key value：如果member存在于集合中就删除该集合。</li>
+</ul>
+<h3 id="Bitmaps"><a href="#Bitmaps" class="headerlink" title="Bitmaps"></a>Bitmaps</h3><p>可以用来实现<a href="https://www.cnblogs.com/ysocean/p/12594982.html" target="_blank" rel="noopener">布隆过滤器</a>。</p>
+<h3 id="过期时间设置"><a href="#过期时间设置" class="headerlink" title="过期时间设置"></a>过期时间设置</h3><ul>
+<li>ttl key：查看给定键距离过期还有多少秒。</li>
+<li>pttl key：查看给定键距离过期还有多少毫秒。</li>
+<li>expire key time：让给定键在指定的秒数后过期。</li>
+<li>expireat key time：将给定键的过期时间设置为给定的UNIX时间戳。</li>
+<li>pexpire key time：让给定键在指定的毫秒数后过期。</li>
+<li>pexpireat key time：将一个毫秒精度的UNIX时间戳设置为给定键的过期时间。<ul>
+<li>当key到达过期时间有两种方法删除失效主键：1）消极方法，在主键被访问时如果发现它已经失效，就删除它；2）积极方法，周期性的从设置了失效时间的主键中选择一部分失效的主键删除。</li>
+</ul>
+</li>
+<li>persist key：移除键的过期时间。<ul>
+<li>对于字符串类型键，执行set命令会去掉过期时间，这个问题很容易在开发中被忽视。</li>
+</ul>
+</li>
+<li>setex命令作为set+expire的组合，不但是原子执行，同时减少了一次网络通讯的时间。</li>
+</ul>
+<h3 id="客户端管理命令"><a href="#客户端管理命令" class="headerlink" title="客户端管理命令"></a>客户端管理命令</h3><ul>
+<li>client list：查看和服务端相连的所有客户端连接信息。</li>
+<li>client getName/setName：设置获取当前客户端的名称。</li>
+<li>client kill ip:port：杀掉指定ip和端口的客户端。</li>
+<li>client pause timeout(毫秒)：阻塞客户端timeout毫秒。</li>
+<li>monitor：用于监控Redis正在执行的命令，并记录了详细的时间戳。</li>
+</ul>
+<h3 id="其它一些命令"><a href="#其它一些命令" class="headerlink" title="其它一些命令"></a>其它一些命令</h3><ul>
+<li>type key：查看键的数据类型。</li>
+<li>rename key newkey：重命名key。</li>
+<li>randomkey：随机返回一个key。</li>
+</ul>
+<h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><h3 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h3><p>RDB持久化是把当前进程数据生成快照保存到硬盘的过程，如果系统崩溃，用户将丢失最近一次生成快照之后的数据。所以RDB不适合实时持久化。触发RDB持久化过程分为手动触发和自动触发。</p>
+<ul>
+<li>手动触发：手动调用bgsave命令，Redis进程执行fork操作创建子进程进行RDB持久化操作。</li>
+<li>自动触发：<ol>
+<li>使用save相关配置，即在配置文件中配置”save m n”。表示m秒内数据集存在n次修改时，自动触发bgsave。</li>
+<li>如果从节点执行全量复制操作，主节点自动生成RDB文件并发送给从节点。</li>
+<li>执行debug reload命令重新加载Redis时，会触发save操作。</li>
+<li>默认情况下执行shutdown命令时，如果没有开启AOF持久化功能则自动执行bgsave。 </li>
+</ol>
+</li>
+</ul>
+<h3 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h3><p>以独立日志的方式记录每次写命令，重启时在重新执行AOF中的命令达到恢复数据的目的。配置文件中使用appendonly yes配置打开AOP持久化。</p>
+<ol>
+<li>所有的写入命令会追加到aof_buf缓冲区中。</li>
+<li>缓冲区根据对应的策略向硬盘做同步操作。<ul>
+<li>appendfsync everysec：由专门的线程每秒写入磁盘一次。</li>
+<li>appendfsync always：命令写入aof_buf后调用系统fsync操作同步到AOF文件。</li>
+<li>appendfsync no：同步硬盘操作由操作系统负责，通常同步周期最长30秒。</li>
+</ul>
+</li>
+<li>随着AOF文件越来越大，需要定期对AOF文件进行重写，以压缩文件。<ul>
+<li>auto-aof-rewrite-percentage 100和auto-aof-rewrite-min-size 64mb：表示当AOP体积大于64M并且体积比上一次重写后的体积大了至少一倍(100%)时Redis将执行重写AOP文件操作。</li>
+</ul>
+</li>
+<li>当Redis重启时，可以加载AOF文件进行数据恢复。</li>
+</ol>
+<h2 id="Redis复制"><a href="#Redis复制" class="headerlink" title="Redis复制"></a>Redis复制</h2><h3 id="复制命令"><a href="#复制命令" class="headerlink" title="复制命令"></a>复制命令</h3><ul>
+<li>slaveof ip port：建立主从复制，以ip为主自己为从。也可以配置在配置文件中。</li>
+<li>slaveof no one：断开与主节点的复制关系并晋升为主节点。</li>
+</ul>
+<h3 id="一主一从结构"><a href="#一主一从结构" class="headerlink" title="一主一从结构"></a>一主一从结构</h3><ol>
+<li>当应用<b>写命令并发量高且需要持久化</b>时，可以只在从节点开启AOF，这样既保证数据安全性同时避免了持久化对主节点的性能干扰。</li>
+<li>但是需要注意当主节点关闭持久化功能时，如果主节点脱机要避免自动重启操作。因为主节点之前没有开启持久化功能，重启后数据集为空，这时候继续复制主节点数据会导致从节点数据清空。</li>
+<li>应该先断开与从节点与主节点的复制关系，在重启主节点。</li>
+</ol>
+<h3 id="一主多从结构"><a href="#一主多从结构" class="headerlink" title="一主多从结构"></a>一主多从结构</h3><p>一主多从结构使得应用端可以利用多个从节点实现读写分离。对于读占比比较大的场景，可以把读命令发送到从节点来分担主节点压力。</p>
+<h3 id="树状主从结构"><a href="#树状主从结构" class="headerlink" title="树状主从结构"></a>树状主从结构</h3><p>树状主从结构使得从节点不但可以复制主节点数据，同时可以作为其他从节点的主节点继续向下复制。通过引入复制中间层，可以有效降低主节点负载和需要传送给从节点的数据量。</p>
+<h3 id="Redis主从复制"><a href="#Redis主从复制" class="headerlink" title="Redis主从复制"></a>Redis主从复制</h3><p>Redis主从复制是单向的，只能从主节点复制数据到从节点。Redis主从复制分为全量复制和部分复制，全量复制一般发生在主从第一次建立复制时，主节点会直接将RDB文件丢过去，需要注意RDB文件过大的问题；部分复制一般是当从节点挂了一段时间，如果主节点的复制积压缓冲区内存在这部分数据则直接发送给从节点，这样就可以保持主从节点复制的一致性。</p>
+<h2 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h2><h3 id="数据分布"><a href="#数据分布" class="headerlink" title="数据分布"></a>数据分布</h3><p>分布式数据库首先要解决把整个数据集按照分区规则映射到多个节点的问题，即根据数据分区规则把数据集划分到多个节点上，每个节点负责整体数据的一个子集。常见的分区规则有哈希分区和顺序分区两种。Redis Cluster使用的是哈希分区。</p>
+<ul>
+<li>哈希分区：数据离散好、数据分布业务无关、无法顺序访问。</li>
+<li>顺序分区：离散读易倾斜、数据分布业务相关、可顺序访问。</li>
+</ul>
+<h3 id="常见的哈希分区规则"><a href="#常见的哈希分区规则" class="headerlink" title="常见的哈希分区规则"></a>常见的哈希分区规则</h3><ul>
+<li>节点取余分区：使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式：hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。这种方案存在一个问题：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。</li>
+<li><a href="https://www.zsythink.net/archives/1182/" target="_blank" rel="noopener">一致性哈希分区</a>：为系统中每个节点分配一个token，范围一般在0~2^32，这些token构成一个哈希环。数据读写执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一个大于等于该哈希值的token节点。</li>
+<li>虚拟槽分区：使用分散度良好的哈希函数把所有数据映射到一个固定范围的整数集合中，整数定义为槽（slot）。这个范围一般远远大于节点数，比如Redis Cluster槽范围是0~16383。每一个实例负责维护一部分槽以及槽所映射的键值数据，所以动态扩展时只需要将部分槽的数据重新Hash即可。</li>
+</ul>
+<h2 id="Redis阻塞"><a href="#Redis阻塞" class="headerlink" title="Redis阻塞"></a>Redis阻塞</h2><p>因为Redis是单线程架构，所有的读写操作都在一条主线程上完成，阻塞就成为影响Redis效率的关键性因素。当Redis阻塞时，线上应用服务应该是最先感知到的，这时应用方会收到大量Redis超时异常，比如Jedis客户端会抛出JedisConnectionException。<b>常见的做法是在应用方加入异常统计并通过邮件/微信/短信报警，以便及时发现通知问题。</b></p>
+<h3 id="阻塞的原因"><a href="#阻塞的原因" class="headerlink" title="阻塞的原因"></a>阻塞的原因</h3><ol>
+<li>内在原因：包括不合理的使用API或数据结构、CPU饱和、持久化阻塞等。<ul>
+<li>慢查询分析：可以通过slowlog get [n]命令来查询慢查询列表中的数据。线上建议设置慢查询为1毫秒（默认是10毫秒，即将配置slowlog-log-slower-than为1000）以便及时发现毫秒级以上的命令。</li>
+<li>发现大对象：使用redis-cli -h {ip} -p {port} –bigkeys命令。</li>
+<li>CPU饱和：单线程的Redis处理命令时只能使用一个CPU。而CPU饱和是指Redis把单核CPU使用率跑到接近100%。可以使用redis-cli –stat来实时查看每秒的QPS，如果只有几百或几千OPS的Redis实例就接近CPU饱和是很不正常的，有可能使用了高算法复杂度的命令。</li>
+<li>持久化阻塞：对于开启了持久化功能的Redis节点，需要排查是否是持久化导致的阻塞。例如fork阻塞、AOF刷盘阻塞、HugePage写操作阻塞等。</li>
+</ul>
+</li>
+<li>外在原因：包括CPU竞争、内存交换、网络问题等。<ul>
+<li>CPU竞争：Redis是CPU密集型应用，不建议和其他多核CPU密集型服务部署在一起。部署Redis时为了充分利用多核CPU，通常一台机器部署多个实例。常见的一种优化时把Redis进程绑定到CPU上，用于降低CPU频换上下文切换的开销。当Redis父进程创建子进程进行RDB/AOF重写时，如果做了CPU绑定，会与父进程共享使用一个CPU。子进程重写时对单核CPU使用率通常在90%以上，父进程与子进程将产生激烈CPU竞争，极大影响Redis稳定性。因此对于开启了持久化或参与复制的主节点不建议绑定CPU。</li>
+<li>Redis保证高性能的一个重要前提是所有的数据在内存中。如果操作系统把Redis使用的部分内存换出到硬盘，由于内存与硬盘读写速度差几个数量级，会导致发生交换后的Redis性能急剧下降。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Redis常见的性能问题都有哪些"><a href="#Redis常见的性能问题都有哪些" class="headerlink" title="Redis常见的性能问题都有哪些"></a>Redis常见的性能问题都有哪些</h3><ul>
+<li>Master写内存快照，save命令调度rdbSave函数，会阻塞主线程的工作，当快照比较大时对性能影响是非常大的，会间断性暂停服务，所以Master最好不要写内存快照。</li>
+<li>Master AOF持久化，如果不重写AOF文件，这个持久化方式对性能的影响是最小的，但是AOF文件会不断增大，AOF文件过大会影响Master重启的恢复速度。Master最好不要做任何持久化工作，包括内存快照和AOF日志文件，特别是不要启用内存快照做持久化,如果数据比较关键，某个Slave开启AOF备份数据，策略为每秒同步一次。</li>
+<li>Master调用BGREWRITEAOF重写AOF文件，AOF在重写的时候会占大量的CPU和内存资源，导致服务load过高，出现短暂服务暂停现象。</li>
+<li>Redis主从复制的性能问题，为了主从复制的速度和连接的稳定性，Slave和Master最好在同一个局域网内。</li>
+</ul>
+<h2 id="Redis内存管理"><a href="#Redis内存管理" class="headerlink" title="Redis内存管理"></a>Redis内存管理</h2><h3 id="查看内存消耗"><a href="#查看内存消耗" class="headerlink" title="查看内存消耗"></a>查看内存消耗</h3><p>内存消耗分为进程自身消耗和子进程消耗。Redis进程消耗主要包括自身内存、对象内存、缓冲内存和内存碎片，子进程内存消耗主要指执行AOF/RDB重写时Redis创建的子进程内存消耗。可通过执行info memory命令获取内存相关指标。</p>
+<ul>
+<li>used_memory：Redis分配器分配的内存总量，也就是内部存储的所有数据内存占用量。</li>
+<li>used_memory_human：以可读格式返回used_memory。</li>
+<li>used_memory_rss：从操作系统角度显示Redis进程占用的物理内存总量。</li>
+</ul>
+<h3 id="Redis内存回收机制"><a href="#Redis内存回收机制" class="headerlink" title="Redis内存回收机制"></a>Redis内存回收机制</h3><ol>
+<li>删除过期的键对象：Redis所有的键都可以设置过期属性，内部保存在过期字典中。由于进程内保存大量的键，维护每个键精准的过期删除机制会导致大量的CPU消耗，因此Redis采用惰性删除和定时任务删除机制实现过期键的内存回收。<ul>
+<li>惰性删除：当客户端读取带有超时属性的键时，如果已经超过键设置的超时时间，会执行删除操作并返回空。但是单独用这种方式存在内存泄露的问题，当过期键一直没有访问将无法得到及时删除，从而导致内存不能及时释放。</li>
+<li>定时任务删除：Redis内部维护一个定时任务，默认每秒运行10次（通过配置hz控制）。定时任务中删除过期键逻辑采用了自适应算法，根据键的过期比例、使用快慢两种速率模式回收键。</li>
+</ul>
+</li>
+<li>内存溢出控制策略：当Redis所用内存达到maxmemory上限时会触发相应的溢出控制策略。具体策略受maxmemory-policy参数控制，Redis支持6种数据淘汰策略。<ol>
+<li>noeviction：默认策略，不会删除任何数据，拒绝所有写入操作并返回客户端错误信息（error OOM command not allowed when used memory），此时Redis只响应读操作。</li>
+<li>volatile-lru：根据LRU（最近最少使用）算法删除设置了超时属性（expire）的键，直到腾出足够空间为止。如果没有可删除的键对象，回退到noeviction策略。</li>
+<li>allkeys-lru：根据LRU算法删除键，不管数据有没有设置超时属性，直到腾出足够空间为止。</li>
+<li>allkeys-random：随机删除所有键，直到腾出足够空间为止。</li>
+<li>volatile-random：随机删除过期键，直到腾出足够空间为止。</li>
+<li>volatile-ttl：根据键值对象的ttl属性，删除最近将要过期数据。如果没有，回退到noeviction策略。</li>
+</ol>
+</li>
+</ol>
+<h2 id="Redis使用"><a href="#Redis使用" class="headerlink" title="Redis使用"></a>Redis使用</h2><h3 id="Redis更新缓存"><a href="#Redis更新缓存" class="headerlink" title="Redis更新缓存"></a>Redis更新缓存</h3><p>Redis更新缓存时一般会先更新数据库，然后在删除缓存。否则如果在删除缓存后还没有来得及更新数据库，其他用户访问了该数据会重新生成脏缓存。</p>
+<h3 id="Redis分布式锁"><a href="#Redis分布式锁" class="headerlink" title="Redis分布式锁"></a>Redis分布式锁</h3><p>使用setnx来抢夺锁，抢到后，使用expire给锁加一个过期时间防止锁忘记释放。使用set的参数可以将set和expire合并为一条指令。具体实现方式参考Dubbo如何保证幂等性。</p>
+<h2 id="缓存7大今典问题"><a href="#缓存7大今典问题" class="headerlink" title="缓存7大今典问题"></a>缓存7大今典问题</h2><h3 id="缓存失效"><a href="#缓存失效" class="headerlink" title="缓存失效"></a>缓存失效</h3><p>表现：如果大量数据同时过期，很多缓存数据访问都会miss，进而穿透到DB，DB的压力就会明显上升，由于DB的性能较差，只在缓存的1%~2%以下，这样请求的慢查率会明显上升。<br>原因：数据定时批量加载到缓存中、新业务上线进行缓存预热等。<br>解决：过期时间=Base时间+随机时间。</p>
+<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>表现：缓存命中率下降，DB压力上升。<br>原因：用户查询一个DB中不存在的Key，导致每次查询都会穿透到DB。<br>解决：</p>
+<ol>
+<li>查询不存在的数据时，第一次查DB，虽然没查到结果返回NULL，仍然记录这个key到缓存，只是这个key对应的value是一个特殊设置的值。</li>
+<li>构建一个布隆过滤器缓存过滤器，记录全量数据，这样访问数据时，可以直接通过布隆过滤器判断这个key是否存在，如果不存在直接返回即可，根本无需查缓存和DB。</li>
+</ol>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>表现：部分缓存节点不可用，导致整个缓存体系甚至甚至服务系统不可用的情况。<br>原因：</p>
+<ol>
+<li>缓存不进行rehash时产生的雪崩，一般是由于较多缓存节点不可用，请求穿透导致DB也过载不可用，最终整个系统雪崩不可用的。</li>
+<li>缓存支持rehash时产生的雪崩，则大多跟流量洪峰有关，流量洪峰到达，引发部分缓存节点过载Crash，然后因rehash扩散到其他缓存节点，最终整个缓存体系异常。<br>解决：</li>
+<li>业务DB的访问增加读写开关，当发现DB请求变慢、阻塞，慢请求超过阀值时，就会关闭读开关，部分或所有读DB的请求进行failfast立即返回，待DB恢复后再打开读开关。</li>
+<li>对缓存增加多个副本，缓存异常或请求miss后，再读取其他缓存副本，而且多个缓存副本尽量部署在不同机架，从而确保在任何情况下，缓存系统都会正常对外提供服务。</li>
+<li>对缓存体系进行实时监控，当请求访问的慢速比超过阀值时，及时报警，通过机器替换、服务替换进行及时恢复；也可以通过各种自动故障转移策略，自动关闭异常接口、停止边缘服务、停止部分非核心功能措施，确保在极端场景下，核心功能的正常运行。</li>
+</ol>
+<h3 id="数据不一致"><a href="#数据不一致" class="headerlink" title="数据不一致"></a>数据不一致</h3><p>表现：同一份数据，可能会同时存在DB和缓存之中。那就有可能发生，DB和缓存的数据不一致。如果缓存有多个副本，多个缓存副本里的数据也可能会发生不一致现象。<br>原因：</p>
+<ol>
+<li>缓存机器的带宽被打满，或者机房网络出现波动时，缓存更新失败，新数据没有写入缓存，就会导致缓存和DB的数据不一致。</li>
+<li>缓存rehash时，某个缓存机器反复异常，多次上下线，更新请求多次rehash。这样，一份数据存在多个节点，且每次rehash只更新某个节点，导致一些缓存节点产生脏数据。<br>解决：</li>
+<li>cache更新失败后，可以进行重试，如果重试失败，则将失败的key写入队列机服务，待缓存访问恢复后，将这些key从缓存删除。这些key在再次被查询时，重新从DB加载，从而保证数据的一致性。</li>
+<li>缓存时间适当调短，让缓存数据及早过期后，然后从DB重新加载，确保数据的最终一致性。</li>
+<li>不采用rehash漂移策略，而采用缓存分层策略，尽量避免脏数据产生。</li>
+</ol>
+<h3 id="并发竞争"><a href="#并发竞争" class="headerlink" title="并发竞争"></a>并发竞争</h3><p>表现：在高并发访问场景，一旦缓存访问没有找到数据，大量请求就会并发查询DB，导致DB压力大增的现象。<br>原因：多个进程/线程中，有大量并发请求获取相同的数据，而这个数据key因为正好过期、被剔除等各种原因在缓存中不存在，这些进程/线程之间没有任何协调，然后一起并发查询DB，请求那个相同的key，最终导致DB压力大增。<br>解决：</p>
+<ol>
+<li>使用全局锁。即当缓存请求miss后，先尝试加全局锁，只有加全局锁成功的线程，才可以到DB去加载数据。其他进程/线程在读取缓存数据miss时，如果发现这个key有全局锁，就进行等待，待之前的线程将数据从 DB回种到缓存后，再从缓存获取。</li>
+<li>对缓存数据保持多个备份，即便其中一个备份中的数据过期或被剔除了，还可以访问其他备份，从而减少数据并发竞争的情况。</li>
+</ol>
+<h3 id="Hot-key"><a href="#Hot-key" class="headerlink" title="Hot key"></a>Hot key</h3><p>现象：在突发事件发生时，大量用户同时去访问这个突发热点信息，这个突发热点信息所在的缓存节点就很容易出现过载和卡顿现象，甚至会被Crash。<br>原因：数十万的访问请求同一个key，流量集中打在一个缓存节点机器，这个缓存机器很容易被打到物理网卡、带宽、CPU的极限，从而导致缓存访问变慢、卡顿。<br>解决：</p>
+<ol>
+<li>可以将这些热key进行分散处理，比如一个热key名字叫hotkey，可以被分散为hotkey#1、hotkey#2、hotkey#n，这n个key分散存在多个缓存节点，然后client端请求时，随机访问其中某个后缀的hotkey，这样就可以把热key的请求打散，避免一个缓存节点过载。</li>
+<li>可以key的名字不变，对缓存提前进行多副本+多级结合的缓存架构设计。</li>
+<li>如果热key较多，还可以通过监控体系对缓存实时监控，通过快速扩容来减少热key的冲击。</li>
+<li>业务端可以使用本地缓存，将这些热key记录在本地缓存，来减少对远程缓存的冲击。</li>
+</ol>
+<h3 id="Big-key"><a href="#Big-key" class="headerlink" title="Big key"></a>Big key</h3><p>现象：缓存访问时，部分Key的Value过大，读写、加载易超时的。<br>解决：</p>
+<ol>
+<li>将大key分拆为多个key，尽量减少大key的存在。</li>
+<li>由于大key一旦穿透到DB，加载耗时很大，所以可以对这些大key进行特殊照顾，比如设置较长的过期时间，比如缓存内部在淘汰key时，同等条件下，尽量不淘汰这些大key。</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/其它/">其它</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

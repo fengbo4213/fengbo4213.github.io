@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Properties文件解析 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Properties文件解析">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Properties文件解析</h1>
+  
+
+      
+        <time datetime="2018-07-14T02:30:07.000Z">2018-07-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="将Properties文件中内容解析到容器中"><a href="#将Properties文件中内容解析到容器中" class="headerlink" title="将Properties文件中内容解析到容器中"></a>将Properties文件中内容解析到容器中</h2><h3 id="Img1"><a href="#Img1" class="headerlink" title="Img1"></a>Img1</h3><p><img src="/img/SpringProperties/01.png"><br>配置文件在XML中的配置。<br><a id="more"></a></p>
+<h3 id="Img2"><a href="#Img2" class="headerlink" title="Img2"></a>Img2</h3><p><img src="/img/SpringProperties/02.png"><br>XML中解析context标签的NamespaceHandler。可以看出property-placeholder标签由PropertyPlaceholderBeanDefinitionParser类解析。</p>
+<h3 id="Img3"><a href="#Img3" class="headerlink" title="Img3"></a>Img3</h3><p><img src="/img/SpringProperties/03.png"><br>Img3.1.使用了模板方法模式，Spring会默认调用BeanDefinitionParser接口的parse(Element element, ParserContext parserContext)方法，而该接口的顶层实现类是AbstractBeanDefinitionParser。</p>
+<h3 id="Img4"><a href="#Img4" class="headerlink" title="Img4"></a>Img4</h3><p><img src="/img/SpringProperties/04-1.png"><br><img src="/img/SpringProperties/04-2.png"><br>使用模板方法调用子类的，本处是类AbstractSingleBeanDefinitionParser的parseInternal(Element, ParserContext)方法。<br>下面的逻辑是构建BeanDefinition并注册到BeanDefinition容器中。</p>
+<h3 id="Img5"><a href="#Img5" class="headerlink" title="Img5"></a>Img5</h3><p><img src="/img/SpringProperties/05-1.png"><br><img src="/img/SpringProperties/05-2.png"><br>Img5.1.使用模板方法模式调用子类，本处是PropertyPlaceholderBeanDefinitionParser类的getBeanClass(Element element)的方法获取真正构建的类PropertySourcesPlaceholderConfigurer。<br>PropertySourcesPlaceholderConfigurer类在Spring3.1后替代了PropertyPlaceholderConfigurer类，该类间接实现了BeanFactoryPostProcessor接口，所以postProcessBeanFactory方法会在容器实例化之前被调用。</p>
+<h3 id="Img6"><a href="#Img6" class="headerlink" title="Img6"></a>Img6</h3><p><img src="/img/SpringProperties/06-1.png"><br><img src="/img/SpringProperties/06-2.png"><br>Img6.1.调用父类PropertiesLoaderSupport的mergeProperties()方法获取所有一个包含所有配置文件的配置信息的Properties实例并用PropertySource实例进行包装。</p>
+<h3 id="Img7"><a href="#Img7" class="headerlink" title="Img7"></a>Img7</h3><p><img src="/img/SpringProperties/07.png"><br>调用本类的loadProperties(Properties props)方法。</p>
+<h3 id="Img8"><a href="#Img8" class="headerlink" title="Img8"></a>Img8</h3><p><img src="/img/SpringProperties/08.png"><br>循环调用PropertiesLoaderUtils.fillProperties(Properties props, EncodedResource resource, PropertiesPersister persister)方法将Resource资源解析到Properties对象中。<br>Img5.2.使用模板方法模式调用子类，本处是PropertyPlaceholderBeanDefinitionParser类的doParse(Element element, BeanDefinitionBuilder builder)方法，即回到Img3.2。</p>
+<p>Img3.2.调用父类AbstractPropertyLoadingBeanDefinitionParser的doParse(Element element, BeanDefinitionBuilder builder)方法，该方法和本类下面的代码主要解析property-placeholder的各种属性并保存到BeanDefinition中。</p>
+<h2 id="将容器中的配置解析到BeanDefinition"><a href="#将容器中的配置解析到BeanDefinition" class="headerlink" title="将容器中的配置解析到BeanDefinition"></a>将容器中的配置解析到BeanDefinition</h2><p>Img6.2.调用本类的processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, ConfigurablePropertyResolver propertyResolver)方法。</p>
+<h3 id="Img9"><a href="#Img9" class="headerlink" title="Img9"></a>Img9</h3><p><img src="/img/SpringProperties/09.png"><br>Img9.1.调用本类的doProcessProperties(ConfigurableListableBeanFactory beanFactoryToProcess, 方法。StringValueResolver valueResolver)方法。</p>
+<h3 id="Img10"><a href="#Img10" class="headerlink" title="Img10"></a>Img10</h3><p><img src="/img/SpringProperties/10.png"><br>Img10.1.遍历所有的BeanDefinition并对它们进行解析，如果有需要替换的EL表达式就进行替换。<br>Img10.2.调用BeanDefinitionVisitor类的visitBeanDefinition(BeanDefinition)方法对BeanDefinition进行解析。</p>
+<h3 id="Img11"><a href="#Img11" class="headerlink" title="Img11"></a>Img11</h3><p><img src="/img/SpringProperties/11.png"><br>调用本类的visitPropertyValues(MutablePropertyValues pvs)方法解析setter方法注入的属性。</p>
+<h3 id="Img12"><a href="#Img12" class="headerlink" title="Img12"></a>Img12</h3><p><img src="/img/SpringProperties/12.png"><br>Img12.1.遍历所有的setter方法注入的属性。<br>Img12.2.调用本类的resolveValue(Object value)方法，对该属性进行解析。</p>
+<h3 id="Img13"><a href="#Img13" class="headerlink" title="Img13"></a>Img13</h3><p><img src="/img/SpringProperties/13-1.png"><br><img src="/img/SpringProperties/13-2.png"><br>Img13.1.判断传递过来的属性是否是TypedStringValue类型。<br>Img13.2.如果是，调用本类的resolveStringValue(String strVal)方法对该类型的值即EL表达式进行解析。</p>
+<h3 id="Img14"><a href="#Img14" class="headerlink" title="Img14"></a>Img14</h3><p><img src="/img/SpringProperties/14.png"><br>回调Img9.2的匿名内部类。<br>Img9.2.调用AbstractPropertyResolver类的resolveRequiredPlaceholders(String text)方法。</p>
+<h3 id="Img15"><a href="#Img15" class="headerlink" title="Img15"></a>Img15</h3><p><img src="/img/SpringProperties/15.png"><br>调用本类的doResolvePlaceholders(String text, PropertyPlaceholderHelper helper)方法。</p>
+<h3 id="Img16"><a href="#Img16" class="headerlink" title="Img16"></a>Img16</h3><p><img src="/img/SpringProperties/16.png"><br>Img16.1.调用PropertyPlaceholderHelper类的replacePlaceholders(String value, PlaceholderResolver placeholderResolver)方法。</p>
+<h3 id="Img17"><a href="#Img17" class="headerlink" title="Img17"></a>Img17</h3><p><img src="/img/SpringProperties/17.png"><br>调用本类的parseStringValue(String value, PlaceholderResolver placeholderResolver, Set<string> visitedPlaceholders)方法。</string></p>
+<h3 id="Img18"><a href="#Img18" class="headerlink" title="Img18"></a>Img18</h3><p><img src="/img/SpringProperties/18.png"><br>Img18.1.解析出EL表达式中真正的字符串。<br>Img18.2.回调Img16.2。<br>Img16.2.使用模板方法模式调用子类PropertySourcesPropertyResolver的String getPropertyAsRawString(String key)方法。</p>
+<h3 id="Img19"><a href="#Img19" class="headerlink" title="Img19"></a>Img19</h3><p><img src="/img/SpringProperties/19.png"><br>调用本类的getProperty(String key, Class<t> targetValueType, boolean resolveNestedPlaceholders)方法。</t></p>
+<h3 id="Img20"><a href="#Img20" class="headerlink" title="Img20"></a>Img20</h3><p><img src="/img/SpringProperties/20.png"><br>Img20.1.遍历存放着所有从Properties文件中解析出来的值的PropertySource列表。<br>Img20.2.从PropertySource中获取该EL表达式所对应的真正的值。<br>Img13.3.将真正的值存入TypedStringValue中。</p>
+<h2 id="将容器中的配置注入到实例中"><a href="#将容器中的配置注入到实例中" class="headerlink" title="将容器中的配置注入到实例中"></a>将容器中的配置注入到实例中</h2><p>AutowiredAnnotationBeanPostProcessor类实现了InstantiationAwareBeanPostProcessor接口，Bean在初始化时会循环调用该类的postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)方法。</p>
+<h3 id="Img21"><a href="#Img21" class="headerlink" title="Img21"></a>Img21</h3><p><img src="/img/SpringProperties/21.png"><br>调用InjectionMetadata类的inject(Object target, String beanName, PropertyValues pvs)方法。</p>
+<h3 id="Img22"><a href="#Img22" class="headerlink" title="Img22"></a>Img22</h3><p><img src="/img/SpringProperties/22.png"><br>回调子类AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement类的inject(Object bean, String beanName, PropertyValues pvs)方法。</p>
+<h3 id="Img23"><a href="#Img23" class="headerlink" title="Img23"></a>Img23</h3><p><img src="/img/SpringProperties/23.png"><br>Img23.1.调用DefaultListableBeanFactory类的resolveDependency(DependencyDescriptor descriptor, String requestingBeanName, Set<string> autowiredBeanNames, TypeConverter typeConverter)方法获取Properties文件配置的真正数据。</string></p>
+<h3 id="Img24"><a href="#Img24" class="headerlink" title="Img24"></a>Img24</h3><p><img src="/img/SpringProperties/24.png"><br>调用本类的doResolveDependency(DependencyDescriptor descriptor, String beanName, Set<string> autowiredBeanNames, TypeConverter typeConverter)方法。</string></p>
+<h3 id="Img25"><a href="#Img25" class="headerlink" title="Img25"></a>Img25</h3><p><img src="/img/SpringProperties/25.png"><br>Img25.1.获取@Value注解中的EL表达式。<br>Img25.2.调用AbstractBeanFactory类的resolveEmbeddedValue(String value)方法。</p>
+<h3 id="Img26"><a href="#Img26" class="headerlink" title="Img26"></a>Img26</h3><p><img src="/img/SpringProperties/26.png"><br>回调Img9.2的内部类，剩下的解析流程就和将容器中的配置解析到BeanDefinition一样。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Spring基础/">Spring基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

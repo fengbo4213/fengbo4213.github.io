@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>计算机网络 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="计算机网络">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">计算机网络</h1>
+  
+
+      
+        <time datetime="2018-12-01T07:32:20.000Z">2018-12-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>TCP/IP提供一种面向连接的、可靠的字节流服务。面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。在一个TCP连接中，仅有两方进行彼此通信。广播和多播不能用于TCP。<br><a id="more"></a></p>
+<h2 id="计算机网络基础"><a href="#计算机网络基础" class="headerlink" title="计算机网络基础"></a>计算机网络基础</h2><h3 id="日常网络设备"><a href="#日常网络设备" class="headerlink" title="日常网络设备"></a>日常网络设备</h3><ul>
+<li>调制解调器：通常称为猫；负责将数字信号调变到模拟信号上进行传输，并解调收到的模拟信号以得到数字信号。它的目标是产生能够方便传输的模拟信号并且能够通过解码还原原来的数字信号。调制解调器可以使用不同的手段来传送模拟信号，比如使用光纤，射频无线电或电话线等。<b>现在大多数猫都具备路由功能。</b></li>
+<li>路由器：使用IP地址转发分组的存储转发分组交换即，提供了路由和传送两种重要机制。路由器又分为静态路由（由网络管理员手动配置路由表的路由方式）和动态路由（路由器会根据生成算法自动生成路由表）。<ul>
+<li>路由：决定数据包从来源端到目的端的所经过的路由路径。</li>
+<li>传送：将路由器输入端的数据包移送至适当的路由器输出端。</li>
+<li>将客户端连接到Internet的路由器被称为边缘路由器。只负责与其他路由器之间（例如ISP的网络）传递数据的路由器被称为核心路由器。其中，边缘路由器一般都具有交换机的功能和NAT功能。</li>
+</ul>
+</li>
+<li>交换机：工作在链路层，用于同一网络内部的快速传输，主要通过MAC地址将在局域网中将数据传送到对应的机器上。交换机只工作在局域网内，不具有路由器的功能，只能实现数据包的转发，其解包只能解链路层协议，再往上层（IP层及以上）都不会被解析。<ul>
+<li>交换式集线器简称交换机，而中继式集线器简称集线器。</li>
+<li>MAC地址表：交换机记录所连接设备的MAC地址和交换机端口的对应关系的表。</li>
+<li>ARP缓存表：记录着主机的IP地址和MAC地址的对应关系。</li>
+</ul>
+</li>
+</ul>
+<h3 id="计算机中需要配置的一些信息"><a href="#计算机中需要配置的一些信息" class="headerlink" title="计算机中需要配置的一些信息"></a>计算机中需要配置的一些信息</h3><ul>
+<li>子网掩码：负责将IP地址划分为网络地址和主机地址。即指明了一个IP地址的哪些位标识的是主机所在的网络地址以及哪些位标识的是主机地址的位掩码。</li>
+<li>网关：负责转发其他服务器通信数据的服务器，接收从客户端发送来的请求时，它就像自己拥有资源的源服务器一样对请求进行处理。有时客户端可能都不会察觉，自己的通信目标是一个网关。由于历史的原因，许多有关TCP/IP的文献曾经把网络层使用的路由器（英语：Router）称为网关，在今天很多局域网采用都是路由来接入网络，因此现在通常指的网关就是路由器的IP。</li>
+<li>默认路由：对IP数据包中的目的地址找不到存在的其他路由时，路由器所选择的路由。目的地不在路由器的路由表里的所有数据包都会使用默认路由。<b>主机里的默认路由通常被称作默认网关。</b></li>
+</ul>
+<h2 id="TCP-IP分层模型"><a href="#TCP-IP分层模型" class="headerlink" title="TCP/IP分层模型"></a>TCP/IP分层模型</h2><h3 id="链路层-以太网协议"><a href="#链路层-以太网协议" class="headerlink" title="链路层-以太网协议"></a>链路层-以太网协议</h3><p>也称作数据链路层或网络接口层，通常包括操作系统中的设备驱动程序和计算机中对应的网络接口卡。它们一起处理与电缆（或其他任何传输媒介）的物理接口细节。<br>在链路层中有两种截然不同的链路层信道。第一种是广播信道，主要用于连接有线局域网、卫星网和混合光纤同轴电缆接入的多台主机；第二种是点对点通信链路，一般用于长距离链路连接的两台路由器之间或用户主机和邻近的以太网交换机之间。而目前大多数有线局域网都使用以太网协议进行通信。</p>
+<ul>
+<li>ARP（地址解析协议）：负责将IP地址转换成MAC地址（以太网地址）。</li>
+<li>RARP（逆地址解析协议）：和ARP相反，负责将MAC地址转换成IP地址。</li>
+</ul>
+<h3 id="ARP首部"><a href="#ARP首部" class="headerlink" title="ARP首部"></a>ARP首部</h3><p><img src="/img/ARP首部.png"></p>
+<ul>
+<li>上图中的以太网首部使用的是Ehternet II（以太网第二版）协议，它当今现有局域网采用的最通用的通信协议标准。<ul>
+<li>源地址和目的地址：48bit的MAC地址，目的地址为全1的特殊地址是广播地址。电缆上的所有以太网接口都要接收广播的数据帧。</li>
+<li>两个字节长的以太网帧类型表示后面数据的类型。对于ARP请求来说，该字段的值为0x0806。对于<b>IPv4请求</b>来说是0x0800。</li>
+</ul>
+</li>
+<li>硬件类型字段表示硬件地址的类型。它的值为1即表示以太网地址。</li>
+<li>协议类型字段表示要映射的协议地址类型。它的值为0x0800即表示IP地址。它的值与包含IP数据报的以太网数据帧中的类型字段的值相同。</li>
+<li>硬件地址长度和协议地址长度分别指出硬件地址和协议地址的长度，以字节为单位。对于以太网上IP地址的ARP请求或应答来说，它们的值分别为6和4。</li>
+<li>操作字段指出四种操作类型，它们是ARP请求（值为1）、ARP应答（值为2）、RARP请求（值为3）和RARP应答（值为4）。</li>
+<li>发送端的硬件地址（在本例中是以太网地址）、发送端的协议地址（IP地址）、目的端的硬件地址和目的端的协议地址。这是一些重复信息：在以太网的数据帧报头中和ARP请求数据帧中都有发送端的硬件地址。</li>
+</ul>
+<h3 id="网络层-IP协议"><a href="#网络层-IP协议" class="headerlink" title="网络层-IP协议"></a>网络层-IP协议</h3><p>也称作互联网层，处理分组在网络中的活动，例如分组的选路。</p>
+<ul>
+<li>IP协议（网际协议）：IP提供不可靠、无连接的数据报传送服务。不可靠（unreliable）的意思是它不能保证IP数据报能成功地到达目的地。IP仅提供最好的传输服务。如果发生某种错误时，如某个路由器暂时用完了缓冲区，IP有一个简单的错误处理算法：丢弃该数据报，然后发送ICMP消息报给信源端。任何要求的可靠性必须由上层来提供（如TCP）；无连接（connectionless）这个术语的意思是IP并不维护任何关于后续数据报的状态信息。每个数据报的处理是相互独立的。这也说明，IP数据报可以不按发送顺序接收。如果一信源向相同的信宿发送两个连续的数据报（先是A，然后是B），每个数据报都是独立地进行路由选择，可能选择不同的路线，因此B可能在A到达之前先到达。</li>
+<li>ICMP协议（Internet互联网控制报文协议）：IP协议的附属协议。IP层用它来与其他主机或路由器交换错误报文和其他重要信息。诊断工具，Ping和Traceroute都是用了该协议。</li>
+<li>IGMP协议（Internet组管理协议）：IGMP是Internet组管理协议。它用来把一个UDP数据报多播到多个主机。</li>
+</ul>
+<h3 id="IP首部"><a href="#IP首部" class="headerlink" title="IP首部"></a>IP首部</h3><p><img src="/img/IP首部.png"></p>
+<ul>
+<li>首部长度指的是首部占32bit字的数目，包括任何选项。由于它是一个4比特字段，因此首部最长为60个字节。</li>
+<li>服务类型（TOS）字段包括一个3bit的优先权子字段（现在已被忽略），4bit的TOS子字段和1bit未用位但必须置0。4bit的TOS分别代表：最小时延、最大吞吐量、最高可靠性和最小费用。</li>
+<li>总长度字段是指整个IP数据报的长度，以字节为单位。利用首部长度字段和总长度字段，就可以知道IP数据报中数据内容的起始位置和长度。由于该字段长16比特，所以IP数据报最长可达65535字节。</li>
+<li>标识字段唯一地标识主机发送的每一份数据报。通常每发送一份报文它的值就会加1。</li>
+<li>TTL（time-to-live）生存时间字段设置了数据报可以经过的最多路由器数。它指定了数据报的生存时间。TTL的初始值由源主机设置（通常为32或64），一旦经过一个处理它的路由器，它的值就减去1。当该字段的值为0时，数据报就被丢弃，并发送ICMP报文通知源主机。</li>
+<li>首部检验和字段是根据IP首部计算的检验和码。它不对首部后面的数据进行计算。ICMP、IGMP、UDP和TCP在它们各自的首部中均含有同时覆盖首部和数据检验和码。</li>
+</ul>
+<h3 id="传输层-TCP协议"><a href="#传输层-TCP协议" class="headerlink" title="传输层-TCP协议"></a>传输层-TCP协议</h3><p>主要为两台主机上的应用程序提供端到端的通信。</p>
+<ul>
+<li>TCP（传输控制协议）：面向连接的安全的流式传输协议。可以为两台主机提供高可靠性的数据通信。它所做的工作包括把应用程序交给它的数据分成合适的小块交给下面的网络层，确认接收到的分组，设置发送最后确认分组的超时时钟等。由于运输层提供了高可靠性的端到端的通信，因此应用层可以忽略所有这些细节。为了提供可靠的服务，TCP采用了超时重传、发送和接收端到端的确认分组等机制。</li>
+<li>UDP（用户数据报协议）：面向无连接的不安全的报式传输。即只为应用层提供一种非常简单的服务。它只是把称作数据报的分组从一台主机发送到另一台主机，但并不保证该数据报能到达另一端。一个数据报是指从发送方传输到接收方的一个信息单元（例如，发送方指定的一定字节数的信息）。UDP协议任何必需的可靠性必须由应用层来提供。</li>
+</ul>
+<h3 id="TCP首部"><a href="#TCP首部" class="headerlink" title="TCP首部"></a>TCP首部</h3><p><img src="/img/TCP首部.png"></p>
+<ol>
+<li>源端和目的端的端口号：用于寻找发端和接收端应用进程。这两个值加上IP首部中的源端IP地址和目的端IP地址唯一确定一个TCP连接。</li>
+<li>序号(Seq)：表示本报文段所发送数据的第一个字节的编号。在TCP连接中所传送的字节流的每一个字节都会按顺序编号。由于序列号由32位表示，所以每2^32个字节，就会出现序列号回绕，再次从0开始。</li>
+<li>确认序号(Ack)：表示发送确认的一端所期望收到的下一个序号，即希望发送方下次发送给自己的TCP报文段的序号的值是这个确认号。因此，确认序号应当是上次已成功收到数据字节序号加1。</li>
+<li>首部长度：由于TCP首部包含一个长度可变的选项部分，所以需要这么一个值来指定这个TCP报文段到底有多长。</li>
+<li>6个标志比特：<ul>
+<li>ACK：表示前面的确认号字段是否有效。只有当ACK=1时，前面的确认序号字段才有效。TCP规定，连接建立后，ACK必须为1。</li>
+<li>SYN：在建立连接时使用，用来同步序号。当SYN=1，ACK=0时，表示这是一个请求建立连接的报文段；当SYN=1，ACK=1时，表示对方同意建立连接。SYN=1，说明这是一个请求建立连接或同意建立连接的报文。只有在前两次握手中SYN才置为1。</li>
+<li>FIN：发标记数据是否发送完毕。如果FIN=1，就相当于告诉对方我的数据已经发送完毕，你可以释放连接了。</li>
+<li>RST：如果你收到一个RST=1的报文，说明你与主机的连接出现了严重错误（如主机崩溃），必须释放连接，然后再重新建立连接。或者说明你上次发送给主机的数据有问题，主机拒绝响应。</li>
+<li>URG：表示本报文段中发送的数据是否包含紧急数据。后面的紧急指针字段只有当URG=1时才有效。</li>
+<li>PSH：告诉对方收到该报文段后是否应该立即把数据推送给上层。如果为1，则表示对方应当立即把数据提交给上层，而不是缓存起来。</li>
+</ul>
+</li>
+<li>窗口大小(Win)：滑动窗口（缓存）大小，即允许对方发送的数据量。也就是告诉对方，从本报文段的确认号开始允许对方发送的数据量。</li>
+<li>检验和：提供额外的可靠性。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果收到段的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段（希望发端超时并重发）。</li>
+<li>紧急指针：一个正的偏移量，标记紧急数据在数据字段中的位置。</li>
+<li>选项部分：其最大长度可根据TCP首部长度进行推算。TCP首部长度用4位表示，那么选项部分最长为：(2^4-1)*4-20=40字节。</li>
+</ol>
+<h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层负责处理特定的应用程序细节。</p>
+<ul>
+<li>HTTP（超文本传输协议）：一种用于分布式、协作式和超媒体信息系统的应用层协议。一般使用80端口。</li>
+<li>DNS（域名系统）：将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。DNS使用TCP和UDP端口53。</li>
+<li>FTP（文件传输协议）：用于在网络上进行文件传输的一套标准协议，使用客户/服务器模式。一般运行在20和21两个端口。端口20用于在客户端和服务器之间传输数据流，而端口21用于传输控制流，并且是命令通向ftp服务器的进口。</li>
+<li>SSH（安全外壳协议）：通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接。一般监听22端口，用于远程登录。</li>
+<li>SMTP（简单邮件传输协议）：一个相对简单的基于文本的协议。在其之上指定了一条消息的一个或多个接收者（在大多数情况下被确认是存在的），然后消息文本会被传输。一般使用25端口。</li>
+</ul>
+<h2 id="网络通信过程"><a href="#网络通信过程" class="headerlink" title="网络通信过程"></a>网络通信过程</h2><h3 id="局域网内两台主机间的通信"><a href="#局域网内两台主机间的通信" class="headerlink" title="局域网内两台主机间的通信"></a><a href="https://blog.csdn.net/hik_zxw/article/details/48845111" target="_blank" rel="noopener">局域网内两台主机间的通信</a></h3><p>当一台主机把以太网数据帧发送到位于同一局域网上的另一台主机时，是根据48bit的以太网地址（MAC地址）来确定目的接口的。设备驱动程序从不检查IP数据报中的目的IP地址。</p>
+<ul>
+<li>发送端IP层先查看主机的路由表，通过查找路由表（netstat -rn）选择一条路由，但是该路由的网关是On-link（在链路上）。On-link的意思是直接相连，不需要经过路由，可将数据包直接发送至目的地址。这时路由器将被当做交换机来使用。</li>
+<li>由于可直接将数据包发送至目的地址不需要路由，这时需要查找目的IP地址对应的MAC地址，即查找ARP缓存表（arp -a）。</li>
+<li>如果没有找到目的IP地址对应的表项，主机发送一条ARP广播（链路层）。交换机（路由器）收到ARP广播后，将主机的MAC地址写入自己的MAC地址表并转发给交换机上的各个接口（LAN口）。</li>
+<li>目的主机收到ARP广播发现目的IP地址和本机IP地址相同就回复一条ARP应答，交换机（路由器）收到ARP应答将目的主机的MAC地址写入到自己的MAC地址表并转发给源主机。</li>
+<li>发送端得到了目标主机的MAC地址，将ICMP包（ping包）发送出去，同时更新自己的ARP表，将目标主机的表项加入进去。</li>
+<li>交换机（路由器）接收到发送端的ICMP包，并接其转发给目的主机。</li>
+</ul>
+<h3 id="公网中的两台主机间的通信"><a href="#公网中的两台主机间的通信" class="headerlink" title="公网中的两台主机间的通信"></a><a href="https://blog.csdn.net/hanbo622/article/details/39694149" target="_blank" rel="noopener">公网中的两台主机间的通信</a></h3><ul>
+<li>发送端IP层先查看主机的路由表，通过查找路由表选择一条路由，根据路由信息获取到了网关的IP地址。根据该IP地址查找自身ARP表，如果没有则会发出ARP广播包。如果有直接向目的端发送数据包。</li>
+<li>路由器R1收到数据吧包并查到数据包的目的MAC地址为自己MAC地址，将包解封到IP层获取目的IP地址。</li>
+<li>根据目的IP地址查询路由表：在路由表中查到最优匹配项，查找到下一跳接口IP地址并将数据包发送出去；如果没有最优匹配项，则按照默认路由发送，没有默认路由则丢弃数据包，并发送回应包，目的地址不可达。</li>
+<li>路由器R2（连接公网的端口）接收到数据包，检验目的MAC地址和自己的MAC地址相等后接收并解封至IP层，查询路由表发现转发接口为自己连接局域网的端口且目的IP地址与转发接口在同一网段内，查找ARP表中目的IP的MAC地址得到目的主机的MAC地址。如果没有查到，则通过发送ARP广播包查询IP地址为的MAC地址。</li>
+<li>路由器将封装好的数据包发送出去，目的主机接收到发送端发来的数据包，解封检验MAC地址为自己MAC地址，接收数据包并向原地址发送ICMP应答数据包，过程相似。</li>
+</ul>
+<h3 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h3><p><a href="https://www.cnblogs.com/lsgxeva/p/9268438.html" target="_blank" rel="noopener">网络地址转换</a> | <a href="https://blog.51cto.com/wangbojing/1968118" target="_blank" rel="noopener">P2P的实现</a></p>
+<h2 id="TCP协议保证可靠性的工作原理"><a href="#TCP协议保证可靠性的工作原理" class="headerlink" title="TCP协议保证可靠性的工作原理"></a>TCP协议保证可靠性的工作原理</h2><h3 id="超时重传"><a href="#超时重传" class="headerlink" title="超时重传"></a>超时重传</h3><ul>
+<li>应用数据被分割成TCP认为最合适的长度进行发送。由TCP传递给IP的信息单位称为报文段或段（segment）。</li>
+<li>当TCP收到发自发送端的数据，它将回复一个确认。这个确认不是立即发送，通常将推迟几分之一秒。</li>
+<li>当TCP发出一个报文段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段，即<b>超时重传</b>。</li>
+</ul>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a><a href="https://blog.csdn.net/yao5hed/article/details/81046945" target="_blank" rel="noopener">滑动窗口</a></h3><p>发送方在可以同时发送多个数据分组，即使用滑动窗口机制来发送数据。由于发送方不必每发一个分组就停下来等待确认，因此该可以加速数据的传输，提高网络吞吐量。同时为了保证包的顺序性，接收端可以先缓存提前到的数据，如果超过一定时间，等待的数据还没到达，则丢掉之前缓存的数据。当发送端和接受端传输速率不一致时就有可能发生缓冲区溢出，所以接收端返回的数据的TCP首部中会包含自己的<b>接收窗口的大小</b>来控制发送方的数据发送（流量控制）。</p>
+<ol>
+<li>首先发送端发送A,B,C,D四个包，但是A,B丢失，只有C,D到达接收端。</li>
+<li>接收端没有收到A，所以不回复ACK包。发送端重传A,B,C,D四个包，这次全都到达了。</li>
+<li>接收端先获得A，发ACK包A，但是中途丢失；获得B后，根据累计确认的原则，发D的ACK包，然后窗口滑动。再次获得C,D后，连续回复2个D的ACK包，其中C对应的ACK包丢失。</li>
+<li>发送端连收2个D的ACK包，说明4个包对方都已收到，窗口滑动，发E,F,G,H包，其中G包丢失。现在整个序列的状态：ABCD是已发送已确认，EFGH是已发送未确认，I~S是不能发送。</li>
+<li>接收端先收到E，发ACK包；收到F后发F的ACK包；未收到G，还是发F的ACK包；收到H，还是发F的ACK包。不幸的是，三个ACK包全都丢失。</li>
+<li>发送端收到E的ACK包，窗口向右滑动一位；然后再发送F,G,H,I，其中F丢失。</li>
+<li>接收端获得I，因为没有G，只好回复F的ACK包。相继收到G,H包。</li>
+<li>接收端根据累计确认，连发两个I包，其中H对应的丢失。窗口向右滑动。 </li>
+<li>发送端接收I的ACK包后，向右滑动四位。发送J,K,L,M四个包，后面不再分析。</li>
+</ol>
+<h3 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口"></a><a href="https://blog.csdn.net/qq_33436509/article/details/81979024" target="_blank" rel="noopener">拥塞窗口</a></h3><ul>
+<li>流量控制只是简单地表明了接收方的处理能力，并不能代表中间网络的处理能力。如果一开始把滑动窗口内的数据全部发送出去，中间路由器可能一时处理不了如此多的突发流量导致拥塞（路由器因无法处理高速到达的流量而被迫丢弃数据信息的现象称为拥塞）。</li>
+<li>TCP具备拥塞控制机制，即让每一个发送方感知到网络的拥塞程度来限制其能向连接发送流量的速率。</li>
+<li>如果一个TCP发送方感知从它到目的地之间的路径上没有拥塞，则发送方增加其发送速率；如果发送方感知到该路径有阻塞，则降低其发送速率。</li>
+<li>运行在发送方的TCP拥塞控制机制跟踪一个额外的变量，即拥塞窗口来限制其向其连接发送流量。</li>
+<li>TCP拥塞控制算法：该算法包括三个部分，慢启动、拥塞避免和快速恢复。</li>
+</ul>
+<h2 id="TCP连接管理"><a href="#TCP连接管理" class="headerlink" title="TCP连接管理"></a>TCP连接管理</h2><h3 id="建立连接的三次握手"><a href="#建立连接的三次握手" class="headerlink" title="建立连接的三次握手"></a>建立连接的三次握手</h3><ol>
+<li>客户端发送一个（SYN=1,ACK=0,序号为x）的请求给服务器端。</li>
+<li>服务器端回复一个（SYN=1,ACK=1,序号为y,确认序号为x+1）的请求给客户端。</li>
+<li>客户端再次发送一个（SYN=0,ACK=1,确认序号为y+1）的请求给服务器端表示连接建立成功。</li>
+</ol>
+<h3 id="终止连接的四次挥手"><a href="#终止连接的四次挥手" class="headerlink" title="终止连接的四次挥手"></a>终止连接的四次挥手</h3><p>每一端都能主动关闭这个连接（即首先发送FIN）。然而，一般由客户端决定何时终止连接，因为客户进程通常由用户交互控制，用户会键入诸如quit一样的命令来终止进程，所以第一个SYN一般是从客户传到服务器。</p>
+<ol>
+<li>主动关闭方发送一个（FIN=1,序号为x）的请求给被动关闭方。</li>
+<li>被动关闭方回复一个（FIN=0,确认序号为x+1）的请求给主动关闭方。此时主动关闭方处于<b>半关闭状态</b>，即它还能接收来自另一端数据并回复确认信息。</li>
+<li>被动关闭方发送一个（FIN=1,序号为y）的请求给主动关闭方。</li>
+<li>主动关闭方回复一个（FIN=0,确认序号为y+1）的请求给被动关闭方。连接彻底关闭。</li>
+</ol>
+<h3 id="为什么建立连接协议是三次握手，而关闭连接却是四次握手？"><a href="#为什么建立连接协议是三次握手，而关闭连接却是四次握手？" class="headerlink" title="为什么建立连接协议是三次握手，而关闭连接却是四次握手？"></a>为什么建立连接协议是三次握手，而关闭连接却是四次握手？</h3><p>服务端的LISTEN状态下的SOCKET当收到SYN报文的连接请求后，它可以把ACK和SYN(ACK起应答作用，而SYN起同步作用)放在一个报文里来发送。但关闭连接时，当收到对方的FIN报文通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可能未必会马上会关闭SOCKET,即你可能还需要发送一些数据给对方之后，再发送FIN报文给对方来表示你同意现在可以关闭连接了，所以这里的<b>ACK报文和FIN报文多数情况下都是分开发送的</b>。</p>
+<h2 id="TCP状态转换"><a href="#TCP状态转换" class="headerlink" title="TCP状态转换"></a>TCP状态转换</h2><p><img src="/img/TCP状态转换图.png"></p>
+<ol>
+<li>CLOSED：一个假想的起点和终点，不是一个实际的状态。</li>
+<li>LISTEN：监听状态，服务器正在等待连接进入。</li>
+<li>SYN_SENT：在客户端发送第一个同步报文段（第一次握手）之后的状态，等待服务器端确认。如果服务器端不能连接，则直接进入CLOSED状态。</li>
+<li>SYN_RCVD：服务器向客户端发送了确认同步报文段（第二次握手）之后的状态。</li>
+<li>ESTABLISHED：在收到服务端发送的确认和同步报文段（第二次握手）后，客户端只需要发送出一个确认报文段（第三次握手）就进入该状态；收到客户端发来的确认报文段（第三次握手）后服务器端也进入该状态。</li>
+<li>FIN_WAIT_1：主动关闭方发出第一个FIN报文段（第一次挥手）后进入该状态。</li>
+<li>CLOSE_WAIT：被动关闭方接收到主动方发送的FIN报文，并发送了返回的ACK（第二次挥手）后进入该状态。</li>
+<li>FIN_WAIT_2：主动关闭接收到被动方返回的ACK（第二次挥手）后进入该状态。</li>
+<li>LAST_ACK：被动方发送FIN给对方（第三次挥手）后进入该状态。</li>
+<li>TIME_WAIT：主动方最后回应一个ACK（第四次挥手）后进入该状态。</li>
+</ol>
+<h3 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h3><p>主动关闭的一端会在最后回应一个ACK后进入该状态，并在该状态停留的持续时间是最长分节生命期的两倍。最长分节生命期(MSL)指任何IP数据报能再因特网上存活的最长时间。之所以要有该状态是因为以下两个理由：</p>
+<ol>
+<li>可靠地实现TCP全双工连接的终止。如果最终的ACK丢失了，服务器将重新发送它的最终那个FIN，因此客户必须维护状态信息，以允许它重新发送最终那个ACK。要是客户不维护状态信息，它将响应以一个RST（另外一种类型的TCP分节），该分节将被服务器解释成一个错误。</li>
+<li>允许老的重复分节在网络中消逝。关闭一个连接后，过一段时间在相同的IP地址和端口之间建立另一个连接。后一个连接称为前一个连接的化身因为它们的IP地址和端口号都相同。TCP必须防止来自某个连接的老的重复分组在该连接已终止后再现，从而被误解成属于同一连接的某个新的化身。</li>
+</ol>
+<h2 id="TCP拆包和粘包"><a href="#TCP拆包和粘包" class="headerlink" title="TCP拆包和粘包"></a><a href="https://blog.csdn.net/u010853261/article/details/55803933" target="_blank" rel="noopener">TCP拆包和粘包</a></h2><p>TCP协议是基于字节流传输的。应用层传递的是大小不等的数据块，但是TCP并不了解上层业务数据的具体含义，它会根据TCP缓冲区的实际情况进行包的划分，所以在业务上认为，一个完整的包可能会被TCP拆分成多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送。这就需要拆包和粘包。</p>
+<h3 id="拆包粘包的四种解决方案"><a href="#拆包粘包的四种解决方案" class="headerlink" title="拆包粘包的四种解决方案"></a>拆包粘包的四种解决方案</h3><ol>
+<li>消息长度固定，例如每120个字节代表一个整包消息，不足的前面补位。解码器在处理这类定常消息的时候比较简单，每次读到指定长度的字节后再进行解码。</li>
+<li>回车换行符作为结束符，在文本协议中应用比较广泛。HTTP协议头使用这种方式。</li>
+<li>将特殊的分隔符作为消息的结束标志，回车换行符就是一种特殊的结束分隔符。</li>
+<li>通过在协议头/消息头中设置长度字段来标识整包消息。例如HTTP协议就是在协议头中设定了body的长度。</li>
+</ol>
+<h3 id="Netty针对上述四种方案都提供了对应的解码器"><a href="#Netty针对上述四种方案都提供了对应的解码器" class="headerlink" title="Netty针对上述四种方案都提供了对应的解码器"></a>Netty针对上述四种方案都提供了对应的解码器</h3><ol>
+<li>通过FixedLengthFrameDecoder定长解码器来解决定长消息的黏包问题。</li>
+<li>通过LineBasedFrameDecoder和StringDecoder来解决以回车换行符作为消息结束符的TCP黏包的问题。</li>
+<li>通过DelimiterBasedFrameDecoder特殊分隔符解码器来解决以特殊符号作为消息结束符的TCP黏包问题。</li>
+<li>通过LengthFieldBasedFrameDecoder和LengthFieldPrepender自定义长度解码器解决TCP黏包问题。</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/计算机基础/">计算机基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

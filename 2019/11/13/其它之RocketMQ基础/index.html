@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>RocketMQ基础 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="RocketMQ基础">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">RocketMQ基础</h1>
+  
+
+      
+        <time datetime="2019-11-13T04:29:51.000Z">2019-11-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="MQ作用"><a href="#MQ作用" class="headerlink" title="MQ作用"></a><a href="https://www.cnblogs.com/javazhiyin/p/13201315.html" target="_blank" rel="noopener">MQ作用</a></h3><p>在一个企业级的架构应用中，MQ的主要作用为业务解耦、事件消息广播、消息流控处理。其中，对于业务解耦是作为消息队列，要解决的一个首要问题。所谓业务解耦，就是说在一个业务流程处理上，只关注具体的流程，尽到通知的责任即可，不必等待消息处理的结果。<br>总得来看，企业级系统模块通信的方式通常情况下，无非两种。同步方式：REST、RPC方式实现；异步方式：消息中间件（消息队列）方式实现。<br><a id="more"></a></p>
+<h3 id="RocketMQ基础组件"><a href="#RocketMQ基础组件" class="headerlink" title="RocketMQ基础组件"></a>RocketMQ基础组件</h3><ul>
+<li>NameServer：相当于注册中心。是一个几乎无状态节点，可集群部署，节点之间无任何信息同步。<ol>
+<li>维护了一份Broker的地址列表。Broker在启动的时候会去NameServer进行注册，并发送心跳来维护Broker的存活状态。</li>
+<li>维护了一份Topic和Topic对应队列的地址列表，Broker每次发送心跳过来的时候都会把Topic信息带上。</li>
+<li>接收客户端（Producer和Consumer）的请求根据某个Topic获取所有到Broker的路由信息。</li>
+</ol>
+</li>
+<li>Broker：负责存储和分发消息。<ul>
+<li>Broker分为Master与Slave，一个Master可以对应多个Slave，但是一个Slave只能对应一个Master，Master与Slave的对应关系通过指定相同的BrokerName，不同的BrokerId来定义，BrokerId为0表示Master，非0表示Slave。</li>
+<li>每隔30秒（此时间无法更改）向所有NameServer发送心跳，心跳包含了自身的Topic配置信息。</li>
+<li>NameServer每隔10秒钟（此时间无法更改），扫描所有还存活的Broker连接，若某个连接2分钟内（当前时间与最后更新时间差值超过2分钟，此时间无法更改）没有发送心跳数据，则断开连接。</li>
+</ul>
+</li>
+<li>Producer：消息生产者。与NameServer集群中的其中一个节点（随机选择）建立长连接，定期从NameServer取Topic路由信息，并向提供Topic服务的所有Master建立长连接，且定时向Master发送心跳。Producer完全无状态，可集群部署。</li>
+<li>Consumer：消息消费者。与NameServer集群中的其中一个节点（随机选择）建立长连接，定期从NameServer取Topic路由信息，并向提供Topic服务的所有Master和Slave建立长连接，且定时向Master和Slave发送心跳。Consumer既可以从Master订阅消息，也可以从Slave订阅消息，订阅规则由Broker配置决定。</li>
+</ul>
+<h3 id="RocketMQ部署方式"><a href="#RocketMQ部署方式" class="headerlink" title="RocketMQ部署方式"></a>RocketMQ部署方式</h3><ul>
+<li>单个Master：只适合测试环境。</li>
+<li>多Master模式<ul>
+<li>优点：配置简单，单个Master宕机或重启维护对应用无影响，在磁盘配置为RAID10时，即使机器宕机不可恢复情况下，由于RAID10磁盘非常可靠，消息也不会丢失（异步刷盘丢失少量消息，同步刷盘一条不丢）。性能最高。</li>
+<li>缺点：单台机器宕机期间，这台机器上未被消费的消息在机器恢复之前不可订阅，消息实时性会受到影响。</li>
+</ul>
+</li>
+<li>多Master多Slave模式，异步复制<ul>
+<li>优点：即使磁盘损坏，消息丢失的非常少，且消息实时性不会受影响，因为Master 宕机后，消费者仍然可以从Slave消费，此过程对应用透明。不需要人工干预。性能同多Master模式几乎一样。</li>
+<li>缺点：Master宕机，磁盘损坏情况，会丢失少量消息。</li>
+</ul>
+</li>
+<li>多Master多Slave模式，同步双写<ul>
+<li>优点：数据与服务都无单点，Master宕机情况下，消息无延迟，服务可用性与数据可用性都非常高。</li>
+<li>缺点：性能比异步复制模式略低，大约低10%左右，发送单个消息的RT会略高。目前主宕机后，备机不能自动切换为主机，后续会支持自动切换功能。</li>
+</ul>
+</li>
+</ul>
+<h3 id="RocketMQ实现功能"><a href="#RocketMQ实现功能" class="headerlink" title="RocketMQ实现功能"></a>RocketMQ实现功能</h3><ul>
+<li>消息存储：消息中间件的一个核心实现是消息的存储对消息存储一般有如下两个维度的考量: 消息堆积能力和消息存储性能。RocketMQ追求消息存储的高性能，引人内存映射机制，所有主题的消息顺序存储在同一个文件中。同时为了避免消息无限在消息存储服务器中累积，引入了消息文件过期机制与文件存储空间报警机制。</li>
+<li>消息高可用性：通常影响消息可靠性的有以下几种情况。1.Broker正常关机。2.Broker异常Crash。3.OS Crash。4.机器断电，但是能立即恢复供电情况。5.机器无法开机(可能是CPU、主板、内存等关键设备损坏)。6.磁盘设备损坏。针对上述情况，情况1~4的RocketMQ在同步刷盘机制下可以确保不丢失消息，在异步刷盘模式下，会丢失少量消息。情况5-6属于单点故障，一旦发生，该节点上的消息全部丢失，如果开启了异步复制机制，RoketMQ能保证只丢失少量消息，如果使用Master Slave双写机制，可以保证不丢失消息，从而满足消息可靠性要求极高的场合。</li>
+<li>消费低延迟：RocketMQ在消息不发生消息堆积时，以长轮询模式实现准实时的消息推送模式。</li>
+<li>确保消息必须被消费一次：RocketMQ通过消息消费确认机制(ACK)来确保消息至少被消费一次，但由于ACK消息有可能丢失等其他原因，RocketMQ无法做到消息只被消费一次，有重复消费的可能。</li>
+<li>回溯消息：回溯消息是指消息消费端已经消费成功的消息，由于业务要求需要重新消费消息。RocketMQ支持按时间回溯消息，时间维度可精确到毫秒，可以向前或向后回溯。</li>
+<li>消息堆积：消息中间件的主要功能是异步解耦，必须具备应对前端的数据洪峰，提高后端系统的可用性，必然要求消息中间件具备一定的消息堆积能力。RocketMQ消息存储使用磁盘文件(内存映射机制)，并且在物理布局上为多个大小相等的文件组成逻辑文件组，可以无限循环使用。RocketMQ消息存储文件并不是永久存储在消息服务器端，而是提供了过期机制，默认保留3天。</li>
+<li>定时消息：定时消息是指消息发送到Broker后，不能被消息消费端立即消费，要到特定的时间点或者等待特定的时间后才能被消费。如果要支持任意精度的定时消息消费，必须在消息服务端对消息进行排序，势必带来很大的性能损耗，故RocketMQ不支持任意进度的定时消息，而只支持特定延迟级别。</li>
+<li>消息重试机制：消息重试是指消息在消费时，如果发送异常，消息中间件需要支持消息重新投递，RocketMQ支持消息重试机制。</li>
+</ul>
+<h3 id="RocketMQ路由查找"><a href="#RocketMQ路由查找" class="headerlink" title="RocketMQ路由查找"></a>RocketMQ路由查找</h3><ul>
+<li>Topic路由信息创建<ol>
+<li>手动创建Topic路由信息：可以根据该Topic消息的实际需求，分配合适的Broker数量和消息队列数量。一般来说，生产环境的服务都推荐以这种方式进行。</li>
+<li>打开自动创建Topic功能：配置BrokerConfig#autoCreateTopicEnable，这样就会在发送第一个消息时，动态的创建该topic的路由信息。</li>
+</ol>
+</li>
+<li>路由选择<ol>
+<li>轮训所有队列，通过LatencyFaultTolerance找到可用队列。</li>
+<li>如果未找到任何可用队列，通过LatencyFaultTolerance存储的信息，按照三个纬度的可用性排序（当前可用与否&gt;上次使用该节点时的调用耗时&gt;预估的下次可使用时间），选出最可能可用的队列。</li>
+<li>如果上述两个步骤都没有选出队列，则按照最简单的轮训找到下一个队列。</li>
+</ol>
+</li>
+</ul>
+<h3 id="RocketMQ消息存储"><a href="#RocketMQ消息存储" class="headerlink" title="RocketMQ消息存储"></a>RocketMQ消息存储</h3><p>RocketMQ主要存储的文件包括CommitLog文件、ConsumeQueue文件、IndexFile文件。</p>
+<ul>
+<li>CommitLog：消息存放的物理文件。CommitLog的消息存储单元长度不固定，文件顺序写，随机读。</li>
+<li>ConsumeQueue：是消息的逻辑队列，类似数据库的索引文件，存储的是指向物理存储的地址。</li>
+<li>IndexFile：索引文件，引入了Hash索引机制为消息建立索引，对CommitLog进行数据索引。</li>
+</ul>
+<h2 id="RocketMQ应用"><a href="#RocketMQ应用" class="headerlink" title="RocketMQ应用"></a>RocketMQ应用</h2><h3 id="系统I-O和虚拟内存设置"><a href="#系统I-O和虚拟内存设置" class="headerlink" title="系统I/O和虚拟内存设置"></a>系统I/O和虚拟内存设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 内存分配策略</span><br><span class="line"># 可选值：0、1、2</span><br><span class="line"># 0：表示内核将检查是否有足够的可用内存供应用进程使用；如果有足够的可用内存，内存申请允许；否则，内存申请失败，并把错误返回给应用进程。即内核计算NR_FILE_PAGES总量+SWAP总量+slab中可以释放的内存总量，如果申请空间超过此数值，则将此数值与空闲内存总量减掉totalreserve_pages的总量相加。如果申请空间依然超过此数值，则分配失败。</span><br><span class="line"># 1：表示内核允许分配所有的物理内存，而不管当前的内存状态如何。</span><br><span class="line"># 2：表示内核允许分配超过所有物理内存和交换空间总和的内存。</span><br><span class="line">echo &apos;vm.overcommit_memory=1&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 表示强制Linux VM最低保留多少空闲内存（Kbytes）。当可用内存低于这个参数时，系统开始回收cache内存，以释放内存，直到可用内存大于这个值。RocketMQ需要大量使用页缓存，故需要适当小的设置该值。</span><br><span class="line">echo &apos;vm.min_free_kbytes=5000000&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"></span><br><span class="line">echo &apos;vm.drop_caches=1&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 在申请内存时，内核在当前zone(内存页)内没有足够内存可用的情况下，会根据zone_reclaim_mode的设置来决策是从下一个zone找空闲内存还是在zone内部进行回收。</span><br><span class="line"># 0：意味着关闭zone_reclaim模式，可以从其他zone或NUMA节点回收内存。</span><br><span class="line"># 1：表示打开zone_reclaim模式，这样内存回收只会发生在本地节点内。</span><br><span class="line"># 2：在本地回收内存时，可以将cache中的脏数据写回硬盘，以回收内存。</span><br><span class="line"># 3：可以用swap方式回收内存。</span><br><span class="line">echo &apos;vm.zone_reclaim_mode=0&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 一个进程可以拥有的VMA(虚拟内存区域)的数量。虚拟内存区域是一个连续的虚拟地址空间区域。</span><br><span class="line">echo &apos;vm.max_map_count=655360&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 指定了当文件系统缓存脏页数量达到系统内存百分之多少时(如5%)就会触发pdflush/flush/kdmflush等后台回写进程运行，将一定缓存的脏页异步地刷入磁盘。</span><br><span class="line">echo &apos;vm.dirty_background_ratio=50&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 指定了当文件系统缓存脏页数量达到系统内存百分之多少时(如10%)，新的IO请求将会被阻挡，直到脏数据被写进磁盘。这是造成IO卡顿的重要原因，但这也是保证内存中不会存在过量脏数据的保护机制。</span><br><span class="line">echo &apos;vm.dirty_ratio=50&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 用来控制从swap空间换入数据的时候，一次连续读取的页数，这相当于对交换空间的预读。</span><br><span class="line">echo &apos;vm.page-cluster=3&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># 指定多长时间pdflush/flush/kdmflush这些进程会唤醒一次，然后检查是否有缓存需要清理。</span><br><span class="line">echo &apos;vm.dirty_writeback_centisecs=360000&apos; &gt;&gt; /etc/sysctl.conf</span><br><span class="line"># swappiness=0的时候表示最大限度使用物理内存，然后才是swap空间，swappiness＝100的时候表示积极的使用swap分区，并且把内存上的数据及时的搬运到swap空间里面。Linux的基本默认设置为60。</span><br><span class="line">echo &apos;vm.swappiness=10&apos; &gt;&gt; /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
+<h3 id="系统文件句柄设置"><a href="#系统文件句柄设置" class="headerlink" title="系统文件句柄设置"></a>系统文件句柄设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 可以打开最大文件描述符的数量。</span><br><span class="line">echo &apos;ulimit -n 1000000&apos; &gt;&gt; /etc/profile</span><br><span class="line"># admin用户可用的最大进程数量(硬限制)。</span><br><span class="line">echo &apos;admin hard nofile 1000000&apos; &gt;&gt; /etc/security/limits.conf</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/其它/">其它</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

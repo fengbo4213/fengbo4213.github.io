@@ -1,0 +1,244 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Git的安装和使用 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Git的安装和使用">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Git的安装和使用</h1>
+  
+
+      
+        <time datetime="2017-06-30T02:44:31.000Z">2017-06-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h4 id="Hexo配置"><a href="#Hexo配置" class="headerlink" title="Hexo配置"></a><a href="http://www.cnblogs.com/seayxu/p/5548243.html" target="_blank" rel="noopener">Hexo配置</a></h4><p>重装hexo时，直接从Git上克隆下源码然后直接执行npm install –save hexo-deployer-git命令就好。<br><a id="more"></a></p>
+<ol>
+<li>将目录初始化为git创库：git init</li>
+<li>设置name和email：<br> git config user.name “fengbo”<br> git config user.email “<a href="mailto:2540889969@qq.com" target="_blank" rel="noopener">2540889969@qq.com</a>“</li>
+<li>设置key：ssh-keygen -t rsa -C “<a href="mailto:2540889969@qq.com" target="_blank" rel="noopener">2540889969@qq.com</a>“</li>
+<li>测试是否成功：ssh <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a><br> 如果出现You’ve successfully authenticated, but GitHub does not provide shell access 。这就表示已成功连上github。</li>
+<li>从远程GitHub上将项目克隆下来：git clone <a href="https://github.com/fengbo4213/myapp.git" target="_blank" rel="noopener">https://github.com/fengbo4213/myapp.git</a></li>
+<li>添加远程访问地址：git remote add origin <a href="https://github.com/fengbo4213/myapp.git" target="_blank" rel="noopener">https://github.com/fengbo4213/myapp.git</a></li>
+<li>修改远程访问地址：git remote set-url origin <a href="https://github.com/fengbo4213/myapp.git" target="_blank" rel="noopener">https://github.com/fengbo4213/myapp.git</a></li>
+<li>提交修改：<br> git pull<br> git add 文件名<br> git commit -m “添加注释”<br> git push origin master<br> git push -f origin master：强制推送到远程</li>
+<li>分支管理<br> git branch &lt;新分支名字&gt;：在本地电脑新建一个分支<br> git push origin &lt;新分支名字&gt;：将新分支发布在github上<br> git checkout &lt;新分支名字&gt;：切换到你的新分支<br> git checkout -b 本地分支名 origin/远程分支名：拉取远程分支并同时创建对应的本地分支<br> git branch：查看所有已存在的分支<br> git branch -a：查看所有已存在的分支，包括远程分支<br> git merge &lt;分支名字&gt;：将当前分支合并该分支上<br> git branch -d &lt;分支名字&gt;：删除该分支<br> git reset <commit>：将当前分支重设到指定<commit>或者HEAD （默认，如果不指定commit，默认是HEAD）<br> 分支冲突：当合并分支冲突时，可以使用git status查看冲突的文件，同时会在冲突的文件中显示。这时需要手动修改该文件，然后使用git add &lt;冲突的文件名&gt;标记冲突已经解决。然后使用git commit命令提交即可。</commit></commit></li>
+<li>远程仓库管理<br>git remote -v：查看远程仓库<br>git remote show origin：查看origin仓库的详细信息<br>git remote rename 新名 旧名：重命名远程仓库<br>git remote rm 名称：移除一个远程仓库</li>
+<li>丢弃本地修改<br>git checkout .：本地所有修改的。没有的提交的，都返回到原来的状态<br>git clean -xdf .：删除本地没有提交的文件<br>git reset –hard HASH：返回到某个节点，不保留修改<br>git reset –soft HASH：返回到某个节点，保留修改</li>
+<li>删除Git和本地的文件：git rm -rf .idea</li>
+<li>删除Git中的文件：git rm -rf –cached .idea</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/其它/">其它</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,359 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>汇编基础 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="汇编基础">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">汇编基础</h1>
+  
+
+      
+        <time datetime="2018-01-30T12:34:07.000Z">2018-01-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><ul>
+<li>通用寄存器组(GPRs)：也称数据寄存器，用来存放一般性数据。</li>
+<li>段寄存器(16位的寄存器)：CPU根据段寄存器的内容，与寻址方式确定的有效地址一起，并结合其它用户不可见的内部寄存器，生成操作数所在的存储地址。一共有6个，<b>即代码段(CS)、堆栈段(SS)、数据段(DS)和3个附加段(ES、FS、GS)寄存器。</b></li>
+<li>指令指针寄存器(RIP)：用来确认CPU需要执行的下一条指令在指令内存中的地址。</li>
+<li>标志寄存器(FLAGS)：用来存储相关指令的某些执行结果；用来为CPU执行相关指令提供行为依据；用来控制CPU的相关工作方式。</li>
+<li>程序计数器：CS和IP寄存器指示了CPU当前要读取指令的地址。CS为代码段寄存器，IP为指令指针寄存器。<a id="more"></a>
+</li>
+</ul>
+<h3 id="通用目的寄存器：一个x86-64位的中央处理单元（CPU）包含一组16个存储64位值的通用目的寄存器。"><a href="#通用目的寄存器：一个x86-64位的中央处理单元（CPU）包含一组16个存储64位值的通用目的寄存器。" class="headerlink" title="通用目的寄存器：一个x86-64位的中央处理单元（CPU）包含一组16个存储64位值的通用目的寄存器。"></a>通用目的寄存器：一个x86-64位的中央处理单元（CPU）包含一组16个存储64位值的通用目的寄存器。</h3><pre><code>01 rax -&gt; eax -&gt; ax -&gt; al           
+02 rbx -&gt; ebx -&gt; bx -&gt; bl
+03 rcx -&gt; ecx -&gt; cx -&gt; cl
+04 rdx -&gt; edx -&gt; dx -&gt; dl           --&gt; 这四个主要用来存放操作数
+05 rsi -&gt; esi -&gt; si -&gt; sil
+06 rdi -&gt; edi -&gt; di -&gt; dil
+07 rbp -&gt; ebp -&gt; bp -&gt; bpl          --&gt; 基址指针寄存器：
+08 rsp -&gt; esp -&gt; sp -&gt; spl          --&gt; 栈指针寄存器：保存着栈顶的元素。
+09  r8 -&gt;  r8d -&gt;  r8w -&gt;  r8b
+10  r9 -&gt;  r9d -&gt;  r9w -&gt;  r9b
+11 r10 -&gt; r10d -&gt; r10w -&gt; r10b
+12 r11 -&gt; r11d -&gt; r11w -&gt; r11b
+13 r12 -&gt; r12d -&gt; r12w -&gt; r12b
+14 r13 -&gt; r12d -&gt; r13w -&gt; r13b
+15 r14 -&gt; r14d -&gt; r14w -&gt; r14b
+16 r15 -&gt; r15d -&gt; r15w -&gt; r15b
+</code></pre><p>对于生成小于8字节结果的指令，寄存器中剩下的字节有两种可能：</p>
+<ol>
+<li>生成1字节和2字节数字的指令会保持剩下的字节不变。</li>
+<li>生成4字节数字的指令会把高位4字节置为0。</li>
+</ol>
+<h3 id="标志寄存器"><a href="#标志寄存器" class="headerlink" title="标志寄存器"></a>标志寄存器</h3><p>该寄存器的每一位都有专门的含义，记录特定的信息。其中有6个条件标志和3个控制标志。</p>
+<ul>
+<li>CF –&gt; 进位标志，最近的操作使最高位产生了进位。可以用来检测无符号操作的溢出。<ul>
+<li>在进行无符号运算的时候，它记录了运算结果的最高有效位向更高有效位的进位值。</li>
+<li>当两个数据相加时，如两个8位数据：98H + 98H，将产生进位。由于这个进位值在8位数上无法保存，在之前的理解中，只是简单的说这个进位值丢失了。其实CPU在运算的时候，并不丢弃这个进位值，而是记录在该标志位上。</li>
+<li>当两个数据做减法的时候，有可能向更高位借位。例如，两个8位数据：97H - 98H，将产生借位，借位后，相当于计算197H - 98H。该标志位也可以用来记录这个借位值。</li>
+</ul>
+</li>
+<li>ZF –&gt; 零标志，最近操作得出的结果为0.<ul>
+<li>记录相关指令执行后，其结果是否为0。如果结果为0，那么zf = 1,；如果结果不为0，那么zf = 1。</li>
+</ul>
+</li>
+<li>SF –&gt; 符号标志，最近的操作得到的结果为负数。<ul>
+<li>记录相关指令执行后，其结果是否为负。如果结果为负，那么sf = 1；如果非负，那么sf = 1。</li>
+<li>将数据当有符号数来运算的时候，可以通过它来得知结果的正负。如果将数据当做无符号数来运算，SF的值没有意义，虽然相关指令影响了它的值。</li>
+</ul>
+</li>
+<li>OF –&gt; 溢出标志，最近的操作导致一个补码溢出—正溢出或负溢出。<ul>
+<li>在进行有符号数运算时，如结果超过了机器所能表达的范围，称为溢出。</li>
+<li>记录有符号运算的结果是否发生了溢出，发生了溢出，of = 1，没有发生溢出；of = 0。</li>
+</ul>
+</li>
+<li>PF –&gt; 奇偶标志。</li>
+<li>AF –&gt; 辅助进位标志。</li>
+<li>TF –&gt; 单步标志位。</li>
+<li>IF –&gt; 中断允许位。</li>
+<li>DF –&gt; 方向位。</li>
+</ul>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><h3 id="赋值操作"><a href="#赋值操作" class="headerlink" title="赋值操作"></a>赋值操作</h3><pre><code>mov s, d --&gt; d = s
+movb     --&gt; 传送字节
+movw     --&gt; 传送字（一个字等于两个字节）
+movl     --&gt; 传送双字（四字节）
+movq     --&gt; 传送四字（八字节）
+movabsq  --&gt; 传送绝对的四字
+</code></pre><p>C语言中的指针其实就是地址，间接引用指针就是将指针放在一个寄存器中，然后在内存引用中使用这个寄存器；<br>局部变量通常存放在寄存器而不是内存中。</p>
+<h3 id="栈操作"><a href="#栈操作" class="headerlink" title="栈操作"></a>栈操作</h3><pre><code>push s --&gt; 将四字（八字节）压入栈中  ==== subq $8, %rsp   movq %rsp, (%rsp)
+pop s  --&gt; 将四字（八字节）弹出
+</code></pre><p>将一个四字压入栈中，首先要将栈指针减8，然后将值写到新的栈顶地址。</p>
+<h3 id="算术和逻辑操作（-、—、-、-）"><a href="#算术和逻辑操作（-、—、-、-）" class="headerlink" title="算术和逻辑操作（+、—、*、/）"></a>算术和逻辑操作（+、—、*、/）</h3><pre><code>inc d       -&gt; d = d + 1 -&gt; 加1
+dec d       -&gt; d = d - 1 -&gt; 减1
+neg d       -&gt; d = -d    -&gt; 取负
+not d       -&gt; d = ~d    -&gt; 取补
+
+add s, d    -&gt; d = d + s -&gt; 加
+sub s, d    -&gt; d = d - s -&gt; 减
+imul s, d   -&gt; d = d * s -&gt; 乘
+xor s, d    -&gt; d = d ^ s -&gt; 异或
+or s, d     -&gt; d = d | s -&gt; 或
+and s, d    -&gt; d = d &amp; s -&gt; 与
+
+sal k, d    -&gt; d = d &lt;&lt; k   左移
+shl k, d    -&gt; d = d &lt;&lt; k   左移（同sal）
+sar k, d    -&gt; d = d &gt;&gt; k   算术右移
+shr k, d    -&gt; d = d &gt;&gt; k   逻辑右移
+
+leaq s, d   d = &amp;s          加载有效地址
+和movq区别：
+movq (%rdi, %rsi, 4), %rax      --&gt; rax等于4 * rsi + rdi所指向的内存的值
+leaq (%rdi, %rsi, 4), %rax      --&gt; rax等于4 * rsi + rdi
+</code></pre><p>leaq指令不改变条件码，因为他是用来进行地址计算的。上面的其他操作都会设置条件码。对于逻辑操作，例如XOR，进位标志和溢出标志会设置为0。对于移位操作，进位标志将设置为最后一个被移出的位，而溢出标志设置为0。INC和DEC指令会设置溢出和零标志，但不会改变进位标志。</p>
+<h3 id="比较操作（-、-gt-、-lt-、-gt-、-lt-）"><a href="#比较操作（-、-gt-、-lt-、-gt-、-lt-）" class="headerlink" title="比较操作（==、&gt;、&lt;、&gt;=、=&lt;）"></a>比较操作（==、&gt;、&lt;、&gt;=、=&lt;）</h3><pre><code>cmp --&gt; 根据两个操作数之差来设置条件码，除了只设置条件码而不更新目的寄存器之外，cmp指令和sub指令的行为是一样的。
+cmp ax, bx
+  ax == bx -&gt; ax - bx = 0            -&gt; zf = 1
+  ax != bx -&gt; ax - bx != 0           -&gt; zf = 0
+  ax &lt; bx  -&gt; ax - bx 借位           -&gt; cf = 1
+  ax &gt;= bx -&gt; ax - bx 不借位         -&gt; cf = 0
+  ax &gt; bx  -&gt; ax - bx != 0且不借位   -&gt; cf = 0且zf = 0
+  ax &lt;= bx -&gt; ax - bx == 0且借位     -&gt; cf = 1且zf = 1
+test --&gt; 和and指令行为一样。
+</code></pre><h3 id="跳转操作（if、while、for、switch）"><a href="#跳转操作（if、while、for、switch）" class="headerlink" title="跳转操作（if、while、for、switch）"></a>跳转操作（if、while、for、switch）</h3><pre><code>jmp .L1     -&gt; 1                    -&gt; 直接跳转
+jmp *(%rax) -&gt; 1                    -&gt; 间接跳转
+
+je/jz .L1   -&gt; zf                   -&gt; 相等/零
+jne/jnz .L1 -&gt; ~zf                  -&gt; 不相等/非零
+
+js .L1      -&gt; sf                   -&gt; 负数
+jns .L1     -&gt; ~sf                  -&gt; 非负数
+
+jg/jnle .L1 -&gt; ~(sf ^ of) &amp; ~zf     -&gt; 大于(有符号&gt;)
+jge/jnl .L1 -&gt; ~(sf ^ of)           -&gt; 大于或等于(有符号&gt;=)
+jl/jnge .L1 -&gt; sf ^ of              -&gt; 小于(有符号&lt;)
+jle/jng .L1 -&gt; (sf ^ of) | zf       -&gt; 小于或等于(有符号&lt;=)
+
+ja/jnbe .L1 -&gt; ~cf &amp; ~zf            -&gt; 超过(无符号&gt;)
+jae/jnb .L1 -&gt; ~cf                  -&gt; 超过或相等(无符号&gt;=)
+jb/jnae .L1 -&gt; cf                   -&gt; 低于(无符号&lt;)
+jbe/jna .L1 -&gt; cf | zf              -&gt; 低于或相等(无符号&lt;=)
+</code></pre><h3 id="过程指令"><a href="#过程指令" class="headerlink" title="过程指令"></a>过程指令</h3><p>假设过程P调用过程Q，Q执行后返回P：</p>
+<ul>
+<li><p>传递控制：在进入过程Q的时候，程序计数器必须被设置为Q的代码的起始地址，然后返回是，要把程序计数器设置为P中调用Q后面那条指令的地址。</p>
+<p>  call .L1/*(%rax)    -&gt; 将当前的IP或CS和IP压入栈中，然后跳转<br>  ret                 -&gt; 用栈中的数据修改IP的值，从而实现近转移<br>  retf                -&gt; 用栈中的数据修改CS和IP的值，从而实现远转移</p>
+</li>
+<li><p>传递数据：P必须能向Q提供一个或多个参数，Q必须能向P返回一个值。</p>
+<ul>
+<li>x86-64中，可以通过寄存器最多传递6个整型（例如整数和指针）参数。</li>
+<li>如果一个函数有超过6个参数，超过6个的部分就要通过栈来传递。</li>
+<li>同时对一个局部变量使用地址运算符 &amp; 和当一个局部变量是数组或结构时，会使用栈来传递变量。</li>
+</ul>
+</li>
+<li>分配和释放内存：在开始时，Q可能需要为局部变量分配空间，而在返回时，又必须释放这些空间。</li>
+</ul>
+<p>被调用函数需要保存寄存器rbx rbp r12-r15的值，要么不去修改它，要么把原始值压入栈中，并在返回前从栈中弹出旧值。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/计算机基础/">计算机基础</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

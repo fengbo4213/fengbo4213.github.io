@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>分布式原理 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="分布式原理">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">分布式原理</h1>
+  
+
+      
+        <time datetime="2020-03-13T12:59:16.000Z">2020-03-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="单机存储引擎"><a href="#单机存储引擎" class="headerlink" title="单机存储引擎"></a>单机存储引擎</h3><p>存储系统的基本功能包括:增、删、读、改,其中,读取操作又分为随机读取和顺序扫描。</p>
+<ul>
+<li>哈希存储引擎是哈希表的持久化实现,支持增、删、改,以及随机读取操作,但不支持顺序扫描,对应的存储系统为键值(Key-Value)存储系统。</li>
+<li>B树(B-Tree)存储引擎是B树的持久化实现,不仅支持单条记录的增、删、读、改操作,还支持顺序扫描,对应的存储系统是关系数据库。</li>
+<li>LSM树存储引擎通过将数据的修改增量保存在内存中，读取时需要合并磁盘中的历史数据和内存中的操作记录。支持增、删、改、随机读取以及顺序扫描。<a id="more"></a>
+</li>
+</ul>
+<h3 id="分布式系统数据复制"><a href="#分布式系统数据复制" class="headerlink" title="分布式系统数据复制"></a>分布式系统数据复制</h3><p>客户端将数据写入主副本，主副本将操作日志同步到备副本，备副本回放操作日志，完成后通知主副本。</p>
+<h2 id="分布式协议基础"><a href="#分布式协议基础" class="headerlink" title="分布式协议基础"></a>分布式协议基础</h2><ul>
+<li>CAP理论：一个分布式系统不可能同时满足一致性(C:Consistency)、可用性(A:Availability)和分区容错性(P:Partition tolerance)这三个基本要求,最多只能同时满足其中的两项。<ul>
+<li>一致性 (Consistency)：一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。所有节点访问同一份最新的数据。</li>
+<li>可用性 (Availability)：对数据更新具备高可用性，请求能够及时处理，不会一直等待，即使出现节点失效。</li>
+<li>分区容错性 (Partition tolerance)：能容忍网络分区，在网络断开的情况下，被分隔的节点仍能正常对外提供服务。</li>
+</ul>
+</li>
+<li>BASE理论：对CAP中一致性和可用性权衡的结果，其核心思想是即使无法做到强一致性(Strongconsistency),但每个应用都可以根据自身的业务特点,采用适当的方式来使系统达到最终一致性(Eventualconsistency)。<ul>
+<li>基本可用：基本可用是指分布式系统在出现不可预知故障的时候,允许损失部分可用性。响应时间上的损失:正常情况下,一个在线搜索引擎需要在0.5秒之内返回给用户相应的查询结果,但由于出现故障(比如系统部分机房发生断电或断网故障),查询结果的响应时间增加到了1~2秒；功能上的损失:正常情况下,在一个电子商务网站上进行购物,消费者儿乎能够顺利地完成每一笔订单,但是在一些节日大促购物高峰的时候,由于消费者的购物行为激增,为了保护购物系统的稳定性,部分消费者可能会被引导到一个降级页面。</li>
+<li>弱状态也称为软状态,和硬状态相对,是指允许系统中的数据存在中间状态,并认为该中间状态的存在不会影响系统的整体可用性,即允许系统在不同节点的数据副本之间进行数据吟步的过程存在延时。</li>
+<li>最终一致性强调的是系统中所有的数据副本,在经过一段时间的同步后,最终能够达到一个一致的状态。因此,最终一致性的本质是需要系统保证最终数据能够达到一致,而不需要实时保证系统数据的强一致性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h3><p>大部分的关系型数据库都是采用二阶段提交协议来完成分布式事务处理的,利用该协议能够非常方便地完成所有分布式事务参与者的协调,统一决定事务的提交或回漫,从而能够有效地保证分布式数据一致性。<br>阶段一:提交事务请求</p>
+<ol>
+<li>事务询问。协调者向所有的参与者发送事务内容,询问是否可以执行事务提交操作,并开始等待各参与者的响应。</li>
+<li>执行事务。各参与者节点执行事务操作,并将Undo和Redo信息记人事务日志中。</li>
+<li>各参与者向协调者反馈事务询问的响应。如果参与者成务执行了事务操作,那么就反馈给协调者Yes响应,表示事务可以执行;如果参与者没有成功执行事务,那么就反馈给协调者No响应,表示事务不可以执行。</li>
+</ol>
+<p>阶段二:假如协调者从所有的参与者获得的反馈都是Yes响应,那么就会执行事务提交。</p>
+<ol>
+<li>发送提交请求。协调者向所有参与者节点发出Commit请求。</li>
+<li>事务提交。参与者接收到Commit请求后,会正式执行事务提交操作,并在完成提交之后释放在整个事务执行期间占用的事务资源。</li>
+<li>反馈事务提交结果。参与者在完成事务提交之后,向协调者发送Ack消息。</li>
+</ol>
+<p>阶段二:假如任何一个参与者向协调者反馈了No响应,或者在等待超时之后,协调者尚无法接收到所有参与者的反馈响应,那么就会中断事务。</p>
+<ol>
+<li>发送回滚请求。协调者向所有参与者节点发出Rollback请求。</li>
+<li>事务回滚。参与者接收到Rollback请求后,会利用其在阶段一中记录的Undo信息来执行事务回滚操作,并在完成回滚之后释放在整个事务执行期间占用的资源。</li>
+<li>反馈事务回滚结果。参与者在完成事务回滚之后,向协调者发送Ack消息。</li>
+<li>中断事务。协调者接收到所有参与者反馈的Ack消息后,完成事务中断。</li>
+</ol>
+<h3 id="两阶段提交的问题"><a href="#两阶段提交的问题" class="headerlink" title="两阶段提交的问题"></a>两阶段提交的问题</h3><ol>
+<li>同步阻塞:二阶段提交协议存在的最朋显也是最大的一分布式系统的性能。在二阶段提交的执行过于阻塞状态,也就是说,各个参与者在等待具他任何操作。个问题就是同步阻塞,这会极大地限制程中,所有参与该事务操作的逻辑都处其他参与者响应的过程中,将无法进行其他任何操作。</li>
+<li>单点问题:协调者的角色在整个二阶段提交协议中起到了非常重要的作用。一旦协调者出现问题,那么整个二阶段提交流程将无法运转,更为严重的是,如果协调者是在阶段二中出现问题的话,那么其它参与者将会一直处于锁定事务资源的状态中,而无法继续完成事务操作。</li>
+<li>数据不一致:在二阶段提交协议的阶段二,即执行事务提交的时候,当协调者向所有的参与者发送Commit请求之后,发生了局部网络异常或者是协调者在尚未发送完Commit请求之前自身发生了崩澎,导致最终只有部分参与者收到了Commit请求。于是,这部分收到了Commit请求的参与者就会进行事务的提交,而其他没有收到Commit请求的参与者则无法进行事务提交,于是整个分布式系统便出现了数据不一致性现象。</li>
+<li>太过保守:如果在协调者指示参与者进行事务提交询问的过程中,参与者出现故障而导致协调者始终无法获取到所有参与者的响应信息的话,这时协调者只能依靠其自身的超时机制来判断是否需要中断事务,这样的策略显得比较保守。换句话说,二阶段提交协议没有设计较为完善的容错机制,任意一个节点的失败都会导致整个事务的失败。</li>
+</ol>
+<h2 id="Paxos协议"><a href="#Paxos协议" class="headerlink" title="Paxos协议"></a>Paxos协议</h2><h2 id="Raft协议"><a href="#Raft协议" class="headerlink" title="Raft协议"></a>Raft协议</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>主从备份主要有两种方法：<ol>
+<li>状态转移(State Transfer)：主服务器将完整的状态内容都传输给备份服务器。即将主节点的当前所有数据进行镜像备份，适合冷备份。</li>
+<li>备份状态机(Replicated State Machine)：将需要备份的服务器视为一个确定性状态机——主备以相同的状态启动，以相同顺序导入相同的输入，最后它们就会进入相同的状态、给出相同的输出。</li>
+</ol>
+</li>
+<li>Write-Ahead Logging：对数据文件的修改必须发生在这些修改已经记录到日志之后，也就是先写日志落盘然后写数据。这样就不需要每次提交事务的时候把数据块刷回磁盘，因为出现奔溃的情况下可以用日志来恢复数据。</li>
+</ul>
+<h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a><a href="https://www.cnblogs.com/rgcLOVEyaya/p/RGC_LOVE_YAYA_1003days.html" target="_blank" rel="noopener">Redis实现分布式锁</a></h2><h2 id="ZooKeeper的典型应用场景"><a href="#ZooKeeper的典型应用场景" class="headerlink" title="ZooKeeper的典型应用场景"></a>ZooKeeper的典型应用场景</h2><h3 id="ZooKeeper简介"><a href="#ZooKeeper简介" class="headerlink" title="ZooKeeper简介"></a>ZooKeeper简介</h3><p>ZooKeeper是一个高可用的分布式数据管理与协调框架。基于对ZAB算法的实现,该框架能够很好地保证分布式环境中数据的一致性。也正是基于这样的特性，使得ZooKeeper成为了解决分布式一致性问题的利器。</p>
+<h3 id="数据的发布-订阅"><a href="#数据的发布-订阅" class="headerlink" title="数据的发布/订阅"></a>数据的发布/订阅</h3><ul>
+<li>即所谓的配置中心,顾名思义就是发布者将数据发布到ZooKeeper的一个或一系列节点上,供订阅者进行数据订阅,进而达到动态获取数据的目的,实现配置信息的集中式管理和数据的动态更新。</li>
+<li>客户端向服务端注册自己需要关注的节点,一旦该节点的数据发生变更,那么服务端就会向相应的客户端发送Wateher事件通知,客户端接收到这个消息通知之后,需要主动到服务端获取最新的数据。</li>
+</ul>
+<h3 id="命名服务-Name-Service"><a href="#命名服务-Name-Service" class="headerlink" title="命名服务(Name Service)"></a>命名服务(Name Service)</h3><p>在分布式系统中，被命名的实体通常可以是集群中的机器、提供的服务地址或远程对象等一一这些我们都可以统称它们为名字(Name),其中较为常见的就是一些分布式服务框架(如RPC、RMI)中的服务地址列表,通过使用命名服务,客户端应用能够根据指定名字来获取资源的实体、服务地址和提供者的信息等。<br>命名服务器的作用主要有两个，一个是收集提供请求处理的服务器的地址信息;另外一个是提供这些地址信息给请求发起方。当然,名称服务只是起到了一个地址交换的作用,在发起请求的机器上,需要根据从名称服务得到的地址迹行负载均衡的工作。</p>
+<h3 id="集群管理与负载均衡"><a href="#集群管理与负载均衡" class="headerlink" title="集群管理与负载均衡"></a>集群管理与负载均衡</h3><p>ZooKeeper具有以下两大特性。</p>
+<ol>
+<li>客户端如果对ZooKeeper的一个数据节点注册Wateher监听,那么当该数据节点的内容或是其子节点列表发生变更时,ZooKeeper服务器就会向订阅的客户端发送变更通知。</li>
+<li>对在ZooKeeper上创建的临时节点,一旦客户端与服务器之间的会话失效,那么该临时节点也就被自动清除。<br>利用ZooKeeper的这两大特性,就可以实现集群机器存活性监控系统。监控系统在/cuserServers节点上注册一个Watcher监听,那么但凡进行动态添加机器的操作,就会在/clusterServers节点下创建一个临时节点:/cliisterServers/[HostName]。这样一来,监控系统就能够实时检测到机器的变动情况。<br>同时集群上的服务器可以在监听到Watcher事件时，去ZooKeeper拉取集群上所有服务器的基础信息，然后以这些信息为基础进行软负载均衡。</li>
+</ol>
+<h3 id="Master选举"><a href="#Master选举" class="headerlink" title="Master选举"></a>Master选举</h3><ul>
+<li>在分布式系统中,Master往往用来协调集群中其他系统单元,具有对分布式系统状态变更的决定权。例如,在一些读写分离的应用场景中,客户端的写请求往往是由Master来处理的;而在另一些场景中,Master则常常负责处理一些复杂的逻辑,些将处理结果同步给集群中其他系统单元。</li>
+<li>ZooKeeper能够很好地保证在分布式高并发情况下节点的创建一定能够保证全局唯一性,即ZooKeeper将会保证客户端无法重复创建一个已经存在的数据节点。也就是说,如果同时有多个客户端请求创建同一个节点,那么最终一定只有一个客户端请求能够创建成功。利用这个特性,就能很容易地在分布式环境中进行Master选举了。</li>
+<li>即所有客户端都去向ZooKeeper请求创建一个临时节点,例如/maser_efecrion/2013-09-20/binding。在这个过程中,只有一个客户端能够成功创建这个节点,那么这个客户端所在的机器就成为了Master。同时,其他没有在ZooKeeper上成功创建节点的客户端,都会在节点/maser_elecrion/2013-09-20上注册一个子节点变更的Watcher,用于监控当前的Master机器是否存活,一旦发现当前的Master挂了,那么其余的客户端将会重新进行Master选举。</li>
+</ul>
+<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><ol>
+<li>获取锁：在需要获取排他锁时,所有的客户端都会试图通过调用create()接口,在/exclusive_lock节点下创建临时子节点/exclusive_lock/lock。ZooKeeper会保证在所有的客户端中,最终只有一个客户端能够创建成功,那么就可以认为该客户端获取了锁。同时,所有没有获取到锁的客户端谐需要到/excliusive_lock节点上注册一个子节点变更的Watcher监听,以便实时监听到lock节点的变更情况。</li>
+<li>释放锁：/exelsive_lock/lock是一个临时节点,因此在以下两种情况下,都有可能释放锁。<ul>
+<li>当前获取锁的客户端机器发生宕机,那么ZooKeeper上的这个临时节点就会被移除。</li>
+<li>正常执行完业务逻辑后,客户端就会主动将自已创建的临时节点删除。<br>无论在什么情况下移除了lock节点,ZooKeeper都会通知所有在/exclusive_lock节点上注册了子节点变更Wateher监听的客户端。这些客户端在接收到通知后,再次重新发起分布式锁获取,即重复获取锁过程。</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/分布式/">分布式</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

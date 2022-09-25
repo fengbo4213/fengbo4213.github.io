@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Nginx使用 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Nginx使用">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">Nginx使用</h1>
+  
+
+      
+        <time datetime="2019-01-26T06:07:10.000Z">2019-01-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="Nginx基本概念"><a href="#Nginx基本概念" class="headerlink" title="Nginx基本概念"></a>Nginx基本概念</h3><ul>
+<li>Nginx是一款轻量级的Web服务器、反向代理服务器及电子邮件代理服务器。目前大多数公司使用Nginx作为反向代理服务器，反向代理是指接受外部网络请求后转发到内网中真正可以处理业务逻辑的服务器上，并将从服务器上得到的结果返回给用户。</li>
+<li>正向代理和反向代理的区别是正向代理的用户的真实访问地址不是代理服务器，却通过代理服务器进行了转发；反向代理的用户的访问地址就是代理服务器，而真实处理请求的服务器却不是代理服务器。</li>
+<li>代理连接的是两个或多个使用相同协议的应用程序，而网关连接的则是两个或多个使用不同协议的端点。网关扮演的是协议转换器的角色，即使客户端和服务器使用的是不同的协议，客户端也可以通过它完成与服务器之间的事务处理。<a id="more"></a>
+</li>
+</ul>
+<h3 id="Nginx源码目录解析"><a href="#Nginx源码目录解析" class="headerlink" title="Nginx源码目录解析"></a>Nginx源码目录解析</h3><p>├ auto #自动检测系统环境以及编译相关的脚本，configure执行时会调用<br>│ ├── cc #关于编译器相关的编译选项的检测脚本<br>│ ├── lib #nginx编译所需要的一些库的检测脚本<br>│ ├── os #与平台相关的一些系统参数与系统调用相关的检测<br>│ └── types #与数据类型相关的一些辅助脚本<br>├ conf #存放默认配置文件，在make install后，会拷贝到安装目录中去<br>├ contrib #存放一些实用工具，如geo配置生成工具（geo2nginx.pl）<br>├ html #存放html文件，在make install后，会拷贝到安装目录中<br>├ man #存放Nginx软件帮助文档，Nginx安装完成后，在命令行中使用man命令可以查看<br>├ objs #configure执行成功时会生成该目录<br>├ src #存放Nginx所有源代码</p>
+<h2 id="Nginx配置解析"><a href="#Nginx配置解析" class="headerlink" title="Nginx配置解析"></a>Nginx配置解析</h2><h3 id="块配置项"><a href="#块配置项" class="headerlink" title="块配置项"></a>块配置项</h3><p>块配置项由一个配置项名和一对大括号组成。具体有events、http、server、location、upstream等。快配置可以嵌套，内层快直接继承外层快当内外层块中的配置发生冲突时，究竟是以内层块还是外层块的配置为准，取决于解析这个配置项的模块。</p>
+<h3 id="Nginx服务的基本配置"><a href="#Nginx服务的基本配置" class="headerlink" title="Nginx服务的基本配置"></a>Nginx服务的基本配置</h3><ul>
+<li>daemon on|off：是否以守护进程方式运行Nginx。默认是启用(on)。</li>
+<li>master_process on|off：是否以master/worker方式工作。默认是启用(on)，如果用off关闭了master_process方式，就不会fork出worker子进程来处理请求，而是用master进程自身来处理请求。</li>
+<li>error_log pathfile level：error日志的设置。默认是error_log logs/error.log error。</li>
+<li><p>debug_connection [IP|CIDR]：仅对指定的客户端输出debug级别的日志，这个配置项实际上属于事件类配置，因此，它必须放在events{…}中才有效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">    # 来自以上IP地址的请求才会输出debug级别的日志，其他请求仍然沿用error_log中配置的日志级别。</span><br><span class="line">    debug_connection 10.224.66.14;</span><br><span class="line">    debug_connection 10.224.57.0/24;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>include pathfile：嵌入其他配置文件，将其他配置文件嵌入到当前的nginx.conf文件中，它的参数既可以是绝对路径，也可以是相对路径。</p>
+</li>
+<li>pid path/file：保存master进程ID的pid文件存放路径。默认pid logs/nginx.pid。</li>
+<li>user username [groupname]：用于设置master进程启动后，fork出的worker进程运行在哪个用户和用户组下。默认user nobody nobody。</li>
+<li>worker_rlimit_nofile limit：设置一个worker进程可以打开的最大文件句柄数。</li>
+<li>worker_rlimit_sigpending limit：设置每个用户发往Nginx的信号队列的大小。也就是说，当某个用户的信号队列满了，这个用户再发送的信号量会被丢掉。</li>
+</ul>
+<h3 id="HTTP核心模块配置"><a href="#HTTP核心模块配置" class="headerlink" title="HTTP核心模块配置"></a>HTTP核心模块配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"># 所有的HTTP配置项都必须直属于http块、server块、location块、upstream块或if块等。</span><br><span class="line">http &#123;</span><br><span class="line">    gzip on;</span><br><span class="line">    upstream &#123;</span><br><span class="line">        …</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        # listen参数决定Nginx服务如何监听端口。不加端口时，默认监听80端口。</span><br><span class="line">        listen localhost:80;</span><br><span class="line">        # location会尝试根据用户请求中的URI来匹配上面的/uri表达式，如果可以匹配，就选择location&#123;&#125;块中的配置来处理用户请求。</span><br><span class="line">        location /webstatic &#123;</span><br><span class="line">            if … &#123;</span><br><span class="line">                …</span><br><span class="line">            &#125;</span><br><span class="line">            # 以root方式设置资源路径。</span><br><span class="line">            root optwebresource;</span><br><span class="line">            # 访问首页。访问站点时的URI是/，这时一般是返回网站的首页。</span><br><span class="line">            index index.html index.htm;</span><br><span class="line">            …</span><br><span class="line">        &#125;</span><br><span class="line">        location ~* .(jpg|jpeg|png|jpe|gif)$ &#123;</span><br><span class="line">            …</span><br><span class="line">        &#125;</span><br><span class="line">        # 当对于某个请求返回错误码时，如果匹配上了error_page中设置的code，则重定向到新的URI中。</span><br><span class="line">        error_page 404 /404.html;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        …</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>client_header_timeout time：读取HTTP头部的超时时间，单位是秒，默认值是60。</li>
+<li>client_body_timeout time：读取HTTP包体的超时时间。</li>
+<li>send_timeout time：发送响应的超时时间，即Nginx服务器向客户端发送了数据包，但客户端一直没有去接收这个数据包。如果某个连接超过send_timeout定义的超时时间，那么Nginx将会关闭这个连接。</li>
+<li>keepalive_disable [msie6|safari|none]：对某些浏览器禁用keepalive功能，针对IE 6及其早期版本、Safari浏览器默认是禁用。</li>
+<li>keepalive_timeout time：一个keepalive连接在闲置超过一定时间后（默认的是75秒），服务器和浏览器都会去关闭这个连接。</li>
+<li>keepalive_requests n：keepalive长连接上允许承载的请求最大数，一个keepalive连接上默认最多只能发送100个请求。</li>
+<li>tcp_nodelay on|off：确定对keepalive连接是否使用TCP_NODELAY选项。</li>
+</ul>
+<h3 id="Nginx负载均衡配置"><a href="#Nginx负载均衡配置" class="headerlink" title="Nginx负载均衡配置"></a>Nginx负载均衡配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># upstream块定义了一个上游服务器的集群，便于反向代理中的proxy_pass使用。</span><br><span class="line">upstream backend &#123;</span><br><span class="line">    # 将来自某一个用户的请求始终落到固定的一台上游服务器中。</span><br><span class="line">    ip_hash;</span><br><span class="line">    # server指定了一台上游服务器的名字，这个名字可以是域名、IP地址端口、UNIX句柄等。</span><br><span class="line">    server backend1.example.com weight=5;</span><br><span class="line">    server 127.0.0.1:8080 max_fails=3 fail_timeout=30s;</span><br><span class="line">    server unix:/tmp/backend3;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">    location / &#123;</span><br><span class="line">        # 将当前请求反向代理到URL参数指定的服务器上，URL可以使域名、IP地址等，也可以直接使用upstream块。</span><br><span class="line">        proxy_pass http://backend;</span><br><span class="line">        # 默认情况下反向代理是不会转发请求中的Host头部的。如果需要转发，那么必须加上该配置。</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        # 此配置项表示转发时的协议方法名。如下配置客户端发来的GET请求在转发时方法名也会改为POST。</span><br><span class="line">        proxy_method POST;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/其它/">其它</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

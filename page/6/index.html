@@ -1,0 +1,520 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Page 6 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/16/Spring-IoC揭秘/">Spring-IoC揭秘</a></h1>
+  
+
+      
+        <time datetime="2018-06-16T07:22:30.000Z">2018-06-16</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="IoC原理解析"><a href="#IoC原理解析" class="headerlink" title="IoC原理解析"></a>IoC原理解析</h2><p>原来需要手动new对象，并且用完之后对象可能被废弃了，而Spring IoC可以帮助我们创建对象、管理对象的生命周期、对对象的依赖进行注入等。具体可以分为容器启动阶段和实例化阶段，容器启动阶段主要是解析配置文件，以XML为例，通过XmlBeanDefinitionReader加载所有的xml文件并在内部调用DefaultBeanDefinitionDocumentReader解析xml各个节点，主要是将bean标签解析到BeanDefinition中，在然后就可以通过BeanDefinitionRegistry将BeanDefinition添加到BeanDefinition容器中。实例化阶段在调用getBean方法后开始，一般我们在程序中调用getBean方法后会先去单例容器尝试获取该实例，如果存在就可以直接返回，如果不存在就会去判断该bean是否是单例的，然后去BeanDefinition容器获取该key对应的BeanDefinition对象，然后根据BeanDefinition去构建需要返回的对象实例。大概步骤是这样，中间还有很多需要注意的点，比如会尝试从父容器获取bean、对BeanPostProcessors的调用、循环依赖的问题等。</p>
+<h3 id="循环依赖问题"><a href="#循环依赖问题" class="headerlink" title="循环依赖问题"></a>循环依赖问题</h3><p>Spring使用三级缓存来解决循环依赖问题，即将已经创建出来还没有注入依赖的对象放入singletonsCurrentlyInCreation缓存中，循环依赖时可以将还没有构建完成的实例从该容器中拿出来，并进行依赖注入。所以如果是构造方法注入的循环依赖，Spring会抛出异常。</p>
+<h3 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h3><ol>
+<li>Spring通过XmlBeanDefinitionReader解析XML配置将配置中的bean的基本信息解析到BeanDefinition实例中。</li>
+<li>通过BeanDefinitionRegistry接口的registerBeanDefinition方法将BeanDefinition注册到BeanDefinition容器，即存放到变量名为beanDefinitionMap的Map集合中。</li>
+<li>使用BeanFactoryPostProcessor在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。可以以此来修改bean定义的某些属性，为bean定义增加其他信息等。<ul>
+<li>PropertyPlaceholderConfigurer实现类：允许我们在XML配置文件中使用占位符（PlaceHolder），并将这些站位符所代表的资源单独配置到简单的properties文件中来加载（例如数据库的数据源等配置内容，一般写在配置文件中）。</li>
+<li>PropertyOverrideConfigurer实现类：可以对容器中配置的任何你想处理的bean定义的property信息进行覆盖替换。即读取properties文件中的配置项，用读取到beanName.propertyName=value的value值覆盖掉对应的原来XML中bean定义的property信息。</li>
+<li>CustomEditorConfigurer实现类：容器从XML中读取的都是字符串形式的，最终的应用程序却是由各种类型的对象构成。要想完成这种由字符串到具体对象的转换，就需要转换规则相关的信息，CustomEditorConfigurer类就是负责将我们自己实现的PropertyEditor接口的实现类告知容器的。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/16/Spring-IoC揭秘/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/06/09/JavaWeb-Spring其它/">Spring其它</a></h1>
+  
+
+      
+        <time datetime="2018-06-09T01:05:52.000Z">2018-06-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="Spring定时任务"><a href="#Spring定时任务" class="headerlink" title="Spring定时任务"></a>Spring定时任务</h2><p><a href="http://www.cnblogs.com/haoxinyue/p/6663720.html" target="_blank" rel="noopener">实现延迟任务的几种方式</a> | <a href="https://segmentfault.com/a/1190000013077817" target="_blank" rel="noopener">Spring定时任务</a><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/06/09/JavaWeb-Spring其它/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/04/20/JavaWeb-XML解析/">Sprin之XML解析</a></h1>
+  
+
+      
+        <time datetime="2018-04-20T09:09:42.000Z">2018-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>Spring的IoC容器支持两种配置文件格式：Properties文件格式和XML文件格式。其中XML格式的容器信息管理方式是Spring提供的最为强大、支持最为全面的方式。<br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/04/20/JavaWeb-XML解析/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/03/20/JavaWeb-SpringMVC/">SpringMVC</a></h1>
+  
+
+      
+        <time datetime="2018-03-20T12:42:35.000Z">2018-03-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="SpringMVC请求处理流程"><a href="#SpringMVC请求处理流程" class="headerlink" title="SpringMVC请求处理流程"></a>SpringMVC请求处理流程</h2><ul>
+<li>用户发起请求到前端控制器(FrontController)。</li>
+<li>前端控制器根据用户的URL请求一个或多个处理器映射器(HandlerMapping)，处理器映射器根据XML配置或者注解来进行查找匹配该URL的Handler，并返回给前端控制器。</li>
+<li>前端控制器调用处理器适配器(HandlerAdaptor)去执行Handler，并返回一个ModelAndView。</li>
+<li>如果ModelAndView中直接返回了具体的View实例，那么，前端控制器将直接从ModelAndView中获取该View并渲染视图。</li>
+<li>如果返回的是逻辑视图名，前端控制器将请求视图解析器(ViewResolver)，将逻辑视图名解析成真正的视图。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/03/20/JavaWeb-SpringMVC/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/30/基础之汇编基础/">汇编基础</a></h1>
+  
+
+      
+        <time datetime="2018-01-30T12:34:07.000Z">2018-01-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><ul>
+<li>通用寄存器组(GPRs)：也称数据寄存器，用来存放一般性数据。</li>
+<li>段寄存器(16位的寄存器)：CPU根据段寄存器的内容，与寻址方式确定的有效地址一起，并结合其它用户不可见的内部寄存器，生成操作数所在的存储地址。一共有6个，<b>即代码段(CS)、堆栈段(SS)、数据段(DS)和3个附加段(ES、FS、GS)寄存器。</b></li>
+<li>指令指针寄存器(RIP)：用来确认CPU需要执行的下一条指令在指令内存中的地址。</li>
+<li>标志寄存器(FLAGS)：用来存储相关指令的某些执行结果；用来为CPU执行相关指令提供行为依据；用来控制CPU的相关工作方式。</li>
+<li>程序计数器：CS和IP寄存器指示了CPU当前要读取指令的地址。CS为代码段寄存器，IP为指令指针寄存器。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2018/01/30/基础之汇编基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/20/基础之C语言常用函数/">C语言常用函数</a></h1>
+  
+
+      
+        <time datetime="2017-12-20T12:29:44.000Z">2017-12-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="进程控制相关函数"><a href="#进程控制相关函数" class="headerlink" title="进程控制相关函数"></a>进程控制相关函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 获取进程和父进程pid</span><br><span class="line">pid_t getpid(void);</span><br><span class="line">pid_t getppid(void);</span><br><span class="line">// 创建和终止进程</span><br><span class="line">pid_t fork(void);</span><br><span class="line">void exit(int status);</span><br><span class="line">// 等待子进程终止或停止</span><br><span class="line">pid_t waitpid(pid_t pid, int *startusp, int options);</span><br><span class="line">pid_t wait(int *starusp); // wait函数是waitpid的简单版本</span><br><span class="line">// 让进程休眠</span><br><span class="line">unsigned int sleep(unsigned int secs);</span><br><span class="line">int pause(void);</span><br><span class="line">// 在当前进程的上下文中加载并运行一个新程序</span><br><span class="line">int execve(const char *filename, const char *argv[], const char *envp[]);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/12/20/基础之C语言常用函数/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/19/基础之C语言基础/">C语言基础</a></h1>
+  
+
+      
+        <time datetime="2017-12-19T09:49:45.000Z">2017-12-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="C语言基础"><a href="#C语言基础" class="headerlink" title="C语言基础"></a>C语言基础</h2><h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">存储大小</th>
+<th>值范围 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">unsigned char</td>
+<td style="text-align:center">1字节</td>
+<td>0到255</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1字节</td>
+<td>-128到127</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned int</td>
+<td style="text-align:center">2或4字节</td>
+<td>0到65535或0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">2或4字节</td>
+<td>-32768到32787或-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned short</td>
+<td style="text-align:center">2字节</td>
+<td>0到65535</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2字节</td>
+<td>-32768到32767</td>
+</tr>
+<tr>
+<td style="text-align:center">unsigned long</td>
+<td style="text-align:center">4字节</td>
+<td>0到4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4字节</td>
+<td>-2147483648到2147483647</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4字节</td>
+<td>1.2E-38到3.4E+38，精度为6位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8字节</td>
+<td>2.3E-308到1.7E+308，精度为15位小数</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">16字节</td>
+<td>3.4E-4932到1.1E+4932，精度为19位小数</td>
+</tr>
+</tbody>
+</table>
+<p>ps：</p>
+<ol>
+<li>布尔类型可以使用int替代，1为TRUE，0为FALSE。</li>
+<li>C语言使用常量来判断是否匹配返回值或信号时，这些常量需要设置为2的n次方。
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/12/19/基础之C语言基础/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/26/JavaWeb-Spring注解/">Spring注解</a></h1>
+  
+
+      
+        <time datetime="2017-11-26T03:34:14.000Z">2017-11-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><b>注解本身没有功能，和xml一样是一种元数据；元数据是解释数据的数据，即配置。</b><br>
+      
+    </div>
+      
+        
+        <footer>
+          <div class="alignleft">
+            <a href="/2017/11/26/JavaWeb-Spring注解/#more" class="more-link">Read More ›</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/page/5/" class="alignleft prev">上一页</a>
+  
+  
+    <a href="/page/7/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+

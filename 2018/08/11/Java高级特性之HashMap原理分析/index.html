@@ -1,0 +1,438 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>HashMap原理分析 › 但行好事，莫问前程</title>
+  <meta name="author" content="fengbo">
+  
+  <meta name="description" content="不想当架构师的程序员不是好厨师 ，不认为PHP是世界上最好的编程语言的Python开发者不是一个好的Javaer。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="HashMap原理分析">
+  <meta property="og:site_name" content="但行好事，莫问前程">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="但行好事，莫问前程" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+</html>
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">但行好事，莫问前程</a></h1>
+  <h2><a href="/">CV工程师，了解面向Google编程的基本原理，有三年使用Google经验，在通往程序员的道路上艰难的爬行着。</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">HashMap原理分析</h1>
+  
+
+      
+        <time datetime="2018-08-11T01:34:51.000Z">2018-08-11</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="JDK7中的HashMap"><a href="#JDK7中的HashMap" class="headerlink" title="JDK7中的HashMap"></a>JDK7中的HashMap</h2><h4 id="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"><a href="#HashMap底层维护了一个数组，数组的每一项都是一个Entry。" class="headerlink" title="HashMap底层维护了一个数组，数组的每一项都是一个Entry。"></a>HashMap底层维护了一个数组，数组的每一项都是一个Entry。</h4><pre><code>transient Entry&lt;K,V&gt;[] table;
+</code></pre><a id="more"></a>
+<h4 id="HashMap中的key、value就存放在Entry中。"><a href="#HashMap中的key、value就存放在Entry中。" class="headerlink" title="HashMap中的key、value就存放在Entry中。"></a>HashMap中的key、value就存放在Entry中。</h4><pre><code>static class Entry&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; {
+    final K key;
+    V value;
+    Entry&lt;K,V&gt; next;
+    int hash;
+</code></pre><h4 id="而具体某个Entry应该存放在数组的哪个位置是通过key的hashCode来计算的。"><a href="#而具体某个Entry应该存放在数组的哪个位置是通过key的hashCode来计算的。" class="headerlink" title="而具体某个Entry应该存放在数组的哪个位置是通过key的hashCode来计算的。"></a>而具体某个Entry应该存放在数组的哪个位置是通过key的hashCode来计算的。</h4><pre><code>final int hash(Object k) {
+    int h = hashSeed;
+    if (0 != h &amp;&amp; k instanceof String) {
+        return sun.misc.Hashing.stringHash32((String) k);
+    }
+    h ^= k.hashCode();
+    h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);
+    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);
+}
+</code></pre><h4 id="通过hash计算出来的值将会使用indexFor方法找到它应该所在的table下标，即对table-length取模。"><a href="#通过hash计算出来的值将会使用indexFor方法找到它应该所在的table下标，即对table-length取模。" class="headerlink" title="通过hash计算出来的值将会使用indexFor方法找到它应该所在的table下标，即对table.length取模。"></a>通过hash计算出来的值将会使用indexFor方法找到它应该所在的table下标，即对table.length取模。</h4><pre><code>static int indexFor(int h, int length) {
+    return h &amp; (length-1);
+}
+</code></pre><h4 id="当两个key通过hashCode方法计算的结果相同时，称之为发生了hash冲突，HashMap解决hash冲突的方法是使用链表。即发生冲突时先使用equals方法判断key是否相等，如果相等则替换掉之前的value。"><a href="#当两个key通过hashCode方法计算的结果相同时，称之为发生了hash冲突，HashMap解决hash冲突的方法是使用链表。即发生冲突时先使用equals方法判断key是否相等，如果相等则替换掉之前的value。" class="headerlink" title="当两个key通过hashCode方法计算的结果相同时，称之为发生了hash冲突，HashMap解决hash冲突的方法是使用链表。即发生冲突时先使用equals方法判断key是否相等，如果相等则替换掉之前的value。"></a>当两个key通过<b>hashCode方法</b>计算的结果相同时，称之为发生了hash冲突，HashMap解决hash冲突的方法是使用链表。即发生冲突时先使用<b>equals方法</b>判断key是否相等，如果相等则替换掉之前的value。</h4><pre><code>public V put(K key, V value) {
+    if (table == EMPTY_TABLE) {
+        inflateTable(threshold);
+    }
+    if (key == null)
+        return putForNullKey(value);
+    int hash = hash(key);
+    int i = indexFor(hash, table.length);
+    for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
+        Object k;
+        if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) {
+            V oldValue = e.value;
+            e.value = value;
+            e.recordAccess(this);
+            return oldValue;
+        }
+    }
+    modCount++;
+    addEntry(hash, key, value, i);
+    return null;
+}
+</code></pre><h4 id="如果不相等，则使用头插法将新Entry插入到table中，并将next指向该位置以前存在的那个对象。"><a href="#如果不相等，则使用头插法将新Entry插入到table中，并将next指向该位置以前存在的那个对象。" class="headerlink" title="如果不相等，则使用头插法将新Entry插入到table中，并将next指向该位置以前存在的那个对象。"></a>如果不相等，则使用<b>头插法</b>将新Entry插入到table中，并将next指向该位置以前存在的那个对象。</h4><pre><code>void addEntry(int hash, K key, V value, int bucketIndex) {
+    // 扩容条件 threshold = (int)(capacity * loadFactor)
+    if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
+        resize(2 * table.length);
+        hash = (null != key) ? hash(key) : 0;
+        bucketIndex = indexFor(hash, table.length);
+    }
+    createEntry(hash, key, value, bucketIndex);
+}
+</code></pre><h4 id="当hash冲突很多时，HashMap就退化成了链表。而随着元素数量的增多，hash冲突必然增多，所以当集合中的对象数大于当前容量-加载因子时，容器将自动扩容并重新hash。在JDK7中，只有当size-gt-threshold并且table中的那个槽中已经有Entry时，才会发生resize。"><a href="#当hash冲突很多时，HashMap就退化成了链表。而随着元素数量的增多，hash冲突必然增多，所以当集合中的对象数大于当前容量-加载因子时，容器将自动扩容并重新hash。在JDK7中，只有当size-gt-threshold并且table中的那个槽中已经有Entry时，才会发生resize。" class="headerlink" title="当hash冲突很多时，HashMap就退化成了链表。而随着元素数量的增多，hash冲突必然增多，所以当集合中的对象数大于当前容量 * 加载因子时，容器将自动扩容并重新hash。在JDK7中，只有当size &gt;= threshold并且table中的那个槽中已经有Entry时，才会发生resize。"></a>当hash冲突很多时，HashMap就退化成了链表。而随着元素数量的增多，hash冲突必然增多，所以当集合中的对象数大于<b>当前容量 * 加载因子</b>时，容器将自动扩容并重新hash。在JDK7中，只有当size &gt;= threshold并且<b>table中的那个槽中已经有Entry时</b>，才会发生resize。</h4><pre><code>void resize(int newCapacity) {
+    Entry[] oldTable = table;
+    int oldCapacity = oldTable.length;
+    if (oldCapacity == MAXIMUM_CAPACITY) {
+        threshold = Integer.MAX_VALUE;
+        return;
+    }
+    Entry[] newTable = new Entry[newCapacity];
+    transfer(newTable, initHashSeedAsNeeded(newCapacity));
+    table = newTable;
+    threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
+}
+</code></pre><h4 id="首先对数组中的元素进行遍历，然后遍历每一个节点，使用头插法将元素转移到新的Hash表。可以看出转移是逆序的，所以这个地方在多个线程同时操作时可能会出现循环引用。"><a href="#首先对数组中的元素进行遍历，然后遍历每一个节点，使用头插法将元素转移到新的Hash表。可以看出转移是逆序的，所以这个地方在多个线程同时操作时可能会出现循环引用。" class="headerlink" title="首先对数组中的元素进行遍历，然后遍历每一个节点，使用头插法将元素转移到新的Hash表。可以看出转移是逆序的，所以这个地方在多个线程同时操作时可能会出现循环引用。"></a>首先对数组中的元素进行遍历，然后遍历每一个节点，使用头插法将元素转移到新的Hash表。<b>可以看出转移是逆序的，所以这个地方在多个线程同时操作时可能会出现循环引用。</b></h4><pre><code>void transfer(Entry[] newTable, boolean rehash) {
+    int newCapacity = newTable.length;
+    for (Entry&lt;K,V&gt; e : table) {
+        while(null != e) {
+            Entry&lt;K,V&gt; next = e.next;
+            if (rehash) {
+                e.hash = null == e.key ? 0 : hash(e.key);
+            }
+            int i = indexFor(e.hash, newCapacity);
+            e.next = newTable[i];
+            newTable[i] = e;
+            e = next;
+        }
+    }
+}
+</code></pre><h2 id="JDK8中的HashMap"><a href="#JDK8中的HashMap" class="headerlink" title="JDK8中的HashMap"></a>JDK8中的HashMap</h2><p>JDK7中HashMap采用的是位桶+链表方式，即散列链表的方式，而JDK8中采用的是位桶+链表/红黑树的方式，也是非线程安全的。当某个位桶的链表长度达到某个阀值时，这个链表就将转换成红黑树。</p>
+<h4 id="Entry的名字变成了Node，原因是和红黑树的实现TreeNode相关联。"><a href="#Entry的名字变成了Node，原因是和红黑树的实现TreeNode相关联。" class="headerlink" title="Entry的名字变成了Node，原因是和红黑树的实现TreeNode相关联。"></a>Entry的名字变成了Node，原因是和红黑树的实现TreeNode相关联。</h4><pre><code>transient Node&lt;K,V&gt;[] table;
+</code></pre><h4 id="当冲突节点数不小于8-1时，转换成红黑树。"><a href="#当冲突节点数不小于8-1时，转换成红黑树。" class="headerlink" title="当冲突节点数不小于8-1时，转换成红黑树。"></a>当冲突节点数不小于8-1时，转换成红黑树。</h4><pre><code>static final int TREEIFY_THRESHOLD = 8;
+</code></pre><h4 id="JDK8的put-方法。"><a href="#JDK8的put-方法。" class="headerlink" title="JDK8的put()方法。"></a>JDK8的put()方法。</h4><pre><code>public V put(K key, V value) {
+    return putVal(hash(key), key, value, false, true);
+}
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+               boolean evict) {
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+    // 如果当前map中无数据，执行resize方法，并且返回n。
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    // 如果要插入的键值对要存放的这个位置刚好没有元素，那么把他封装成Node对象，放在这个位置上。
+    if ((p = tab[i = (n - 1) &amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    // 否则的话，说明桶上面有元素。
+    else {
+        Node&lt;K,V&gt; e; K k;
+        // 如果这个元素的key与要插入的一样，那么就替换掉它。
+        if (p.hash == hash &amp;&amp;
+            ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+            e = p;
+        // 如果当前节点是TreeNode类型的数据，执行putTreeVal方法。
+        else if (p instanceof TreeNode)
+            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+        else {
+            // 还是遍历链表上的数据，跟jdk7没什么区别。
+            for (int binCount = 0; ; ++binCount) {
+                if ((e = p.next) == null) {
+                    p.next = newNode(hash, key, value, null);
+                    // 完成了操作后多做了一件事情，判断，并且可能执行treeifyBin方法。
+                    if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        // 将链表转换成红黑树。
+                        treeifyBin(tab, hash);
+                    break;
+                }
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    break;
+                p = e;
+            }
+        }
+        if (e != null) { // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
+        }
+    }
+    ++modCount;
+    // 判断阈值，决定是否扩容。
+    if (++size &gt; threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
+}
+</code></pre><h4 id="JDK8的resize-方法。将原来该位置上的链表拆成了2个链表，因为扩容为原来数组的两倍，所以拆完之后在分别放到原索引位置和原索引-原集合长度的位置上。解决了循环引用问题。"><a href="#JDK8的resize-方法。将原来该位置上的链表拆成了2个链表，因为扩容为原来数组的两倍，所以拆完之后在分别放到原索引位置和原索引-原集合长度的位置上。解决了循环引用问题。" class="headerlink" title="JDK8的resize()方法。将原来该位置上的链表拆成了2个链表，因为扩容为原来数组的两倍，所以拆完之后在分别放到原索引位置和原索引+原集合长度的位置上。解决了循环引用问题。"></a>JDK8的resize()方法。将原来该位置上的链表拆成了2个链表，因为扩容为原来数组的两倍，所以拆完之后在分别放到原索引位置和原索引+原集合长度的位置上。<b>解决了循环引用问题。</b></h4><pre><code>final Node&lt;K,V&gt;[] resize() {
+    Node&lt;K,V&gt;[] oldTab = table;
+    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+    int oldThr = threshold;
+    int newCap, newThr = 0;
+    if (oldCap &gt; 0) {
+        if (oldCap &gt;= MAXIMUM_CAPACITY) {
+            threshold = Integer.MAX_VALUE;
+            return oldTab;
+        }
+        else if ((newCap = oldCap &lt;&lt; 1) &lt; MAXIMUM_CAPACITY &amp;&amp;
+                 oldCap &gt;= DEFAULT_INITIAL_CAPACITY)
+            newThr = oldThr &lt;&lt; 1; // double threshold
+    }
+    else if (oldThr &gt; 0) // initial capacity was placed in threshold
+        newCap = oldThr;
+    else {               // zero initial threshold signifies using defaults
+        newCap = DEFAULT_INITIAL_CAPACITY;
+        newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+    }
+    if (newThr == 0) {
+        float ft = (float)newCap * loadFactor;
+        newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (float)MAXIMUM_CAPACITY ?
+                  (int)ft : Integer.MAX_VALUE);
+    }
+    threshold = newThr;
+    @SuppressWarnings({&quot;rawtypes&quot;,&quot;unchecked&quot;})
+        Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])new Node[newCap];
+    table = newTab;
+    if (oldTab != null) {
+        for (int j = 0; j &lt; oldCap; ++j) {
+            Node&lt;K,V&gt; e;
+            if ((e = oldTab[j]) != null) {
+                oldTab[j] = null;
+                if (e.next == null)
+                    newTab[e.hash &amp; (newCap - 1)] = e;
+                else if (e instanceof TreeNode)
+                    ((TreeNode&lt;K,V&gt;)e).split(this, newTab, j, oldCap);
+                else { // preserve order
+                    Node&lt;K,V&gt; loHead = null, loTail = null;
+                    Node&lt;K,V&gt; hiHead = null, hiTail = null;
+                    Node&lt;K,V&gt; next;
+                    do {
+                        next = e.next;
+                        if ((e.hash &amp; oldCap) == 0) {
+                            if (loTail == null)
+                                loHead = e;
+                            else
+                                loTail.next = e;
+                            loTail = e;
+                        }
+                        else {
+                            if (hiTail == null)
+                                hiHead = e;
+                            else
+                                hiTail.next = e;
+                            hiTail = e;
+                        }
+                    } while ((e = next) != null);
+                    if (loTail != null) {
+                        loTail.next = null;
+                        newTab[j] = loHead;
+                    }
+                    if (hiTail != null) {
+                        hiTail.next = null;
+                        newTab[j + oldCap] = hiHead;
+                    }
+                }
+            }
+        }
+    }
+    return newTab;
+}
+</code></pre><h2 id="其它Map实现类"><a href="#其它Map实现类" class="headerlink" title="其它Map实现类"></a>其它Map实现类</h2><h3 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h3><p>HashMap的直接子类，<b>二者唯一的区别是LinkedHashMap在HashMap的基础上，采用双向链表的形式将所有entry连接起来，这样是为保证元素的迭代顺序跟插入顺序相同。</b>迭代LinkedHashMap时不需要像HashMap那样遍历整个table，而只需要直接遍历header指向的双向链表即可，也就是说LinkedHashMap的迭代时间就只跟entry的个数相关，而跟table的大小无关。</p>
+<h3 id="TreeMap"><a href="#TreeMap" class="headerlink" title="TreeMap"></a>TreeMap</h3><p>基于红黑树的实现。查看键或者键值对时，它们会被排序（次序由Comparable或Comparator决定）。TreeMap是唯一带有subMap()方法的Map，它可以返回一个子树。</p>
+<h3 id="WeakHashMap"><a href="#WeakHashMap" class="headerlink" title="WeakHashMap"></a>WeakHashMap</h3><p>WeakHashMap的entry保存的是关于对象的<b>弱引用</b>，即该对象可能会被GC自动删除，即使程序员没有调用remove()或者clear()方法。<b>WeekHashMap 的这个特点特别适用于需要缓存的场景。</b>在缓存场景下，由于内存是有限的，不能缓存所有对象；对象缓存命中可以提高系统效率，但缓存MISS也不会造成错误，因为可以通过计算重新得到。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://www.importnew.com/22011.html" target="_blank" rel="noopener">JDK7与JDK8中HashMap的实现</a> | <a href="http://www.importnew.com/22011.html" target="_blank" rel="noopener">谈谈HashMap线程不安全的体现</a> | <a href="https://github.com/CarpenterLee/JCFInternals" target="_blank" rel="noopener">Java Collections Framework Internals</a></p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java高级特性/">Java高级特性</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!-- 来必力City版安装代码 -->
+<!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ5MS82MDU5">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div> -->
+<!-- City版安装代码已完成 -->
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tagcloud">
+  <h3 class="title">文章分类</h3>
+  <div class="entry">
+    <a href="/tags/JavaWeb/" style="font-size: 18.33px;">JavaWeb</a> <a href="/tags/Java基础/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java高级特性/" style="font-size: 16.67px;">Java高级特性</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring基础/" style="font-size: 15px;">Spring基础</a> <a href="/tags/其它/" style="font-size: 18.33px;">其它</a> <a href="/tags/分布式/" style="font-size: 11.67px;">分布式</a> <a href="/tags/硬件/" style="font-size: 13.33px;">硬件</a> <a href="/tags/计算机基础/" style="font-size: 20px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 18.33px;">设计模式</a>
+  </div>
+</div>
+
+
+
+    <div class="widget tagcloud">
+    <h3 class="title">电子书</h3>
+    <ul class="entry">
+      <li class='link'><a href='http://www.duokan.com/' target="_blank">多看阅读</a>&nbsp;&nbsp;<a href='https://read.douban.com/' target="_blank">豆瓣阅读</a>&nbsp;&nbsp;<a href='http://e.dangdang.com/' target="_blank">当当阅读</a></li>
+      <li class='link'><a href='http://www.ituring.com.cn/' target="_blank">图灵社区</a>&nbsp;&nbsp;<a href='https://www.epubit.com/' target="_blank">异步社区</a>&nbsp;&nbsp;<a href='https://www.geekbang.org/' target="_blank">极客空间</a></li>
+    </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://www.cnblogs.com/jietang/' target="_blank">唐洁的博客</a></li>
+        
+          <li class='link'><a href='http://rednaxelafx.iteye.com/' target="_blank">R大的博客</a></li>
+        
+          <li class='link'><a href='http://www.hollischuang.com/' target="_blank">阿里大神的博客</a></li>
+        
+          <li class='link'><a href='http://blog.csdn.net/IT_faquir/' target="_blank">IT_faquir的专栏</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">思维导图</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='https://fengbo4213.github.io/img/开源协议.png' target="_blank">开源协议简介</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/diagraming/5b0cf757e4b009aef58d4b9d' target="_blank">我的知识体系</a></li>
+        
+          <li class='link'><a href='https://www.processon.com/view/link/5a2a00e5e4b015e677290b4f' target="_blank">简单的网站架构</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">在线手册</h3>
+      <ul class="entry">
+        
+          <li class='link'><a href='http://v3.bootcss.com/' target="_blank">BootStrap官方手册</a></li>
+        
+          <li class='link'><a href='http://www.iconfont.cn/http://element.eleme.io/#/zh-CN/' target="_blank">阿里巴巴矢量图标库</a></li>
+        
+      </ul>
+  </div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/3017/08/16/一些知识点的链接/"></a>
+      </li>
+    
+      <li>
+        <a href="/2020/11/14/基础之加密算法/">加密算法基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/18/基础之Linux文件操作/">Linux文件操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/13/Python基础/">Python基础</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/11/其它之Docker基础/">Docker基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 fengbo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+
+</body>
+</html>
+
